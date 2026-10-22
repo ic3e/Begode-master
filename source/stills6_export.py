@@ -18,6 +18,7 @@ for n,m,c,r,mt in wheel_parts()+body_parts():
     add(('wheelR_' if near else 'wheel_')+n,m,c,'body',r,mt)
 add('wheel_cover',cover3(),'#1c1e22','body',0.8)
 add('wheel_plate',M2.plate(),'#9ea3a9','body',0.4,0.7)
+add('wheel_block',M2.box_ctrl(),'#1b1c1e','body',0.7)   # the black controller block: the handle's three bolts go into its sides
 BLACK='#1c1e22'
 add('handle',handle13(1),BLACK,'body',0.7); add('cap',trimesh.load(U+'euc_master_front_handle_p2.stl'),BLACK,'body',0.7)
 add('usb',usb_socket(),'#3a3d42','body',0.4,0.6)
