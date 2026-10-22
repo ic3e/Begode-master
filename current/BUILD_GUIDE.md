@@ -99,14 +99,15 @@ The blinks are the running lights. While you hold, they flash once at 3, 6 and 1
 
 ## The USB charger
 
-A USB-C port sits flush in the outer face of the handle's right leg, near the top, with no bump inside the
-handle (handle v15). It's a bare USB-C receptacle in a slot behind a shallow recess. It is fitted from the
-leg's inner face, then that pocket is filled with epoxy, which also seals the receptacle's back. A silicone
-USB-C dust plug closes it when you're not charging. Its two wires run inside the leg, along a groove in the web,
-and up through a hole in the housing's side floor, with a grommet. Use `master_handle_v15_usb_left.stl` instead
-if you want it on the left.
+The USB-C port is on the inside of the handle's right leg, near the top, facing into the handle's opening
+(handle v16). When the wheel falls on its side, the leg's outer face takes the ground and the port stays out of
+the way. The plug goes straight in, into a small rounded well in the leg's face, and a cable up to 50 mm long
+before its bend clears the cover. It's a bare USB-C receptacle pressed into a tight slot from that side; its
+wires run inside the leg, along a groove in the web, and up through a hole in the housing's side floor, with a
+grommet. A silicone USB-C dust plug closes it when you're not charging. Use `master_handle_v16_usb_left.stl`
+instead if you want it on the left.
 
-![USB-C flush in the leg](renders/render_v62_usb.png)
+![USB-C on the inside of the leg](renders/render_v62_usb.png)
 
 - **Power:** it gives 5 V at up to 1.5 A, about 7.5 W.
 - **Sharing with the lamp:** an INA219 measures what the whole lamp draws. When lamp and charger go over the
@@ -142,7 +143,7 @@ if you want it on the left.
 | Rubber grommets for a 6 mm hole | 2 | the wheel's power cable (back wall), the USB wire (side floor) |
 | Conformal coating spray (acrylic or silicone) | | a thin coat on every circuit board |
 | 26 AWG silicone wire; 2-core 24 AWG silicone wire, about 40 cm | | |
-| 2-part epoxy (black if you can get it); a drop of CA (super) glue | | the USB port's pocket in the handle; the servo horn in the lens frame |
+| 2-part epoxy; CA (super) glue; a little neutral-cure silicone | | the USB socket in the handle (glue only if the press fit is loose, silicone round its edge); the servo horn in the lens frame |
 
 ## Printed parts
 
@@ -154,7 +155,7 @@ Every file is already lying on the bed the way it should print: load it, don't r
 | `stl/lamp62_top_plate.stl` | 1 | ASA/PETG | top face on the bed, tongues and fingers up | none |
 | `stl/lamp62_lens_frame.stl` | 1 | PETG/ASA | front face on the bed (the lenses' lips are the first layers) | none |
 | `stl/lamp62_lid.stl` | 1 | ASA/PETG | flat | none |
-| `stl/master_handle_v15_usb_right.stl` (or `_left`) | 1 | PETG/ASA, 5 walls, 40 % infill | flat: legs and grip on the bed | from the bed only, and a brim |
+| `stl/master_handle_v16_usb_right.stl` (or `_left`) | 1 | PETG/ASA, 5 walls, 40 % infill | flat: legs and grip on the bed | from the bed only, and a brim |
 | `stl/master_handle_top_cap_p2.stl` | 1 | as your original | flat side down | none |
 
 ## Printing
@@ -256,13 +257,15 @@ switches the charger by cutting its ground.
    - **Electronics box:** the ESP32 and the MPU-6050 (flat, X arrow forward).
    - Fix everything with foam tape.
 8. **USB in the handle:**
-   - Pull the 2-core wire through the handle's channel, from the foot up to the pocket on the leg's inner face.
+   - Pull the 2-core wire through the handle's channel, from the foot up and out through the slot in the well
+     on the leg's inner face.
    - Solder it to the receptacle's VBUS and GND, and a 22 k resistor from each of CC1 and CC2 to VBUS.
-     Sleeve the joints.
-   - Push the receptacle into its slot from the pocket, mouth outwards, until its front sits level with the
-     recess's floor. A plug pushed in from outside holds it straight.
-   - With the plug still in, fill the pocket with epoxy, level with the leg's face. Once it has set, take the
-     plug out, check a phone charges, and fit the silicone dust plug.
+     Sleeve the joints with heat-shrink and keep them in line behind the receptacle.
+   - Pull the wire back from the foot end, so the joints go ahead into the chamber behind the slot, and press
+     the receptacle into the slot, mouth facing out, until its front is level with the well's floor. It's a
+     press fit: if it's too tight, file the slot lightly; if it's loose, a drop of CA glue holds it.
+   - Run a thin ring of silicone round the receptacle's edge, so water can't get behind it. Check a phone
+     charges, and fit the silicone dust plug.
 9. **Window:** lightly sand the window's inside where it covers the two running-light slots, so it spreads
    their light. Foam tape round the edge of the face, press the window on, film off last.
 10. **Into the wheel:** push the lamp up into the opening, screw the cover's two M4 screws into the inserts.

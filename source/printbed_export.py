@@ -54,7 +54,7 @@ PARTS=[('lamp62_housing','Housing: open top on the bed. Red = support (in the si
        ('lamp62_top_plate','Top plate: top face on the bed, no support','#3a4048'),
        ('lamp62_lens_frame','Lens frame: front face on the bed, no support','#2b2f35'),
        ('lamp62_lid','Lid: flat, no support','#2b2f35'),
-       ('master_handle_v15_usb_right','Handle: legs and grip flat, so every layer runs along them. Red = support from the bed, add a brim','#24272c'),
+       ('master_handle_v16_usb_right','Handle: legs and grip flat, so every layer runs along them. Red = support from the bed, add a brim','#24272c'),
        ('master_handle_top_cap_p2','Top cap: flat side down','#24272c')]
 TOZ=np.array([[1,0,0,0],[0,0,1,0],[0,-1,0,0],[0,0,0,1]],float)    # print frame (z up) -> renderer (y up)
 frames=[]; Z=np.zeros(16).tolist()
@@ -79,7 +79,7 @@ for f,cap,_ in PARTS:
     t=trimesh.load('../current/stl/'+f+'.stl'); e=t.extents; r=max(e)*1.0+40
     tgt=[0,e[2]*0.35,0]; cam=[-r*1.15,r*0.95,r*1.25]
     frames.append(frame(cap,{f},cam,tgt))
-    if f in ('lamp62_housing','master_handle_v15_usb_right'):
+    if f in ('lamp62_housing','master_handle_v16_usb_right'):
         frames.append(frame(cap.split('.')[0]+': see-through, with the support a slicer adds',{f+'_ghost',f+'_sup'},cam,tgt))
 open('anim/printbed_data.js','w').write('window.DATA='+json.dumps(dict(meshes=meshes,frames=frames))+';')
 print('frames',len(frames))

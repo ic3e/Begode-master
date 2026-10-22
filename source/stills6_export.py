@@ -20,8 +20,8 @@ add('wheel_cover',cover3(),'#1c1e22','body',0.8)
 add('wheel_plate',M2.plate(),'#9ea3a9','body',0.4,0.7)
 add('wheel_block',M2.box_ctrl(),'#1b1c1e','body',0.7)   # the black controller block: the handle's three bolts go into its sides
 BLACK='#1c1e22'
-add('handle',handle15(1),BLACK,'body',0.7); add('cap',trimesh.load(U+'euc_master_front_handle_p2.stl'),BLACK,'body',0.7)
-add('usb',usb_receptacle(),'#b8bdc4','body',0.3,0.9)
+add('handle',handle16(1),BLACK,'body',0.7); add('cap',trimesh.load(U+'euc_master_front_handle_p2.stl'),BLACK,'body',0.7)
+add('usb',usb16_receptacle(),'#b8bdc4','body',0.3,0.9)
 add('housing',housing11(),'#16181b','body',0.75); add('lid',lid10(),'#16181b','body',0.75)
 add('plate',top_plate11(),'#16181b','body',0.75)
 add('buttons',buttons8(),'#c9ced6','body',0.3,0.9)
@@ -64,7 +64,7 @@ views=[view('Lamp v6.2 on the Master',stand,whole+np.array([-1500,560,1150]),who
        view('Night: three LEDs, levelled; running lights through their slots',stand,lampS+np.array([-520,120,-300]),lampS+np.array([-60,-50,0]),night=True,beams=True),
        view('Face: three optics behind the window, running-light slots, chin air intake and buttons',stand,lampS+np.array([-330,25,0]),lampS+np.array([0,-20,0])),
        view('Fallen forward (near side cut away): handle and shells take the ground, the lamp stays %.0f mm clear'%lp[1],front,np.array([lp[0]+40,70,lp[2]+560]),np.array([lp[0]+40,30,lp[2]]),cut=True),
-       view('USB-C flush in the handle\'s leg: no bump, a silicone plug closes it',stand,P(stand,[USB_C[0],USB_C[1],ZC+USB_FACE])+np.array([-160,90,260]),P(stand,[USB_C[0],USB_C[1],ZC+USB_FACE])),
+       view('USB-C on the inside of the handle\'s leg: out of the way when the wheel falls on its side',stand,P(stand,[USB16_C[0],USB16_C[1],ZC+MOUTH16])+np.array([-200,5,-150]),P(stand,[USB16_C[0],USB16_C[1],ZC+MOUTH16])),
        view('Fallen onto its side: pad and pedal take it, the lamp stays %.0f mm clear'%ls,side,P(side,[-60,-120,ZC])+np.array([-900,350,200]),P(side,[-60,-120,ZC])+np.array([0,-30,0]))]
 open('anim/stills6_data.js','w').write('window.DATA='+json.dumps(dict(meshes=meshes,frames=views))+';')
 print('views',len(views),'meshes',len(meshes))
