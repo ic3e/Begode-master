@@ -1,9 +1,10 @@
-# Parts list and where to buy (lamp v5.3)
+# Parts list and where to buy (lamp v5.4)
 
 Prices are rough estimates (October 2026), VAT included. Most parts come from AliExpress; the LED drivers
 come from a European distributor.
 
-**Total: about €80–120** with the Mean Well drivers, or **about €65–100** with PT4115 drivers. Add shipping;
+**Total: about €95–145** with the Mean Well drivers, or **about €80–125** with PT4115 drivers. The USB charger and
+the buttons are about €15–25 of that. Add shipping;
 the filament is already in the list.
 
 | Part | Qty | Approx. € | Where |
@@ -12,15 +13,19 @@ the filament is already in the list.
 | 20 mm TIR optic for a 16 mm star: 1 × 10° round, 2 × elliptical (wide) | 3 | 5–10 | the same shops. Genuine Carclo / Fusion Optix: €3–5 each (Mouser, LEDSupply). |
 | Finned aluminium heat-sink bar, 25 mm wide, cut to 64 mm, no deeper than 20 mm | 1 | 3–6 | AliExpress ("aluminium heatsink 100 × 25 × 20") |
 | Mean Well **LDD-1500L** LED driver | 3 | 18–24 | Farnell, Mouser, TME, or Italian shops such as alimentatorishop. **Discontinued: see below.** |
-| ESP32-C3 SuperMini | 1 | 2–4 | AliExpress; Partco (FI) or Oomipood (EE) for faster delivery |
+| ESP32-C3 SuperMini | 1 | 2–4 | AliExpress (Partco doesn't stock it) |
 | MPU-6050 (GY-521) | 1 | 2–3 | AliExpress |
 | VL53L1X module (13 × 18 mm) | 1 | 4–8 | AliExpress |
+| INA219 module (0.1 Ω shunt) | 1 | 1–3 | AliExpress |
 | MG90S metal-gear servo | 1 | 3–4 | AliExpress |
 | 6800-2RS ball bearing, 10 × 19 × 5 mm, sealed | 1 | 1–3 | AliExpress (packs of 2–10) |
-| MP1584EN buck module (pack of 5) | 1 | 2–3 | AliExpress |
-| Logic-level MOSFET module (D4184 / AO3400) | 1 | 1–2 | AliExpress |
+| MP1584EN buck module (pack of 5; you need 2) | 1 | 2–3 | AliExpress |
+| Logic-level MOSFET module (D4184 / AO3400) | 2 | 2–4 | AliExpress |
+| 8 mm sealed momentary push button, IP67, flat head | 2 | 3–6 | AliExpress ("8mm waterproof momentary push button") |
+| USB-C panel socket, IP67 with cap, 16 mm hole, CC1/CC2 brought out | 1 | 4–8 | AliExpress ("USB C waterproof panel mount 16mm"). Not a "charging-in" one with 5.1 k resistors fitted |
+| 2-core 24 AWG silicone wire (about 40 cm), 2-part epoxy | | 4–7 | AliExpress or a hardware shop |
 | 5 V white LED strip, 2835, 120 LEDs/m | 1 m | 2–3 | AliExpress |
-| GL5528 LDR, 10 k NTC (B3950), resistors 10 k ×3 and 47 k | | 2–4 | AliExpress assortments, or with the driver order |
+| GL5528 LDR, 10 k NTC (B3950), resistors 10 k ×2 and 22 k ×2 | | 2–4 | AliExpress assortments, or with the driver order |
 | JST-XH 2-pin plugs, 26 AWG silicone wire | | 5–7 | AliExpress |
 | Thermal adhesive (stars to the heat sink) | | 3–5 | AliExpress |
 | M4 heat-set inserts (5.7 × 5.6 mm), M2/M3 screw assortment, 4 × M3 × 10 countersunk | | 6–8 | AliExpress |
@@ -36,6 +41,8 @@ The Mean Well LDD-1500L is discontinued. Farnell and a few shops still have stoc
 - **Option 2: three PT4115 LED driver modules** (AliExpress, €1–2 each, 6–30 V in, with a dim pin). They give
   up to about 1.2 A, so the lamp makes about 1000 lm. They fit in the same electronics box and need no firmware
   change: wire their DIM pins to GPIO5, as with the Mean Well drivers.
+- **Option 3: three Mean Well LDD-1000L** (Partco stocks them, about €8.50 each). Same fit and wiring, 1 A per
+  LED, about 850–900 lm. At 1 A the lamp is well inside the wheel's power, so 100 % brightness is fine.
 
 Don't use Mean Well's suggested replacement (NLDD-H). It needs a higher input voltage and won't work in the
 wheel's 6.5 V dim mode.

@@ -3,17 +3,18 @@
 3D-printable parts for the Begode Master electric unicycle:
 
 - **Front handle:** built on the community handle (`reference/euc_master_front_handle.stl`), with every
-  original bolt hole kept where it was.
+  original bolt hole kept where it was, and a sealed USB-C phone charger in one leg.
 - **Self-levelling headlamp:** fills the stock lamp's opening in the top cover. It has:
   - three LEDs with optics on one heat-sink bar that a servo tilts ±10°, so the beam stays put while the
     wheel pitches (about 1200 lm)
   - a road sensor that follows the slope ahead
   - daytime running lights and day/night switching
-  - a phone settings page
+  - two buttons in the chin for every setting, so no phone or app is needed (a Wi-Fi page is there if you want it)
+  - a USB-C phone charger in the handle, with a power guard so the lamp and charger stay inside the wheel's lamp output
   - beam brightness that follows the wheel's lamp voltage (6.5 V dim, 12 V full)
   - a flush clear window and angled running-light lines that follow the Master's faceted front
   - drop-safe: whichever way the wheel falls, the handle, shells or tyre touch the ground first (lamp at least
-    20 mm clear)
+    20 mm clear), and hard stops inside so a drop doesn't load the servo's gears
 
 ![Lamp v5.1 in the stock opening](current/renders/render_v51_hero.png)
 
@@ -23,16 +24,19 @@ Everything is in [`current/`](current). [`current/BUILD_GUIDE.md`](current/BUILD
 
 - the parts list
 - which LEDs, optics, heat sink and electronics to buy, and the wiring
-  (prices and shops in [`current/PARTS.md`](current/PARTS.md), about €80–120)
+  (prices and shops in [`current/PARTS.md`](current/PARTS.md), about €95–145)
 - hardware and assembly order
+- the buttons and the USB charger
 - the firmware
 - everything that was checked
 
+[`current/TESTING.md`](current/TESTING.md) is the test plan and log for rides, rough roads, drops and rain.
+
 | Folder | Contents |
 |---|---|
-| `current/stl/` | handle v12, the original top cap, lamp housing, top plate, head, lid, running-light diffusers, and the window's cutting template (SVG) |
-| `current/firmware/headlamp5_firmware/` | ESP32-C3 firmware (Arduino; needs the Pololu "VL53L1X" library) |
-| `current/renders/` | stills: day, night, face on, fallen forward / onto its side, and how the head is fitted |
+| `current/stl/` | handle v13 (USB port on the right or left), the original top cap, lamp housing, top plate, head, lid, running-light diffusers, and the window's cutting template (SVG) |
+| `current/firmware/headlamp6_firmware/` | ESP32-C3 firmware (Arduino; needs the Pololu "VL53L1X" library) |
+| `current/renders/` | stills: day, night, face on, fallen forward / onto its side; how the head is fitted, the stops, the buttons and the USB port |
 | `reference/` | the original handle and cap STLs, the measurement sheets, and [`MEASUREMENTS.md`](reference/MEASUREMENTS.md) (every measurement taken on the wheel) |
 | `source/` | the Python scripts that build, check, export and render every version (see [`source/README.md`](source/README.md)) |
 | `archive/` | all earlier versions: guides, STLs, firmware, renders, including v8 with the swing-up can holder and its animation |
@@ -59,7 +63,8 @@ against a model built from caliper measurements.
 | lamp v5 | v12 | no can holder; three LEDs on one tilting bar (~1200 lm); electronics box between the shells |
 | lamp v5.1 | v12 | flush polycarbonate window, angled running-light lines, chin vent and baffle, checked for drops |
 | lamp v5.2 | v12 | open-top housing with a screwed-on top plate, so the head and servo can actually be fitted |
-| **lamp v5.3** | **v12** | **sealed 6800 ball bearing for the head's pivot; wire hole on the pin's axis** |
+| lamp v5.3 | v12 | sealed 6800 ball bearing for the head's pivot; wire hole on the pin's axis |
+| **lamp v5.4** | **v13** | **hard stops for the head; chin buttons instead of the phone page; USB-C charger in the handle with a power guard; firmware v6** |
 
 ## Rebuilding
 
@@ -67,8 +72,8 @@ Python 3 with `numpy`, `trimesh`, `manifold3d` and `matplotlib`. Run from `sourc
 
 ```
 cd source && mkdir -p ../build_output
-python3 check20.py     # every fit / clearance / assembly / drop check for the current version
-python3 export20.py    # writes the current STLs and the window SVG to build_output/
+python3 check21.py     # every fit / clearance / assembly / drop check for the current version
+python3 export21.py    # writes the current STLs and the window SVG to build_output/
 ```
 
 Stills (three.js in headless Chromium, as for the animation):
