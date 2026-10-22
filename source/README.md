@@ -18,13 +18,14 @@ everything from this folder; the original handle and cap are read from `../refer
 | `master_model.py` | rough Master traced from photos (used up to v9; its front end is wrong) |
 | `master_model2.py` | the wheel's front rebuilt from the caliper measurements (`../reference/MEASUREMENTS.md`) |
 | `build15.py` + `check15.py`, `export15.py` | v10: lamp in front of the cover, swing-up can holder |
-| **`build16.py` + `check16.py`, `export16.py`** | **v11 (current): lamp in the stock opening, tray, handle v11** |
-| `render*.py`, `master_render*.py`, `lamp_render.py` | matplotlib renders of each version (`render_v8.py` is current) |
+| `build16.py` + `check16.py`, `export16.py` | v11: lamp in the stock opening, tray, can holder, handle v11 |
+| **`build17.py` + `check17.py`, `export17.py`, `render_v9.py`** | **lamp v5 (current): three LEDs on one tilting bar, electronics box, handle v12** |
+| `render*.py`, `master_render*.py`, `lamp_render.py` | matplotlib renders of each version (`render_v9.py` is current) |
 | `meas_sheet.py`, `meas_sheet2.py` | the measurement sheets |
 | `anim_export.py`, `anim/` | the animation |
 | others | small helpers used while tracing the handle STL (`holes.py`, `slices.py`, `stlinfo.py`, …) |
 
-## Animation
+## Animation (v8, with the can holder)
 
 ```
 python3 anim_export.py                 # writes anim/data.js (meshes + 780 frames of positions)
