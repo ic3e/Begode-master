@@ -5,3 +5,5 @@ source/anim/node_modules/
 source/anim/data.js
 source/anim/frames/
 source/anim/*.log
+source/anim/stills_data.js
+source/anim/stills/

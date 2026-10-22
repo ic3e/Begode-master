@@ -19,10 +19,12 @@ everything from this folder; the original handle and cap are read from `../refer
 | `master_model2.py` | the wheel's front rebuilt from the caliper measurements (`../reference/MEASUREMENTS.md`) |
 | `build15.py` + `check15.py`, `export15.py` | v10: lamp in front of the cover, swing-up can holder |
 | `build16.py` + `check16.py`, `export16.py` | v11: lamp in the stock opening, tray, can holder, handle v11 |
-| **`build17.py` + `check17.py`, `export17.py`, `render_v9.py`** | **lamp v5 (current): three LEDs on one tilting bar, electronics box, handle v12** |
-| `render*.py`, `master_render*.py`, `lamp_render.py` | matplotlib renders of each version (`render_v9.py` is current) |
+| `build17.py` + `check17.py`, `export17.py`, `render_v9.py` | lamp v5: three LEDs on one tilting bar, electronics box, handle v12 |
+| **`build18.py` + `check18.py`, `export18.py`, `stills_export.py`** | **lamp v5.1 (current): window, angled running lights, chin vent and baffle, drop check** |
+| `render*.py`, `master_render*.py`, `lamp_render.py` | matplotlib renders of earlier versions |
 | `meas_sheet.py`, `meas_sheet2.py` | the measurement sheets |
-| `anim_export.py`, `anim/` | the animation |
+| `anim_export.py`, `anim/index.html`, `anim/render.mjs` | the v8 animation |
+| `stills_export.py`, `anim/stills.html`, `anim/stills_render.mjs` | the v5.1 stills (`current/renders/`) |
 | others | small helpers used while tracing the handle STL (`holes.py`, `slices.py`, `stlinfo.py`, …) |
 
 ## Animation (v8, with the can holder)
@@ -38,3 +40,14 @@ ffmpeg -framerate 30 -i frames/f%04d.png -c:v libx264 -crf 17 -pix_fmt yuv420p a
 Every position in the animation comes from the same functions the checks use, so the motion is the
 checked motion. `render.mjs` uses headless Chromium (Playwright). No GPU is needed: it falls back to
 software WebGL.
+
+## Stills (lamp v5.1)
+
+```
+python3 stills_export.py               # writes anim/stills_data.js (meshes + six camera views)
+cd anim && python3 -m http.server 8766 --bind 127.0.0.1 &
+node stills_render.mjs                 # anim/stills/f0000.png …   (env W, H, OUTD to change size / folder)
+```
+
+The fallen views use the drop check's own ground planes, and the red marker is the measured gap between the
+lamp and the ground.

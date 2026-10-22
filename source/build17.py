@@ -13,6 +13,7 @@ OPTIC_W=(-PITCH3,0.0,PITCH3)
 HS3_W,HS3_H,HS3_D=64.0,25.0,20.0          # finned bar: the three stars glue to its flat face
 HW3=HS3_W/2+1.5; HV3=13.5; HU0_3,HU1_3=-17.0,18.0
 BOSS3=2.5
+VISOR3=6.0
 PIN3_R,BORE3_R=5.0,3.3                   # hollow pivot pin: 6 LED wires + 2 sensor wires (26 AWG) go through it
 PX3=HOUSE_X0+FACE+0.5-HU0_3; PY3=2.2
 def H3(m): return m.translate([PX3,PY3,ZC])
@@ -24,7 +25,7 @@ def head3():
         h-=cu(TIR2_D/2+0.2,HU0_3+1.5,HU0_3+1.5+TIR2_H+STAR2+0.2,w=w)        # optic + star
     h-=box(HU1_3-HS3_D,HU1_3+1,-HS3_H/2-0.2,HS3_H/2+0.2,-HS3_W/2-0.2,HS3_W/2+0.2)   # heat sink bar from the back
     for w in (-27,0,27): h-=mf.Manifold.cylinder(2*HV3+2,1.4,1.4,16).rotate([-90,0,0]).translate([HU1_3-8,-HV3-1,w])
-    h+=box(HU0_3-6,HU0_3+0.5,HV3-2,HV3,-HW3+2,HW3-2)                       # visor over the three
+    h+=box(HU0_3-VISOR3,HU0_3+0.5,HV3-2,HV3,-HW3+2,HW3-2)                  # visor over the three
     b=hull(cw(7,HW3,HW3+BOSS3),cw(4.5,HW3,HW3+BOSS3,u=11))                  # servo horn boss
     b-=hull(cw(3.9,HW3+BOSS3-2.2,HW3+BOSS3+1),cw(2.5,HW3+BOSS3-2.2,HW3+BOSS3+1,u=12))
     b-=cw(3.2,HW3+BOSS3-4,HW3+BOSS3+1)

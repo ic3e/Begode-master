@@ -1,15 +1,15 @@
-# Osade nimekiri ja kust osta (lamp v5)
+# Osade nimekiri ja kust osta (lamp v5.1)
 
 Hinnad on ligikaudsed (oktoober 2026), käibemaksuga. Enamik osi tuleb AliExpressist, LED-draiverid
 Euroopa edasimüüjalt. Ingliskeelne versioon: [`PARTS.md`](PARTS.md).
 
-**Kokku: umbes 75–110 €** Mean Welli draiveritega või **umbes 60–90 €** PT4115 draiveritega. Lisaks
+**Kokku: umbes 80–120 €** Mean Welli draiveritega või **umbes 65–100 €** PT4115 draiveritega. Lisaks
 saatmiskulu ja umbes 6 € filamenti.
 
 | Osa | Tk | Umbes € | Kust |
 |---|---|---|---|
 | LED 16 mm vaskplaadil: Luminus SST-20 (või Cree XM-L2), 3 V, 4000–5000 K | 3 | 10–12 | AliExpressi taskulambipoed (Convoy, Simon's, Kaidomain). Suvalised „Cree“ pakkumised on sageli võltsid. |
-| 20 mm TIR-optika 16 mm plaadile: 1 × 10°, 2 × 25° | 3 | 4–6 | samad poed. Originaal Carclo / Fusion Optix: 3–5 € tükk (Mouser, LEDSupply). |
+| 20 mm TIR-optika 16 mm plaadile: 1 × 10° ümar, 2 × elliptiline (lai) | 3 | 5–10 | samad poed. Originaal Carclo / Fusion Optix: 3–5 € tükk (Mouser, LEDSupply). |
 | Ribidega alumiiniumradiaator, 25 mm lai, lõigatud 64 mm pikkuseks, kuni 20 mm sügav | 1 | 3–6 | AliExpress („aluminium heatsink 100 × 25 × 20“) |
 | Mean Well **LDD-1500L** LED-draiver | 3 | 18–24 | Farnell, Mouser, TME või Itaalia poed, näiteks alimentatorishop. **Tootmisest maas, vt allpool.** |
 | ESP32-C3 SuperMini | 1 | 2–4 | AliExpress; kiiremini Partco (FI) või Oomipood (EE) |
@@ -24,6 +24,7 @@ saatmiskulu ja umbes 6 € filamenti.
 | Soojusjuhtiv liim (LED-plaadid radiaatorile) | | 3–5 | AliExpress |
 | M4 sissesulatatavad keermehülsid (5,7 × 5,6 mm), M2/M3 kruvide komplekt | | 6–8 | AliExpress |
 | PETG või ASA, umbes 250 g | | 5–7 | 3DJake, Prusa pood või kohalik pood |
+| Läbipaistev polükarbonaatleht 1,5 mm (A5 piisab), õhuke kahepoolne vahtteip | | 5–9 | ehitus- või plastipood või AliExpress |
 
 ## LED-draiverid
 
