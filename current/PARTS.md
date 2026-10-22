@@ -1,4 +1,4 @@
-# Parts list and where to buy (lamp v5.1)
+# Parts list and where to buy (lamp v5.2)
 
 Prices are rough estimates (October 2026), VAT included. Most parts come from AliExpress; the LED drivers
 come from a European distributor. Estonian version: [`PARTS_et.md`](PARTS_et.md).

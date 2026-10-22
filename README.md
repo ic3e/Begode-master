@@ -30,9 +30,9 @@ Everything is in [`current/`](current). [`current/BUILD_GUIDE.md`](current/BUILD
 
 | Folder | Contents |
 |---|---|
-| `current/stl/` | handle v12, the original top cap, lamp housing, head, lid, running-light diffusers, and the window's cutting template (SVG) |
+| `current/stl/` | handle v12, the original top cap, lamp housing, top plate, head, lid, running-light diffusers, and the window's cutting template (SVG) |
 | `current/firmware/headlamp5_firmware/` | ESP32-C3 firmware (Arduino; needs the Pololu "VL53L1X" library) |
-| `current/renders/` | stills: day, night, face on, and fallen forward / onto its side |
+| `current/renders/` | stills: day, night, face on, fallen forward / onto its side, and how the head is fitted |
 | `reference/` | the original handle and cap STLs, the measurement sheets, and [`MEASUREMENTS.md`](reference/MEASUREMENTS.md) (every measurement taken on the wheel) |
 | `source/` | the Python scripts that build, check, export and render every version (see [`source/README.md`](source/README.md)) |
 | `archive/` | all earlier versions: guides, STLs, firmware, renders, including v8 with the swing-up can holder and its animation |
@@ -57,7 +57,8 @@ against a model built from caliper measurements.
 | v7 | v10 | rebuilt to caliper measurements; lamp in front of the cover; can holder swings up into the bay |
 | v8 | v11 | lamp built into the stock lamp opening; extra mounting through the cover's two M4 screws |
 | lamp v5 | v12 | no can holder; three LEDs on one tilting bar (~1200 lm); electronics box between the shells |
-| **lamp v5.1** | **v12** | **flush polycarbonate window, angled running-light lines, chin vent and baffle, checked for drops** |
+| lamp v5.1 | v12 | flush polycarbonate window, angled running-light lines, chin vent and baffle, checked for drops |
+| **lamp v5.2** | **v12** | **open-top housing with a screwed-on top plate, so the head and servo can actually be fitted** |
 
 ## Rebuilding
 
@@ -65,8 +66,8 @@ Python 3 with `numpy`, `trimesh`, `manifold3d` and `matplotlib`. Run from `sourc
 
 ```
 cd source && mkdir -p ../build_output
-python3 check18.py     # every fit / clearance / drop check for the current version
-python3 export18.py    # writes the current STLs and the window SVG to build_output/
+python3 check19.py     # every fit / clearance / assembly / drop check for the current version
+python3 export19.py    # writes the current STLs and the window SVG to build_output/
 ```
 
 Stills (three.js in headless Chromium, as for the animation):

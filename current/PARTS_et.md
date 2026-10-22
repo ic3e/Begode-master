@@ -1,4 +1,4 @@
-# Osade nimekiri ja kust osta (lamp v5.1)
+# Osade nimekiri ja kust osta (lamp v5.2)
 
 Hinnad on ligikaudsed (oktoober 2026), käibemaksuga. Enamik osi tuleb AliExpressist, LED-draiverid
 Euroopa edasimüüjalt. Ingliskeelne versioon: [`PARTS.md`](PARTS.md).

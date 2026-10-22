@@ -7,3 +7,5 @@ source/anim/frames/
 source/anim/*.log
 source/anim/stills_data.js
 source/anim/stills/
+source/anim/mech_data.js
+source/anim/mech/
