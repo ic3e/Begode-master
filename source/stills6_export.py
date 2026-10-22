@@ -1,7 +1,7 @@
 # Lamp v6.2 on the Master: exterior stills (renderer: anim/stills6.html). The wheel is the dressed render model
 # (render_wheel.py) over the measured outline; the clearances in the captions are measured on this scene.
 import numpy as np, trimesh, json, base64
-exec(open('build25.py').read()); exec(open('render_wheel.py').read())
+exec(open('build26.py').read()); exec(open('render_wheel.py').read())
 def T(x=0,y=0,z=0): M=np.eye(4); M[:3,3]=[x,y,z]; return M
 def Rz(d): c,s=np.cos(np.radians(d)),np.sin(np.radians(d)); M=np.eye(4); M[:2,:2]=[[c,-s],[s,c]]; return M
 def Rx(d): c,s=np.cos(np.radians(d)),np.sin(np.radians(d)); M=np.eye(4); M[1:3,1:3]=[[c,-s],[s,c]]; return M
@@ -20,7 +20,7 @@ add('wheel_cover',cover3(),'#1c1e22','body',0.8)
 add('wheel_plate',M2.plate(),'#9ea3a9','body',0.4,0.7)
 add('wheel_block',M2.box_ctrl(),'#1b1c1e','body',0.7)   # the black controller block: the handle's three bolts go into its sides
 BLACK='#1c1e22'
-add('handle',handle16(1),BLACK,'body',0.7); add('cap',trimesh.load(U+'euc_master_front_handle_p2.stl'),BLACK,'body',0.7)
+add('handle',handle17(1),BLACK,'body',0.7); add('cap',trimesh.load(U+'euc_master_front_handle_p2.stl'),BLACK,'body',0.7)
 add('usb',usb16_receptacle(),'#b8bdc4','body',0.3,0.9)
 add('housing',housing11(),'#16181b','body',0.75); add('lid',lid10(),'#16181b','body',0.75)
 add('plate',top_plate11(),'#16181b','body',0.75)

@@ -34,7 +34,7 @@ Everything is in [`current/`](current). [`current/BUILD_GUIDE.md`](current/BUILD
 
 | Folder | Contents |
 |---|---|
-| `current/stl/` | handle v16 (USB port on the right or left), the original top cap, lamp housing, top plate, lens frame, lid, and the window's cutting template (SVG), each lying on the bed as it should print |
+| `current/stl/` | handle v17 (USB port on the right or left), the original top cap, lamp housing, top plate, lens frame, lid, and the window's cutting template (SVG), each lying on the bed as it should print |
 | `current/firmware/headlamp6_firmware/` | ESP32-C3 firmware (Arduino; needs the Pololu "VL53L1X" library) |
 | `current/renders/` | stills: day, night, face on, fallen forward / onto its side; how the head is fitted, the stops, the buttons and the USB port |
 | `reference/` | the original handle and cap STLs, the measurement sheets, and [`MEASUREMENTS.md`](reference/MEASUREMENTS.md) (every measurement taken on the wheel) |
@@ -69,7 +69,8 @@ against a model built from caliper measurements.
 | lamp v6.1 | v13 | fewer parts: no road sensor, no heat-sink clamp, no diffusers, no gasket |
 | lamp v6.2 | v14 | ready for the slicer: no thin walls, slits or trapped supports; parts exported in their print orientation; horn glued |
 | lamp v6.2 | v15 | the USB-C port flush in the handle's leg, no bump: a bare receptacle potted in epoxy, with a silicone plug |
-| **lamp v6.2** | **v16** | **the USB-C port on the leg's inside, out of the way in a side fall; pressed in from inside, no pocket to fill** |
+| lamp v6.2 | v16 | the USB-C port on the leg's inside, out of the way in a side fall; pressed in from inside, no pocket to fill |
+| **lamp v6.2** | **v17** | **the lamp tabs braced (the first print snapped them): a gusset under each and a fillet over its root; the USB wire inside the root, not in a groove along it** |
 
 ## Rebuilding
 

@@ -1,9 +1,9 @@
-# Lamp v6.2 + handle v16 checks: the v6.1 checks on the print-ready parts (fit, swing, stops, assembly, sealing, duct, drops).
+# Lamp v6.2 + handle v17 checks: the v6.1 checks on the print-ready parts (fit, swing, stops, assembly, sealing, duct, drops).
 import numpy as np, trimesh, manifold3d as mf
 from matplotlib.path import Path
 from scipy import ndimage
-exec(open('build25.py').read())
-handle=handle16()
+exec(open('build26.py').read())
+handle=handle17()
 hs=housing11(); pl=top_plate11(); win=window(); ld=lid10(); gk=lid_tape(); df=mf.Manifold()
 bar=led_bar(); cl=mf.Manifold(); sv=servo6(); brg=H6(bearing7()); bt=buttons8()
 fr=lambda a: tilt6(H6(lens_frame7()+lenses6()),a)
@@ -14,7 +14,7 @@ v=lambda m: round(m.volume(),2)
 print('vs wheel (suspension bottomed): housing+plate',v(lamp^OBL),' lid',v(ld^OBL),' gasket',v(gk^OBL),' window',v(win^OBR))
 print('lid above the cross plate when bottomed: %.1f mm'%(ld.bounding_box()[1]-M2.PLATE_LOW))
 print('vs handle: housing',v(hs^handle),' plate',v(pl^handle))
-print('handle vs wheel (bottomed / at rest):',v(handle^OBL),v(handle^OBR),' left-hand version:',v(handle16(-1)^OBL),v(handle16(-1)^OBR))
+print('handle vs wheel (bottomed / at rest):',v(handle^OBL),v(handle^OBR),' left-hand version:',v(handle17(-1)^OBL),v(handle17(-1)^OBR))
 print('plate fingers on the bar: overlap',v(pl^bar),' gap at the fins %.2f mm'%(min(to_tm(pl).vertices[(to_tm(pl).vertices[:,0]>BAR_X1-0.5)&(to_tm(pl).vertices[:,0]<BAR_X1+4)][:,0])-BAR_X1))
 print('parts that must not overlap: plate/housing',v(pl^hs),' lid/gasket',v(ld^gk),' gasket/housing',v(gk^hs),' window/housing',v(win^lamp),
       ' bar/housing',v(bar^hs),' bar/plate',v(bar^pl),' clamp/housing',v(cl^hs),' clamp/bar',v(cl^bar),' servo/housing',v(sv^hs),
@@ -84,5 +84,5 @@ rng=np.random.default_rng(1); D=rng.normal(size=(20000,3)); D/=np.linalg.norm(D,
 m=(W@D.T).max(0)-(L@D.T).max(0)
 fwd=(W@[-1,0,0]).max()-(L@[-1,0,0]).max()
 print('drops: worst of',len(D),'directions %.1f mm, straight forward %.1f mm'%(m.min(),fwd))
-for nm,mm in (('housing',hs),('top plate',pl),('lens frame',lens_frame7()),('lid',ld),('lid tape',gk),('handle v16',handle)):
+for nm,mm in (('housing',hs),('top plate',pl),('lens frame',lens_frame7()),('lid',ld),('lid tape',gk),('handle v17',handle)):
     tt=to_tm(mm); print(nm,'watertight',tt.is_watertight,'bodies',len(tt.split(only_watertight=False)))

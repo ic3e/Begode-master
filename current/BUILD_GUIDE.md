@@ -100,11 +100,11 @@ The blinks are the running lights. While you hold, they flash once at 3, 6 and 1
 ## The USB charger
 
 The USB-C port is on the inside of the handle's right leg, near the top, facing into the handle's opening
-(handle v16). When the wheel falls on its side, the leg's outer face takes the ground and the port stays out of
+(handle v16, braced in v17). When the wheel falls on its side, the leg's outer face takes the ground and the port stays out of
 the way. The plug goes straight in, into a small rounded well in the leg's face, and a cable up to 50 mm long
 before its bend clears the cover. It's a bare USB-C receptacle pressed into a tight slot from that side; its
-wires run inside the leg, along a groove in the web, and up through a hole in the housing's side floor, with a
-grommet. A silicone USB-C dust plug closes it when you're not charging. Use `master_handle_v16_usb_left.stl`
+wires run inside the leg and through the lamp tab's braced root, and come up through the tab into a hole in the
+housing's side floor, with a grommet. A silicone USB-C dust plug closes it when you're not charging. Use `master_handle_v17_usb_left.stl`
 instead if you want it on the left.
 
 ![USB-C on the inside of the leg](renders/render_v62_usb.png)
@@ -155,10 +155,17 @@ Every file is already lying on the bed the way it should print: load it, don't r
 | `stl/lamp62_top_plate.stl` | 1 | ASA/PETG | top face on the bed, tongues and fingers up | none |
 | `stl/lamp62_lens_frame.stl` | 1 | PETG/ASA | front face on the bed (the lenses' lips are the first layers) | none |
 | `stl/lamp62_lid.stl` | 1 | ASA/PETG | flat | none |
-| `stl/master_handle_v16_usb_right.stl` (or `_left`) | 1 | PETG/ASA, 5 walls, 40 % infill | flat: legs and grip on the bed | from the bed only, and a brim |
+| `stl/master_handle_v17_usb_right.stl` (or `_left`) | 1 | PETG/ASA, 5 walls, 40 % infill | flat: legs and grip on the bed | from the bed only, and a brim |
 | `stl/master_handle_top_cap_p2.stl` | 1 | as your original | flat side down | none |
 
 ## Printing
+
+- **Handle's lamp tabs (v17):** the first printed handle snapped both tabs where they leave the leg. Each tab
+  now has a triangular gusset underneath, 5 mm deep at the root and tapering out under the screw, and a sloped
+  fillet over its root. The USB wire runs inside that thicker root, not in a groove along it. The tabs are still
+  4 mm thick where the lamp sits on them.
+
+![The lamp tab's gusset](renders/print_handle_tab_gusset.png)
 
 - **Nozzle 0.4 mm, layers 0.2 mm or finer.** The lens frame's lips are 0.6 mm, three layers at 0.2.
 - **Housing:**
@@ -186,7 +193,8 @@ Every file is already lying on the bed the way it should print: load it, don't r
 - **Lamp to cover:** the stock lamp's 2 M4 screws, into 2 **M4 heat-set inserts** (5.7 mm long, 5.6 mm OD) in the
   top plate's bosses.
 - **Top plate to housing:** 4 × M3 × 8 countersunk.
-- **Lamp to handle:** 2 × M3 × 10 self-tapping, up through the handle's webs into the housing.
+- **Lamp to handle:** 2 × M3 × 10 self-tapping, up through the handle's lamp tabs into the housing. Their heads sit
+  in counterbores in the gussets under the tabs.
 - **Lid:** 4 × M3 × 10 self-tapping.
 - **Servo horn:** glued into its recess with a drop of CA glue. Its two little screws aren't used: they would
   stick out of the frame's inner side. The servo itself needs no screws.
@@ -257,8 +265,8 @@ switches the charger by cutting its ground.
    - **Electronics box:** the ESP32 and the MPU-6050 (flat, X arrow forward).
    - Fix everything with foam tape.
 8. **USB in the handle:**
-   - Pull the 2-core wire through the handle's channel, from the foot up and out through the slot in the well
-     on the leg's inner face.
+   - Push the 2-core wire into the hole in the top of the lamp tab (right side) and feed it through the handle's
+     channel, up the leg and out through the slot in the well on the leg's inner face.
    - Solder it to the receptacle's VBUS and GND, and a 22 k resistor from each of CC1 and CC2 to VBUS.
      Sleeve the joints with heat-shrink and keep them in line behind the receptacle.
    - Pull the wire back from the foot end, so the joints go ahead into the chamber behind the slot, and press

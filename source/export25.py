@@ -1,5 +1,5 @@
-# Lamp v6.2 + handle v16 STLs, each lying on the bed the way it should print, centred, lowest point at z = 0.
-exec(open('build25.py').read())
+# Lamp v6.2 + handle v17 STLs, each lying on the bed the way it should print, centred, lowest point at z = 0.
+exec(open('build26.py').read())
 import glob, os
 OUTD='../current/stl/'
 os.makedirs(OUTD,exist_ok=True)
@@ -13,8 +13,8 @@ put(lid10().rotate([90,0,0]),'lamp62_lid.stl')
 # the handle lies with its U flat (the plane of its legs and grip on the bed): every layer runs along the legs
 # and the grip, so a fall onto the grip pulls along the filament, not between layers
 for side,nm in ((1,'right'),(-1,'left')):
-    t=clean_tm(to_tm(handle16(side))); n=np.array([0.71,0.70,0.0]); n/=np.linalg.norm(n)   # the U's normal (its thinnest axis)
-    t.apply_transform(trimesh.geometry.align_vectors(-n,[0,0,1])); put(t,f'master_handle_v16_usb_{nm}.stl')
+    t=clean_tm(to_tm(handle17(side))); n=np.array([0.71,0.70,0.0]); n/=np.linalg.norm(n)   # the U's normal (its thinnest axis)
+    t.apply_transform(trimesh.geometry.align_vectors(-n,[0,0,1])); put(t,f'master_handle_v17_usb_{nm}.stl')
 put(trimesh.load(U+'euc_master_front_handle_p2.stl'),'master_handle_top_cap_p2.stl')   # your stock cap, flat side down
 pts=window_outline(); W_=2*WIN_W; H_=WIN_Y1-WIN_Y0
 path=' '.join(('M' if i==0 else 'L')+f'{w+WIN_W:.2f},{WIN_Y1-y:.2f}' for i,(w,y) in enumerate(pts))+' Z'

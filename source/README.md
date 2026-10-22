@@ -27,7 +27,8 @@ everything from this folder; the original handle and cap are read from `../refer
 | `build22.py` + `check22.py`, `export22.py` | lamp v6: sealed; fixed LEDs behind a bulkhead, tilting lens frame, drained air duct; flood-fill seal test |
 | `build23.py` + `check23.py`, `export23.py`, `mech6_export.py` | lamp v6.1: v6 with fewer parts (no road sensor, clamp, diffusers or gasket) |
 | `build24.py` + `check24.py`, `export24.py`, `print_check.py` | lamp v6.2 + handle v14: v6.1 made ready for the slicer; `print_check.py` checks the STLs as a slicer sees them |
-| **`build25.py` + `check25.py`, `export25.py`** | **lamp v6.2 + handle v16 (current): the USB-C port flush in the leg instead of a socket in a boss (v15, outer face), then on the leg's inside (v16)** |
+| `build25.py` | handle v15 / v16: the USB-C port flush in the leg instead of a socket in a boss (v15, outer face), then on the leg's inside (v16) |
+| **`build26.py` + `check25.py`, `export25.py`** | **lamp v6.2 + handle v17 (current): the lamp tabs braced with gussets and fillets, the USB wire inside their root** |
 | `render*.py`, `master_render*.py`, `lamp_render.py` | matplotlib renders of earlier versions |
 | `meas_sheet.py`, `meas_sheet2.py` | the measurement sheets |
 | `anim_export.py`, `anim/index.html`, `anim/render.mjs` | the v8 animation |

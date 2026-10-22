@@ -57,7 +57,7 @@ Let the wheel tip over from standing, about 10 times each way. Do every step on 
 After each set:
 - [ ] Does the head still swing freely and come back to level?
 - [ ] Does the beam aim where it did before?
-- [ ] Any cracks: corners of the electronics box, the top plate's tongues, the screw bosses, the handle's legs
+- [ ] Any cracks: corners of the electronics box, the top plate's tongues, the screw bosses, the handle's lamp tabs (where they leave the leg), the handle's legs
   around the USB port?
 - [ ] Any loose plugs, flickering LEDs, buttons that stick?
 - [ ] Is the window still sealed?
