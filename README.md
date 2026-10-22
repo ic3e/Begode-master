@@ -19,7 +19,7 @@
 
 ## What to print now
 
-Everything is in [`current/`](current). [`current/BUILD_GUIDE.md`](current/BUILD_GUIDE.md) has (Estonian: [`BUILD_GUIDE_et.md`](current/BUILD_GUIDE_et.md), [`PARTS_et.md`](current/PARTS_et.md)):
+Everything is in [`current/`](current). [`current/BUILD_GUIDE.md`](current/BUILD_GUIDE.md) has:
 
 - the parts list
 - which LEDs, optics, heat sink and electronics to buy, and the wiring

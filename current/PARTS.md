@@ -1,7 +1,7 @@
 # Parts list and where to buy (lamp v5.2)
 
 Prices are rough estimates (October 2026), VAT included. Most parts come from AliExpress; the LED drivers
-come from a European distributor. Estonian version: [`PARTS_et.md`](PARTS_et.md).
+come from a European distributor.
 
 **Total: about €80–120** with the Mean Well drivers, or **about €65–100** with PT4115 drivers. Add shipping;
 the filament is already in the list.
