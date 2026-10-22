@@ -1,4 +1,4 @@
-# Parts list and where to buy (lamp v5.2)
+# Parts list and where to buy (lamp v5.3)
 
 Prices are rough estimates (October 2026), VAT included. Most parts come from AliExpress; the LED drivers
 come from a European distributor.
@@ -16,13 +16,14 @@ the filament is already in the list.
 | MPU-6050 (GY-521) | 1 | 2–3 | AliExpress |
 | VL53L1X module (13 × 18 mm) | 1 | 4–8 | AliExpress |
 | MG90S metal-gear servo | 1 | 3–4 | AliExpress |
+| 6800-2RS ball bearing, 10 × 19 × 5 mm, sealed | 1 | 1–3 | AliExpress (packs of 2–10) |
 | MP1584EN buck module (pack of 5) | 1 | 2–3 | AliExpress |
 | Logic-level MOSFET module (D4184 / AO3400) | 1 | 1–2 | AliExpress |
 | 5 V white LED strip, 2835, 120 LEDs/m | 1 m | 2–3 | AliExpress |
 | GL5528 LDR, 10 k NTC (B3950), resistors 10 k ×3 and 47 k | | 2–4 | AliExpress assortments, or with the driver order |
 | JST-XH 2-pin plugs, 26 AWG silicone wire | | 5–7 | AliExpress |
 | Thermal adhesive (stars to the heat sink) | | 3–5 | AliExpress |
-| M4 heat-set inserts (5.7 × 5.6 mm), M2/M3 screw assortment | | 6–8 | AliExpress |
+| M4 heat-set inserts (5.7 × 5.6 mm), M2/M3 screw assortment, 4 × M3 × 10 countersunk | | 6–8 | AliExpress |
 | PETG or ASA, about 250 g | | 5–7 | 3DJake, Prusa store, or a local shop |
 | Clear polycarbonate sheet 1.5 mm (A5 is plenty), thin double-sided foam tape | | 5–9 | hardware or plastics shop, or AliExpress |
 

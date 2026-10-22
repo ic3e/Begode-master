@@ -21,12 +21,13 @@ everything from this folder; the original handle and cap are read from `../refer
 | `build16.py` + `check16.py`, `export16.py` | v11: lamp in the stock opening, tray, can holder, handle v11 |
 | `build17.py` + `check17.py`, `export17.py`, `render_v9.py` | lamp v5: three LEDs on one tilting bar, electronics box, handle v12 |
 | `build18.py` + `check18.py`, `export18.py`, `stills_export.py` | lamp v5.1: window, angled running lights, chin vent and baffle, drop check |
-| **`build19.py` + `check19.py`, `export19.py`, `mech_export.py`** | **lamp v5.2 (current): open-top housing and top plate, so head and servo can be fitted; mechanism stills** |
+| `build19.py` + `check19.py`, `export19.py` | lamp v5.2: open-top housing and top plate, so head and servo can be fitted |
+| **`build20.py` + `check20.py`, `export20.py`, `mech_export.py`** | **lamp v5.3 (current): 6800 ball bearing on the head's pin; mechanism stills** |
 | `render*.py`, `master_render*.py`, `lamp_render.py` | matplotlib renders of earlier versions |
 | `meas_sheet.py`, `meas_sheet2.py` | the measurement sheets |
 | `anim_export.py`, `anim/index.html`, `anim/render.mjs` | the v8 animation |
 | `stills_export.py`, `anim/stills.html`, `anim/stills_render.mjs` | the v5.1 stills (`current/renders/`) |
-| `mech_export.py`, `anim/mech.html` | the v5.2 mechanism stills: `PAGE=mech.html OUTD=mech node stills_render.mjs` |
+| `mech_export.py`, `anim/mech.html` | the mechanism stills: `PAGE=mech.html OUTD=mech node stills_render.mjs` |
 | others | small helpers used while tracing the handle STL (`holes.py`, `slices.py`, `stlinfo.py`, …) |
 
 ## Animation (v8, with the can holder)

@@ -1,4 +1,4 @@
-# Lamp v5.2: three-LED self-levelling headlamp in the stock lamp opening
+# Lamp v5.3: three-LED self-levelling headlamp in the stock lamp opening
 
 The stock lamp comes out, and this lamp sits flush in its opening in the top cover. There is no cup
 holder any more.
@@ -25,11 +25,14 @@ Everything is checked against the model of your wheel built from your caliper me
 
 ## How the levelling works
 
-![Fitting the head](renders/render_v52_mechanism_2.png)
+![Fitting the head](renders/render_v53_mechanism_2.png)
 
 - **Pivot:** the head (the three LEDs and optics on the finned heat-sink bar) hangs between two inner walls of
-  the housing, on one axis across the wheel. On the left, a hollow pin on the head turns in a 4 mm bearing; the
-  LED and temperature-sensor wires come out through it, so nothing flexes outside. On the right, the servo's
+  the housing, on one axis across the wheel. On the left, a sealed 6800-2RS ball bearing sits on a hollow pin on
+  the head. The LED and temperature-sensor wires come out through the pin, so nothing flexes outside. The
+  bearing keeps the head free and without play for years. A printed pin in a printed hole would work at
+  first, but it binds if the print is tight, grinds with road dust and wears loose, and then the beam
+  shivers over bumps. On the right, the servo's
   shaft sits on the same axis and its horn is screwed to the head.
 - **Drive:** there are no gears or links: the servo turns the head directly. It moves ±10°, and the firmware
   stops it there.
@@ -39,12 +42,12 @@ Everything is checked against the model of your wheel built from your caliper me
   up and down hills. If the wheel falls over, the head simply holds your aim.
 - **Load:** the head weighs about 70 g and its centre is close to the axis, so the servo has little work to do.
   An MG90S with metal gears is plenty.
-- **Holding it in:** the housing is open on top. Head and servo go in from above as one unit: the pin drops into
-  a slot in the left wall, the servo shaft into a slot in the right wall, the servo's tabs into slots in its two
+- **Holding it in:** the housing is open on top. Head and servo go in from above as one unit: the pin's bearing drops into
+  a seat in the left wall, the servo shaft into a slot in the right wall, the servo's tabs into slots in its two
   posts. The top plate's tongues go down into those slots, so nothing can lift out, and four countersunk screws
   hold the plate. The servo needs no screws of its own.
 
-Renders of each step: `renders/render_v52_mechanism_1.png` … `_4.png`.
+Renders of each step: `renders/render_v53_mechanism_1.png` … `_4.png`.
 
 ## Bought parts
 
@@ -52,7 +55,7 @@ Renders of each step: `renders/render_v52_mechanism_1.png` … `_4.png`.
 |---|---|---|
 | Luminus SST-20 (or Cree XM-L2 / XP-L), 3 V, on a **16 mm** copper star | 3 | 4000–5000 K |
 | 20 mm TIR optic for a 16 mm star | 3 | 1 × 10° round (centre, reach), 2 × **elliptical** wide (sides: a flat, wide band of light) |
-| Clear polycarbonate sheet, 1.5 mm | 1 | cut to `stl/lamp52_window_1.5mm_polycarbonate.svg` (133 × 35.8 mm, chamfered corners) |
+| Clear polycarbonate sheet, 1.5 mm | 1 | cut to `stl/lamp53_window_1.5mm_polycarbonate.svg` (133 × 35.8 mm, chamfered corners) |
 | Thin double-sided foam tape, 0.5 mm, 3–5 mm wide | | holds the window on the lamp face and seals it |
 | Finned aluminium heat-sink bar | 1 | flat face **64 × 25 mm**, no deeper than 20 mm, fins running front to back. Cut it from an extruded profile |
 | Mean Well LDD-1500L | 3 | one per LED; works from the wheel's 6.5 V dim mode |
@@ -60,6 +63,7 @@ Renders of each step: `renders/render_v52_mechanism_1.png` … `_4.png`.
 | MPU-6050 (GY-521) | 1 | |
 | VL53L1X module (13 × 18 mm) | 1 | road sensor |
 | MG90S metal-gear servo | 1 | |
+| 6800-2RS ball bearing (10 × 19 × 5 mm, sealed) | 1 | for the head's pivot pin |
 | MP1584EN buck module, set to 5.0 V | 1 | |
 | Logic-level MOSFET module (D4184 / AO3400) | 1 | daytime running lights |
 | 5 V white LED strip, 2835, 120/m | about 14 LEDs | daytime running lights |
@@ -73,11 +77,11 @@ Renders of each step: `renders/render_v52_mechanism_1.png` … `_4.png`.
 |---|---|---|
 | `stl/master_handle_v12.stl` | 1 | your handle plus two webs at the back. On its side, supports under the grip |
 | `stl/master_handle_top_cap_p2.stl` | 1 | your original cap |
-| `stl/lamp52_housing.stl` | 1 | open top on the bed, as exported. Black ASA, "fuzzy skin" on in the slicer for the shells' grainy look |
-| `stl/lamp52_top_plate.stl` | 1 | top face on the bed, tongues up, as exported |
-| `stl/lamp52_head.stl` | 1 | open back on the bed, as exported |
-| `stl/lamp52_lid.stl` | 1 | outside face on the bed, as exported |
-| `stl/lamp52_drl_diffuser_left.stl`, `stl/lamp52_drl_diffuser_right.stl` | 1 each | white or clear PETG, 100 % infill (the angled light lines) |
+| `stl/lamp53_housing.stl` | 1 | open top on the bed, as exported. Black ASA, "fuzzy skin" on in the slicer for the shells' grainy look |
+| `stl/lamp53_top_plate.stl` | 1 | top face on the bed, tongues up, as exported |
+| `stl/lamp53_head.stl` | 1 | open back on the bed, as exported |
+| `stl/lamp53_lid.stl` | 1 | outside face on the bed, as exported |
+| `stl/lamp53_drl_diffuser_left.stl`, `stl/lamp53_drl_diffuser_right.stl` | 1 each | white or clear PETG, 100 % infill (the angled light lines) |
 
 ## Hardware
 
@@ -122,6 +126,9 @@ plug and it gives more.
    - Slide the bar into the head from the back and fix it with the three M3 screws into the fins.
    - Run the 6 LED wires and the 2 NTC wires out through the hollow pin.
 2. **Head and servo, on the bench:**
+   - Thread the 8 wires (6 LED, 2 temperature sensor) out through the hollow pin, then press the 6800-2RS onto
+     the pin until it sits against the shoulder. It should be a firm push fit. If it's too tight, sand the
+     pin lightly; if it's loose, use a drop of superglue on the pin (keep it off the seals).
    - Set the servo to the middle of its travel: use a servo tester's centre position, or turn the shaft gently
      by hand halfway between its two ends.
    - Screw the single-arm horn into the recess on the head's right boss.
@@ -131,11 +138,11 @@ plug and it gives more.
 3. **Housing,** open top up:
    - Glue the two angled diffusers into their recesses, with LED strip rows behind them.
    - Push the LDR into its hole near the top of the face. It looks out through the window.
-   - Lower the head and servo in together: the pin into the slot in the left wall, the servo's shaft into the
+   - Lower the head and servo in together: the bearing into its seat in the left wall, the servo's shaft into the
      slot in the right wall, its two tabs into the slots in its posts. Nothing needs forcing.
    - Lead the 8 wires from the end of the pin, and the servo cable, down into the electronics box.
    - **Top plate:** melt the two M4 inserts into its bosses, then set it on. Its tongues go down into the four
-     slots. Fix it with the 4 countersunk M3 screws.
+     slots, and the one on the left holds the bearing down. Fix it with the 4 countersunk M3 screws.
 4. **Electronics box:** put the three LDD-1500L, the ESP32, the MPU-6050 (flat, X arrow forward), the buck and
    the MOSFET module on foam tape in the box under the head. Slide the road sensor board into its slot behind
    the little tunnel beside the chin vent. Don't put glass or film in front of it; it stays outside the window.
@@ -158,7 +165,9 @@ plug and it gives more.
 - **Suspension:** with the suspension bottomed out, the lid stays 4.5 mm above the cross plate.
 - **Head:** it tilts ±10° without touching the housing, the servo or the window (4–5 mm spare at the top, 6 mm below).
 - **Putting it together:** the head and servo come straight out of the open housing with nothing touching on
-  the way, so they go in the same way. With the top plate on, neither the pin nor the servo can move.
+  the way, so they go in the same way. With the top plate on, neither the bearing nor the servo can move.
+- **Bearing:** it fits its seat and the pin. The pin is a closed tube, and the lip beside the bearing only
+  touches its outer ring.
 - **Window:** it fits inside the opening and sits 0.7 mm behind the cover's front edge.
 - **Drops:** I tested about 18,000 fall directions. In every one, the handle grip, the shells or the tyre touch the
   ground first, and the lamp stays at least 19.8 mm clear: 25 mm falling straight forward, 48 mm onto a front

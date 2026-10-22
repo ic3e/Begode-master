@@ -58,7 +58,8 @@ against a model built from caliper measurements.
 | v8 | v11 | lamp built into the stock lamp opening; extra mounting through the cover's two M4 screws |
 | lamp v5 | v12 | no can holder; three LEDs on one tilting bar (~1200 lm); electronics box between the shells |
 | lamp v5.1 | v12 | flush polycarbonate window, angled running-light lines, chin vent and baffle, checked for drops |
-| **lamp v5.2** | **v12** | **open-top housing with a screwed-on top plate, so the head and servo can actually be fitted** |
+| lamp v5.2 | v12 | open-top housing with a screwed-on top plate, so the head and servo can actually be fitted |
+| **lamp v5.3** | **v12** | **sealed 6800 ball bearing for the head's pivot; wire hole on the pin's axis** |
 
 ## Rebuilding
 
@@ -66,8 +67,8 @@ Python 3 with `numpy`, `trimesh`, `manifold3d` and `matplotlib`. Run from `sourc
 
 ```
 cd source && mkdir -p ../build_output
-python3 check19.py     # every fit / clearance / assembly / drop check for the current version
-python3 export19.py    # writes the current STLs and the window SVG to build_output/
+python3 check20.py     # every fit / clearance / assembly / drop check for the current version
+python3 export20.py    # writes the current STLs and the window SVG to build_output/
 ```
 
 Stills (three.js in headless Chromium, as for the animation):
