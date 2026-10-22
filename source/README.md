@@ -29,7 +29,8 @@ everything from this folder; the original handle and cap are read from `../refer
 | `render*.py`, `master_render*.py`, `lamp_render.py` | matplotlib renders of earlier versions |
 | `meas_sheet.py`, `meas_sheet2.py` | the measurement sheets |
 | `anim_export.py`, `anim/index.html`, `anim/render.mjs` | the v8 animation |
-| `stills_export.py`, `anim/stills.html`, `anim/stills_render.mjs` | the v5.1 stills (`current/renders/`) |
+| `stills_export.py`, `anim/stills.html` | the v5.1 stills (`archive/renders/`) |
+| **`stills6_export.py`, `render_wheel.py`, `anim/stills6.html`, `anim/stills_render.mjs`** | **the v6.1 stills (`current/renders/render_v61_*`); the wheel dressed from the owner's 360 photos** |
 | `mech_export.py`, `anim/mech.html` | the mechanism stills: `PAGE=mech.html OUTD=mech node stills_render.mjs` |
 | others | small helpers used while tracing the handle STL (`holes.py`, `slices.py`, `stlinfo.py`, …) |
 
@@ -47,13 +48,17 @@ Every position in the animation comes from the same functions the checks use, so
 checked motion. `render.mjs` uses headless Chromium (Playwright). No GPU is needed: it falls back to
 software WebGL.
 
-## Stills (lamp v5.1)
+## Stills (lamp v6.1)
 
 ```
-python3 stills_export.py               # writes anim/stills_data.js (meshes + six camera views)
+python3 stills6_export.py              # writes anim/stills6_data.js (meshes + six camera views)
 cd anim && python3 -m http.server 8766 --bind 127.0.0.1 &
-node stills_render.mjs                 # anim/stills/f0000.png …   (env W, H, OUTD to change size / folder)
+PAGE=stills6.html OUTD=stills6 W=2400 H=1350 node stills_render.mjs   # anim/stills6/f0000.png …
 ```
 
-The fallen views use the drop check's own ground planes, and the red marker is the measured gap between the
-lamp and the ground.
+The wheel in these is `render_wheel.py`: the measured outline (shells, cover, tyre at rest) dressed with what
+the owner's 360 turntable GIF shows: faceted side pads, the silver suspension rail over the axle, the rear
+battery pack, a knobby tyre, spoked rim, spiked pedals, fender, red rear linkage and tail light. It is for
+pictures only; the checks still use the measured model. The fallen views put the wheel's lowest point on the
+ground, and the red marker is the gap between the lamp and the ground, measured in the same scene.
+The v5.1 stills (`stills_export.py`) are kept for the record.

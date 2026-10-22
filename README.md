@@ -16,7 +16,7 @@
   - drop-safe: whichever way the wheel falls, the handle, shells or tyre touch the ground first (lamp at least
     20 mm clear), and hard stops inside so a drop doesn't load the servo's gears
 
-![Lamp v5.1 in the stock opening](current/renders/render_v51_hero.png)
+![Lamp v6.1 in the stock opening](current/renders/render_v61_hero.png)
 
 ## What to print now
 
@@ -81,10 +81,10 @@ python3 export23.py    # writes the current STLs and the window SVG to build_out
 Stills (three.js in headless Chromium, as for the animation):
 
 ```
-python3 stills_export.py               # writes anim/stills_data.js
+python3 stills6_export.py              # writes anim/stills6_data.js
 cd anim && npm install
 python3 -m http.server 8766 --bind 127.0.0.1 &
-node stills_render.mjs                 # anim/stills/f0000.png …
+PAGE=stills6.html OUTD=stills6 node stills_render.mjs   # anim/stills6/f0000.png …
 ```
 
 To re-render the v8 animation, see `source/README.md`.

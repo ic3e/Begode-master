@@ -30,7 +30,7 @@ The stock lamp comes out, and this lamp sits flush in its opening in the top cov
 - **Looks:** a clear 1.5 mm polycarbonate window sits flush in the opening, 0.7 mm behind the cover's front
   edge, over a black face. The running lights are two angled light lines that follow the Master's faceted shape.
 
-![Lamp v5.1](renders/render_v51_closeup.png)
+![Lamp v6.1](renders/render_v61_closeup.png)
 
 Everything is checked against the model of your wheel built from your caliper measurements
 (`../reference/MEASUREMENTS.md`). Prices and shops: [`PARTS.md`](PARTS.md). Test plan and log:
