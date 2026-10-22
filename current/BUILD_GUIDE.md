@@ -269,7 +269,7 @@ switches the charger by cutting its ground.
      channel, up the leg and out through the slot in the well on the leg's inner face.
    - Solder it to the receptacle's VBUS and GND, and a 22 k resistor from each of CC1 and CC2 to VBUS.
      Sleeve the joints with heat-shrink and keep them in line behind the receptacle.
-   - Pull the wire back from the foot end, so the joints go ahead into the chamber behind the slot, and press
+   - Pull the wire back from the tab end, so the joints go ahead into the chamber behind the slot, and press
      the receptacle into the slot, mouth facing out, until its front is level with the well's floor. It's a
      press fit: if it's too tight, file the slot lightly; if it's loose, a drop of CA glue holds it.
    - Run a thin ring of silicone round the receptacle's edge, so water can't get behind it. Check a phone
