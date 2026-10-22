@@ -16,10 +16,11 @@
 
 ## What to print now
 
-Everything is in [`current/`](current). [`current/BUILD_GUIDE.md`](current/BUILD_GUIDE.md) has:
+Everything is in [`current/`](current). [`current/BUILD_GUIDE.md`](current/BUILD_GUIDE.md) has (Estonian: [`BUILD_GUIDE_et.md`](current/BUILD_GUIDE_et.md), [`PARTS_et.md`](current/PARTS_et.md)):
 
 - the parts list
 - which LEDs, optics, heat sink and electronics to buy, and the wiring
+  (prices and shops in [`current/PARTS.md`](current/PARTS.md), about €75–110)
 - hardware and assembly order
 - the firmware
 - everything that was checked

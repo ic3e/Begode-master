@@ -14,7 +14,8 @@ holder any more.
   handle's tabs.
 
 Everything is checked against the model of your wheel built from your caliper measurements
-(`../reference/MEASUREMENTS.md`).
+(`../reference/MEASUREMENTS.md`). Prices and shops: [`PARTS.md`](PARTS.md). Eesti keeles:
+[`BUILD_GUIDE_et.md`](BUILD_GUIDE_et.md), [`PARTS_et.md`](PARTS_et.md).
 
 ## Bought parts
 
