@@ -25,12 +25,15 @@ everything from this folder; the original handle and cap are read from `../refer
 | `build20.py` + `check20.py`, `export20.py` | lamp v5.3: 6800 ball bearing on the head's pin |
 | `build21.py` + `check21.py`, `export21.py`, `mech_export.py` | lamp v5.4 + handle v13: head stops, chin buttons, USB-C port in the handle |
 | `build22.py` + `check22.py`, `export22.py` | lamp v6: sealed; fixed LEDs behind a bulkhead, tilting lens frame, drained air duct; flood-fill seal test |
-| **`build23.py` + `check23.py`, `export23.py`, `mech6_export.py`** | **lamp v6.1 (current): v6 with fewer parts (no road sensor, clamp, diffusers or gasket)** |
+| `build23.py` + `check23.py`, `export23.py`, `mech6_export.py` | lamp v6.1: v6 with fewer parts (no road sensor, clamp, diffusers or gasket) |
+| **`build24.py` + `check24.py`, `export24.py`, `print_check.py`** | **lamp v6.2 + handle v14 (current): v6.1 made ready for the slicer; `print_check.py` checks the STLs as a slicer sees them** |
 | `render*.py`, `master_render*.py`, `lamp_render.py` | matplotlib renders of earlier versions |
 | `meas_sheet.py`, `meas_sheet2.py` | the measurement sheets |
 | `anim_export.py`, `anim/index.html`, `anim/render.mjs` | the v8 animation |
 | `stills_export.py`, `anim/stills.html` | the v5.1 stills (`archive/renders/`) |
-| **`stills6_export.py`, `render_wheel.py`, `anim/stills6.html`, `anim/stills_render.mjs`** | **the v6.1 stills (`current/renders/render_v61_*`); the wheel dressed from the owner's 360 photos** |
+| **`stills6_export.py`, `render_wheel.py`, `anim/stills6.html`, `anim/stills_render.mjs`** | **the v6.2 stills (`current/renders/render_v62_*`); the wheel dressed from the owner's 360 photos** |
+| **`mech6_export.py`, `anim/mech6.html`** | **how it's built and how the air goes through (`render_v62_1..5`)** |
+| **`printbed_export.py`, `anim/printbed.html`** | **the print preview: each STL on the bed with its supports (`current/renders/print_*`): `PAGE=printbed.html OUTD=printbed node stills_render.mjs`** |
 | `mech_export.py`, `anim/mech.html` | the mechanism stills: `PAGE=mech.html OUTD=mech node stills_render.mjs` |
 | others | small helpers used while tracing the handle STL (`holes.py`, `slices.py`, `stlinfo.py`, …) |
 
@@ -48,7 +51,7 @@ Every position in the animation comes from the same functions the checks use, so
 checked motion. `render.mjs` uses headless Chromium (Playwright). No GPU is needed: it falls back to
 software WebGL.
 
-## Stills (lamp v6.1)
+## Stills (lamp v6.2)
 
 ```
 python3 stills6_export.py              # writes anim/stills6_data.js (meshes + six camera views)

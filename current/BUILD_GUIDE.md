@@ -1,4 +1,4 @@
-# Lamp v6.1: sealed, self-levelling three-LED headlamp in the stock lamp opening
+# Lamp v6.2: sealed, self-levelling three-LED headlamp in the stock lamp opening
 
 The stock lamp comes out, and this lamp sits flush in its opening in the top cover.
 
@@ -18,6 +18,9 @@ The stock lamp comes out, and this lamp sits flush in its opening in the top cov
 - **As few parts as possible (v6.1):** no road sensor (its window would be dirty with spray and sand most of
   the time), no heat-sink clamp (the top plate's fingers hold it), no light diffusers (the window does it), no
   gasket (the window's foam tape seals the lid).
+- **Ready to print (v6.2):** every STL is one closed solid, lying on the bed the way it should print, with no
+  wall thinner than a 0.4 mm nozzle can draw, no hairline slits and no support trapped where it can't come out.
+  See *Printing* below.
 - **No phone needed:** two buttons in the chin set the aim, brightness, mode, calibration and the USB charger.
   The Wi-Fi settings page stays off unless you ask for it.
 - **USB-C charger:** a sealed USB-C port in the handle charges a phone from the wheel. A power guard keeps the
@@ -30,7 +33,7 @@ The stock lamp comes out, and this lamp sits flush in its opening in the top cov
 - **Looks:** a clear 1.5 mm polycarbonate window sits flush in the opening, 0.7 mm behind the cover's front
   edge, over a black face. The running lights are two angled light lines that follow the Master's faceted shape.
 
-![Lamp v6.1](renders/render_v61_closeup.png)
+![Lamp v6.2](renders/render_v62_closeup.png)
 
 Everything is checked against the model of your wheel built from your caliper measurements
 (`../reference/MEASUREMENTS.md`). Prices and shops: [`PARTS.md`](PARTS.md). Test plan and log:
@@ -38,7 +41,7 @@ Everything is checked against the model of your wheel built from your caliper me
 
 ## How it's built
 
-![Cut through](renders/render_v61_2.png)
+![Cut through](renders/render_v62_2.png)
 
 - **LEDs, fixed:** the three stars sit on the finned aluminium bar, which is clamped behind a wall (the
   bulkhead) inside the lamp. The LEDs look forward through a window in that wall. Their side is dry; the fins
@@ -73,7 +76,7 @@ The dry spaces are sealed by:
 
 The wires pass between dry spaces only: from the LEDs through the left pivot pocket into the left side bay.
 
-![Dry and wet](renders/render_v61_3.png)
+![Dry and wet](renders/render_v62_3.png)
 
 ## The buttons
 
@@ -98,7 +101,7 @@ The blinks are the running lights. While you hold, they flash once at 3, 6 and 1
 
 A sealed USB-C socket (IP67, with a cap) sits in the outer face of the handle's right leg, near the top. Its two
 wires run inside the leg, along a groove in the web, and up through a hole in the housing's side floor, with a
-grommet. Use `master_handle_v13_usb_left.stl` instead if you want it on the left.
+grommet. Use `master_handle_v14_usb_left.stl` instead if you want it on the left.
 
 - **Power:** it gives 5 V at up to 1.5 A, about 7.5 W.
 - **Sharing with the lamp:** an INA219 measures what the whole lamp draws. When lamp and charger go over the
@@ -113,7 +116,7 @@ grommet. Use `master_handle_v13_usb_left.stl` instead if you want it on the left
 | Luminus SST-20 (or Cree XM-L2 / XP-L), 3 V, on a **16 mm** copper star | 3 | 4000–5000 K |
 | 20 mm TIR optic for a 16 mm star | 3 | 1 × 10° round (centre, reach), 2 × **elliptical** wide (sides) |
 | Finned aluminium heat-sink bar | 1 | flat face 25 mm tall, fins no deeper than 20 mm, fins running front to back. **Cut to 62 mm wide** |
-| Clear polycarbonate sheet, 1.5 mm | 1 | the window (`stl/lamp61_window_1.5mm_polycarbonate.svg`) |
+| Clear polycarbonate sheet, 1.5 mm | 1 | the window (`stl/lamp62_window_1.5mm_polycarbonate.svg`) |
 | Thin double-sided foam tape, 0.5 mm, 3–5 mm wide | | the window; strips on the inner walls' top edges under the top plate and on the electronics box's wall edges under the lid |
 | Neutral-cure clear silicone | | seals the LED bar's face to the bulkhead |
 | Mean Well LDD-1500L (or LDD-1000L / PT4115, see `PARTS.md`) | 3 | one per LED |
@@ -133,18 +136,43 @@ grommet. Use `master_handle_v13_usb_left.stl` instead if you want it on the left
 | Rubber grommets for a 6 mm hole | 2 | the wheel's power cable (back wall), the USB wire (side floor) |
 | Conformal coating spray (acrylic or silicone) | | a thin coat on every circuit board |
 | 26 AWG silicone wire; 2-core 24 AWG silicone wire, about 40 cm | | |
-| 2-part epoxy | | the USB socket in the handle |
+| 2-part epoxy; a drop of CA (super) glue | | the USB socket in the handle; the servo horn in the lens frame |
 
 ## Printed parts
 
-| File | Qty | How |
-|---|---|---|
-| `stl/master_handle_v13_usb_right.stl` (or `_left`) | 1 | PETG/ASA. On its side, supports under the grip |
-| `stl/master_handle_top_cap_p2.stl` | 1 | your original cap |
-| `stl/lamp61_housing.stl` | 1 | black ASA, 4 walls, open top on the bed, as exported. "Fuzzy skin" on for the shells' grainy look |
-| `stl/lamp61_top_plate.stl` | 1 | ASA/PETG, top face on the bed, tongues and fingers up |
-| `stl/lamp61_lens_frame.stl` | 1 | PETG/ASA, as exported |
-| `stl/lamp61_lid.stl` | 1 | ASA/PETG, flat |
+Every file is already lying on the bed the way it should print: load it, don't rotate it.
+
+| File | Qty | Material | Lies | Supports |
+|---|---|---|---|---|
+| `stl/lamp62_housing.stl` | 1 | black ASA, 4 walls | open top on the bed | yes, see below |
+| `stl/lamp62_top_plate.stl` | 1 | ASA/PETG | top face on the bed, tongues and fingers up | none |
+| `stl/lamp62_lens_frame.stl` | 1 | PETG/ASA | front face on the bed (the lenses' lips are the first layers) | none |
+| `stl/lamp62_lid.stl` | 1 | ASA/PETG | flat | none |
+| `stl/master_handle_v14_usb_right.stl` (or `_left`) | 1 | PETG/ASA, 5 walls, 40 % infill | flat: legs and grip on the bed | from the bed only, and a brim |
+| `stl/master_handle_top_cap_p2.stl` | 1 | as your original | flat side down | none |
+
+## Printing
+
+- **Nozzle 0.4 mm, layers 0.2 mm or finer.** The lens frame's lips are 0.6 mm, three layers at 0.2.
+- **Housing:**
+  - The supports it needs all stand on the bed or on its own ledges, inside the side bays and in the LED bar's
+    window, and they come out through the open top.
+  - The air duct and the electronics box need none: ribs under the lenses' floor and cones under the lid's
+    screw posts let those surfaces bridge. Keep "bridges" on (the side-bay floors bridge about 20 mm).
+  - ASA warps, so print it in an enclosure.
+  - "Fuzzy skin" on the outside gives the shells' grainy look.
+- **Handle:** it lies with its legs and grip flat, so every layer runs along them. A fall onto the grip then
+  pulls along the plastic, not between layers. It rests on its rounded underside, so use supports from the bed
+  (tree supports are easiest to remove) and a 5 mm brim. The bolt holes then lie sideways and can come out a
+  little oval: run a drill of their own size through them.
+- **Preview:** `renders/print_*.png` show each part on the bed as exported, and the support a slicer adds in
+  red (`print_housing_supports.png`, `print_handle_supports.png`). The housing's supports fill its two side
+  bays (about 40 mm tall) and the LED window: about 15 g with tree supports, all reachable through the open top.
+
+![Housing on the bed, with its supports](renders/print_housing_supports.png)
+
+- **Check before slicing:** `source/print_check.py` checks every STL the way a slicer would see it. It looks
+  for closed solids, thin walls, slits, and what needs support and where that support stands.
 
 ## Hardware
 
@@ -153,7 +181,8 @@ grommet. Use `master_handle_v13_usb_left.stl` instead if you want it on the left
 - **Top plate to housing:** 4 × M3 × 8 countersunk.
 - **Lamp to handle:** 2 × M3 × 10 self-tapping, up through the handle's webs into the housing.
 - **Lid:** 4 × M3 × 10 self-tapping.
-- **Servo horn:** the 2 small screws that come with it. The servo itself needs no screws.
+- **Servo horn:** glued into its recess with a drop of CA glue. Its two little screws aren't used: they would
+  stick out of the frame's inner side. The servo itself needs no screws.
 - **Buttons:** their own nuts.
 
 ## Wiring
@@ -202,8 +231,9 @@ switches the charger by cutting its ground.
 4. **Lens frame and servo, on the bench:**
    - Push the three lenses into the frame from behind (a drop of glue holds them).
    - Press the 6800-2RS onto the pin until it sits against the shoulder.
-   - Set the servo to the middle of its travel. Screw the horn into the recess on the frame's right hub (its
-     arm points up), and press the servo's shaft into the horn with the frame level.
+   - Set the servo to the middle of its travel. Glue the horn into the recess on the frame's right hub with a
+     drop of CA glue (its arm points up, flat side against the recess's floor). Once the glue has set, press
+     the servo's shaft into the horn with the frame level.
 5. **Lens frame in:** lower the frame and servo in together: the bearing into its seat in the left wall, the
    servo's shaft into the slot in the right wall, its tabs into the slots in its posts. Nothing needs forcing.
    Tilt the frame by hand: it should swing freely and stop softly on the stops.
@@ -254,7 +284,8 @@ switches the charger by cutting its ground.
   - The narrowest point of the duct is 355 mm² (trap to passage), about a 21 mm hole.
 - **Drops:** I tested about 18,000 fall directions. In every one, the handle grip, the shells or the tyre touch
   the ground first, and the lamp stays at least 19.8 mm clear (25 mm falling straight forward).
-- **Parts:** every part is one solid piece.
+- **Parts:** every STL is one closed solid with no zero-area triangles, lying flat and centred.
+  `print_check.py` finds no wall under 0.4 mm, no floor under one layer and no slit under 0.3 mm.
 - **Firmware:** it compiles against stand-in Arduino headers, and I ran the buttons through a simulation. It
   hasn't run on real hardware yet.
 

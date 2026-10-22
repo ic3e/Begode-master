@@ -1,7 +1,7 @@
-# Lamp v6.1 on the Master: exterior stills (renderer: anim/stills6.html). The wheel is the dressed render model
+# Lamp v6.2 on the Master: exterior stills (renderer: anim/stills6.html). The wheel is the dressed render model
 # (render_wheel.py) over the measured outline; the clearances in the captions are measured on this scene.
 import numpy as np, trimesh, json, base64
-exec(open('build23.py').read()); exec(open('render_wheel.py').read())
+exec(open('build24.py').read()); exec(open('render_wheel.py').read())
 def T(x=0,y=0,z=0): M=np.eye(4); M[:3,3]=[x,y,z]; return M
 def Rz(d): c,s=np.cos(np.radians(d)),np.sin(np.radians(d)); M=np.eye(4); M[:2,:2]=[[c,-s],[s,c]]; return M
 def Rx(d): c,s=np.cos(np.radians(d)),np.sin(np.radians(d)); M=np.eye(4); M[1:3,1:3]=[[c,-s],[s,c]]; return M
@@ -20,10 +20,10 @@ add('wheel_cover',cover3(),'#1c1e22','body',0.8)
 add('wheel_plate',M2.plate(),'#9ea3a9','body',0.4,0.7)
 add('wheel_block',M2.box_ctrl(),'#1b1c1e','body',0.7)   # the black controller block: the handle's three bolts go into its sides
 BLACK='#1c1e22'
-add('handle',handle13(1),BLACK,'body',0.7); add('cap',trimesh.load(U+'euc_master_front_handle_p2.stl'),BLACK,'body',0.7)
+add('handle',handle14(1),BLACK,'body',0.7); add('cap',trimesh.load(U+'euc_master_front_handle_p2.stl'),BLACK,'body',0.7)
 add('usb',usb_socket(),'#3a3d42','body',0.4,0.6)
-add('housing',housing10(),'#16181b','body',0.75); add('lid',lid10(),'#16181b','body',0.75)
-add('plate',top_plate10(),'#16181b','body',0.75)
+add('housing',housing11(),'#16181b','body',0.75); add('lid',lid10(),'#16181b','body',0.75)
+add('plate',top_plate11(),'#16181b','body',0.75)
 add('buttons',buttons8(),'#c9ced6','body',0.3,0.9)
 add('servo',servo6(),'#2f6fd6','body',0.4)
 fins=bx(BAR_X0,BAR_X0+4,BAR_Y0,BAR_Y1,ZC-BAR_W/2,ZC+BAR_W/2)
@@ -33,7 +33,7 @@ add('bar',fins,'#b9bec6','body',0.35,0.8)
 add('drl',drl_prism(1,x0=HOUSE_X0+0.4,x1=HOUSE_X0+FACE)+drl_prism(-1,x0=HOUSE_X0+0.4,x1=HOUSE_X0+FACE),'#ffffff','body',0.3,emissive='#eef4ff')
 add('window',window(),'#dfe9f2','body',0.03,0.0,opacity=0.16,smooth=False,kind='glass')
 # the tilting part, in its own frame about the pivot (the LED chips)
-add('frame',lens_frame(),'#1b1d21','head',0.55)
+add('frame',lens_frame7(),'#1b1d21','head',0.55)
 add('lens',lenses6(),'#c9d2dc','head',0.05,0.4,emissive='#fff1b8')
 L=2200.0; LX=to_tm(lenses6()).bounds[0][0]
 for k,(w,a) in enumerate(zip(OPTIC_W,(14,4.5,14))):
@@ -41,7 +41,7 @@ for k,(w,a) in enumerate(zip(OPTIC_W,(14,4.5,14))):
     add(f'beam{k}',beam,'#fff3c4','head',emissive='#fff3c4',opacity=0.075 if a>10 else 0.11,smooth=False,kind='beam')
 add('ground',box(-3500,1500,-6,0,-1500,1500),'#c4c9d0','ground',0.95)
 W=np.vstack(allW)
-Lv=np.vstack([to_tm(m).vertices for m in (housing10(),window(),lid10())])
+Lv=np.vstack([to_tm(m).vertices for m in (housing11(),window(),lid10())])
 def head_mat(B,a): return B@T(PX6,PY6,ZC)@Rz(a)
 def on_ground(B): # lift so the lowest point of the wheel touches y=0 (the ground)
     y=(np.c_[W,np.ones(len(W))]@B.T)[:,1].min(); return T(0,-y,0)@B
@@ -59,7 +59,7 @@ Lf=lamp_low(front); lp=Lf[Lf[:,1].argmin()]
 Ls=lamp_low(side); ls=Ls[:,1].min()
 add('gapmark',mf.Manifold.cylinder(lp[1],1.6,1.6,16).rotate([-90,0,0]).translate([lp[0],0,lp[2]]),'#e8262d','ground',0.4,emissive='#e8262d',smooth=False,kind='mark')
 print('lamp lowest point: fallen forward %.1f mm, fallen on its side %.1f mm above the ground'%(lp[1],ls))
-views=[view('Lamp v6.1 on the Master',stand,whole+np.array([-1500,560,1150]),whole+np.array([-40,30,0])),
+views=[view('Lamp v6.2 on the Master',stand,whole+np.array([-1500,560,1150]),whole+np.array([-40,30,0])),
        view('Flush in the stock opening, behind a clear window; + and - under the chin',stand,lampS+np.array([-420,170,330]),lampS+np.array([0,-50,0])),
        view('Night: three LEDs, levelled; running lights through their slots',stand,lampS+np.array([-520,120,-300]),lampS+np.array([-60,-50,0]),night=True,beams=True),
        view('Face: three optics behind the window, running-light slots, chin air intake and buttons',stand,lampS+np.array([-330,25,0]),lampS+np.array([0,-20,0])),

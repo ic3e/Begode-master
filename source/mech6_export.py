@@ -1,6 +1,6 @@
-# Lamp v6.1 stills: how it's built and how the air, water and sand go through it (renderer: anim/mech6.html).
+# Lamp v6.2 stills: how it's built and how the air, water and sand go through it (renderer: anim/mech6.html).
 import numpy as np, trimesh, json, base64
-exec(open('build23.py').read())
+exec(open('build24.py').read())
 def T(x=0,y=0,z=0): M=np.eye(4); M[:3,3]=[x,y,z]; return M
 def Rz(d): c,s=np.cos(np.radians(d)),np.sin(np.radians(d)); M=np.eye(4); M[:2,:2]=[[c,-s],[s,c]]; return M
 def b64(a,dt): return base64.b64encode(np.ascontiguousarray(a,dtype=dt).tobytes()).decode()
@@ -9,7 +9,7 @@ def add(name,m,color,group,rough=0.6,metal=0.0,emissive=None,opacity=1.0,kind='s
     t=trimesh.graph.smooth_shade(to_tm(m) if not isinstance(m,trimesh.Trimesh) else m,angle=np.radians(35))
     meshes.append(dict(name=name,group=group,color=color,rough=rough,metal=metal,emissive=emissive,opacity=opacity,kind=kind,
         pos=b64(t.vertices,np.float32),nrm=b64(t.vertex_normals,np.float32),idx=b64(t.faces,np.uint32)))
-hs=housing10(); pl=top_plate10(); ld=lid10(); gk=lid_tape()
+hs=housing11(); pl=top_plate11(); ld=lid10(); gk=lid_tape()
 CUTW=8.0                                              # section: everything on the near side of w = 8 taken away
 half=lambda m: m-bx(-300,300,-300,300,ZC+CUTW,ZC+400)
 add('housing',hs,'#2b2f35','housing',0.75); add('housing_cut',half(hs),'#2b2f35','housing',0.75)
@@ -17,7 +17,7 @@ add('plate',pl,'#4b525b','plate',0.6); add('plate_cut',half(pl),'#4b525b','plate
 add('lid',ld,'#2b2f35','lid',0.75); add('lid_cut',half(ld),'#2b2f35','lid',0.75)
 add('gasket',gk,'#c0392b','lid',0.8); add('gasket_cut',half(gk),'#c0392b','lid',0.8)
 add('window',window(),'#dfe9f2','housing',0.03,opacity=0.18,kind='glass')
-add('frame',H6(lens_frame()),'#1b1d21','frame',0.55); add('frame_cut',half(tilt6(H6(lens_frame()),6)).translate([0,0,0]),'#1b1d21','fixed',0.55)
+add('frame',H6(lens_frame7()),'#1b1d21','frame',0.55); add('frame_cut',half(tilt6(H6(lens_frame7()),6)).translate([0,0,0]),'#1b1d21','fixed',0.55)
 add('lenses',H6(lenses6()),'#c9d2dc','frame',0.05,0.4,emissive='#fff1b8')
 add('horn',H6(cw(3.6,HW3+BOSS3-2.0,HW3+BOSS3,seg=32)+cw(2.2,HW3+BOSS3-2.0,HW3+BOSS3,u=HORN_UV[0]*1.1,v=HORN_UV[1]*1.1,seg=32)).translate([0,0,0]),'#f2f2f0','frame',0.5)
 add('bearing',H6(bearing7()),'#c8ccd2','frame',0.25,0.9)

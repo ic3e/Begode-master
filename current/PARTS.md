@@ -1,4 +1,4 @@
-# Parts list and where to buy (lamp v6.1)
+# Parts list and where to buy (lamp v6.2)
 
 Prices are rough estimates (October 2026), VAT included. Most parts come from AliExpress; the LED drivers
 come from a European distributor.
@@ -22,7 +22,7 @@ the filament is already in the list.
 | Logic-level MOSFET module (D4184 / AO3400) | 2 | 2–4 | AliExpress |
 | 8 mm sealed momentary push button, IP67, flat head | 2 | 3–6 | AliExpress ("8mm waterproof momentary push button") |
 | USB-C panel socket, IP67 with cap, 16 mm hole, CC1/CC2 brought out | 1 | 4–8 | AliExpress ("USB C waterproof panel mount 16mm"). Not a "charging-in" one with 5.1 k resistors fitted |
-| 2-core 24 AWG silicone wire (about 40 cm), 2-part epoxy | | 4–7 | AliExpress or a hardware shop |
+| 2-core 24 AWG silicone wire (about 40 cm), 2-part epoxy, CA glue | | 4–7 | AliExpress or a hardware shop |
 | 5 V white LED strip, 2835, 120 LEDs/m | 1 m | 2–3 | AliExpress |
 | GL5528 LDR, 10 k NTC (B3950), resistors 10 k ×2 and 22 k ×2 | | 2–4 | AliExpress assortments, or with the driver order |
 | JST-XH 2-pin plugs, 26 AWG silicone wire | | 5–7 | AliExpress |
