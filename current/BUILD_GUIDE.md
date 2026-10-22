@@ -307,6 +307,10 @@ switches the charger by cutting its ground.
   - It doesn't reach the inside of the window, the lens bay, the pivot pockets, either side bay, the electronics
     box or the button box. That counts the window tape, the lid's tape, the grommets and the screws as fitted.
   - The narrowest point of the duct is 355 mm² (trap to passage), about a 21 mm hole.
+- **Handle v17:** it clears the wheel (suspension bottomed and at rest), the lamp and the cover, in both the
+  right- and left-port versions. Its lamp tabs' gussets stay 2 mm off the shells. A USB-C plug up to 50 mm long
+  (before its cable bends) goes fully into the port and clears the cover. The bolt covers sit in the feet's
+  recesses without overlapping them.
 - **Drops:** I tested about 18,000 fall directions. In every one, the handle grip, the shells or the tyre touch
   the ground first, and the lamp stays at least 19.8 mm clear (25 mm falling straight forward).
 - **Parts:** every STL is one closed solid with no zero-area triangles, lying flat and centred.

@@ -1,7 +1,7 @@
 # Lamp v6.2 STLs, each lying on the bed the way it should print, centred, lowest point at z = 0.
 exec(open('build24.py').read())
 import glob, os
-OUTD='../current/stl/'
+OUTD='../build_output/'                # superseded by export25.py, which writes current/stl/
 os.makedirs(OUTD,exist_ok=True)
 def put(m,name):   # centre on x/y, lowest point on the bed; no zero-area triangles for the slicer to "repair"
     t=m if isinstance(m,trimesh.Trimesh) else clean_tm(to_tm(m.simplify(0.001)))
