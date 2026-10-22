@@ -1,0 +1,7 @@
+build_output/
+source/__pycache__/
+source/*.stl
+source/anim/node_modules/
+source/anim/data.js
+source/anim/frames/
+source/anim/*.log
