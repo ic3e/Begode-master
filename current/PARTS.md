@@ -1,9 +1,9 @@
-# Parts list and where to buy (lamp v6)
+# Parts list and where to buy (lamp v6.1)
 
 Prices are rough estimates (October 2026), VAT included. Most parts come from AliExpress; the LED drivers
 come from a European distributor.
 
-**Total: about €110–165** with the Mean Well drivers, or **about €95–145** with PT4115 drivers. The USB charger and
+**Total: about €100–150** with the Mean Well drivers, or **about €85–130** with PT4115 drivers. The USB charger and
 the buttons are about €15–25 of that. Add shipping;
 the filament is already in the list.
 
@@ -15,7 +15,6 @@ the filament is already in the list.
 | Mean Well **LDD-1500L** LED driver | 3 | 18–24 | Farnell, Mouser, TME, or Italian shops such as alimentatorishop. **Discontinued: see below.** |
 | ESP32-C3 SuperMini | 1 | 2–4 | AliExpress (Partco doesn't stock it) |
 | MPU-6050 (GY-521) | 1 | 2–3 | AliExpress |
-| VL53L1X module (13 × 18 mm) | 1 | 4–8 | AliExpress |
 | INA219 module (0.1 Ω shunt) | 1 | 1–3 | AliExpress |
 | MG90S metal-gear servo | 1 | 3–4 | AliExpress |
 | 6800-2RS ball bearing, 10 × 19 × 5 mm, sealed | 1 | 1–3 | AliExpress (packs of 2–10) |
@@ -30,9 +29,8 @@ the filament is already in the list.
 | Thermal adhesive (stars to the heat sink) | | 3–5 | AliExpress |
 | M4 heat-set inserts (5.7 × 5.6 mm), M2/M3 screw assortment, 4 × M3 × 10 countersunk | | 6–8 | AliExpress |
 | PETG or ASA, about 250 g | | 5–7 | 3DJake, Prusa store, or a local shop |
-| TPU 95A filament (a small spool or a sample; the gasket uses about 10 g) | | 3–8 | 3DJake, AliExpress |
 | Neutral-cure clear silicone, 2 rubber grommets (6 mm hole), conformal coating spray | | 12–18 | hardware shop; coating: Partco, AliExpress |
-| Clear polycarbonate sheet 1.5 mm (A5 is plenty: the window and the road sensor's small window), thin double-sided foam tape | | 5–9 | hardware or plastics shop, or AliExpress |
+| Clear polycarbonate sheet 1.5 mm (A5 is plenty), thin double-sided foam tape | | 5–9 | hardware or plastics shop, or AliExpress |
 
 ## The LED drivers
 

@@ -72,7 +72,7 @@ Stop when something breaks. Fix it, note what and why, and start that step again
 - [ ] **Wet road:** ride on a wet road with puddles. Check the same places afterwards.
 - [ ] **Sand:** ride a sandy or gravel path when it's wet. Afterwards rinse the chin and check that the drains run
   clear. Any sand in the dry spaces is a finding: note where.
-- [ ] **Road sensor window:** how quickly does it get dirty, and does the beam still level when it is?
+- [ ] **Levelling without a road sensor:** on hills, is following them halfway right? Adjust "Follow long hills" on the Wi-Fi page if not.
 - [ ] **Light output:** measure lux at 10 m on a wall (beam at 100 %) and note it. The lens gap costs some light;
   this is the real figure.
 

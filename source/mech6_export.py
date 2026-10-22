@@ -1,6 +1,6 @@
-# Lamp v6 stills: how it's built and how the air, water and sand go through it (renderer: anim/mech6.html).
+# Lamp v6.1 stills: how it's built and how the air, water and sand go through it (renderer: anim/mech6.html).
 import numpy as np, trimesh, json, base64
-exec(open('build22.py').read())
+exec(open('build23.py').read())
 def T(x=0,y=0,z=0): M=np.eye(4); M[:3,3]=[x,y,z]; return M
 def Rz(d): c,s=np.cos(np.radians(d)),np.sin(np.radians(d)); M=np.eye(4); M[:2,:2]=[[c,-s],[s,c]]; return M
 def b64(a,dt): return base64.b64encode(np.ascontiguousarray(a,dtype=dt).tobytes()).decode()
@@ -9,7 +9,7 @@ def add(name,m,color,group,rough=0.6,metal=0.0,emissive=None,opacity=1.0,kind='s
     t=trimesh.graph.smooth_shade(to_tm(m) if not isinstance(m,trimesh.Trimesh) else m,angle=np.radians(35))
     meshes.append(dict(name=name,group=group,color=color,rough=rough,metal=metal,emissive=emissive,opacity=opacity,kind=kind,
         pos=b64(t.vertices,np.float32),nrm=b64(t.vertex_normals,np.float32),idx=b64(t.faces,np.uint32)))
-hs=housing9(); pl=top_plate9(); ld=lid9(); gk=gasket9()
+hs=housing10(); pl=top_plate10(); ld=lid10(); gk=lid_tape()
 CUTW=8.0                                              # section: everything on the near side of w = 8 taken away
 half=lambda m: m-bx(-300,300,-300,300,ZC+CUTW,ZC+400)
 add('housing',hs,'#2b2f35','housing',0.75); add('housing_cut',half(hs),'#2b2f35','housing',0.75)
@@ -27,9 +27,7 @@ for k in range(9):
     w=-BAR_W/2+1+k*(BAR_W-2)/8; fins+=bx(BAR_X0+3,BAR_X1,BAR_Y0,BAR_Y1,ZC+w-0.9,ZC+w+0.9)
 add('bar',fins,'#b9bec6','bar',0.35,0.8); add('bar_cut',half(fins),'#b9bec6','bar',0.35,0.8)
 add('stars',mf.Manifold.batch_boolean([mf.Manifold.cylinder(STAR2,8,8,48).rotate([0,-90,0]).translate([BAR_X0,PY3,ZC+w]) for w in OPTIC_W],mf.OpType.Add),'#d9a441','bar',0.4,0.6)
-add('clamp',bar_clamp(),'#e67e22','bar',0.6); add('clamp_cut',half(bar_clamp()),'#e67e22','bar',0.6)
 add('buttons',buttons8(),'#c9ced6','housing',0.3,0.9)
-add('tofwin',tof_window(),'#9ad0ff','housing',0.1,opacity=0.5,kind='glass')
 # the flow: blue = air (and whatever water and sand it carries), down arrows = drains
 def arrow(p0,p1,r=1.6,col='#1e90ff',name='flow'):
     p0=np.array(p0,float); p1=np.array(p1,float); d=p1-p0; L=np.linalg.norm(d); u=d/L
@@ -52,22 +50,22 @@ I=np.eye(4)
 def tilt(a): return T(PX6,PY6,0)@Rz(a)@T(-PX6,-PY6,0)
 def mats(**kw): return {k:(np.asarray(v).T.flatten().round(4).tolist()) for k,v in kw.items()}
 C=np.array([-40.0,-10.0,ZC])
-ALL=['frame_cut','bar_cut','clamp_cut','housing','housing_cut','plate','plate_cut','lid','lid_cut','gasket','gasket_cut','window','frame','lenses','horn','bearing','servo','bar','stars','clamp','buttons','tofwin','flow','drain']
+ALL=['frame_cut','bar_cut','housing','housing_cut','plate','plate_cut','lid','lid_cut','gasket','gasket_cut','window','frame','lenses','horn','bearing','servo','bar','stars','buttons','flow','drain']
 def hide_except(*keep): return [n for n in ALL if n not in keep]
 views=[
  dict(cap='1  The LEDs stay put on the heat sink; only the light lens frame tilts, about the LED chips',
       m=mats(frame=T(-30,10,0)@tilt(0),servo=T(-30,10,0),bar=T(25,10,0),housing=I,plate=I,lid=I,flow=I,ground=I),
-      hide=hide_except('frame','lenses','horn','bearing','servo','bar','stars','clamp')+[],cam=list(C+[-170,170,250]),tgt=list(C+[-5,15,0])),
+      hide=hide_except('frame','lenses','horn','bearing','servo','bar','stars')+[],cam=list(C+[-170,170,250]),tgt=list(C+[-5,15,0])),
  dict(cap='2  Cut through: chin slots -> trap (drains below) -> passage -> fins -> out the back. The rest stays dry',
       m=mats(frame=tilt(6),servo=I,bar=I,housing=I,plate=I,lid=I,flow=I,ground=I,fixed=I),
-      hide=['housing','plate','lid','gasket','servo','horn','window','frame','bar','clamp','stars','bearing'],cam=list(np.array([-42,-14,ZC])+[0,10,250]),tgt=list(np.array([-42,-14,ZC]))),
+      hide=['housing','plate','lid','gasket','servo','horn','window','frame','bar','stars','bearing'],cam=list(np.array([-42,-14,ZC])+[0,10,250]),tgt=list(np.array([-42,-14,ZC]))),
  dict(cap='3  Dry: lenses and the inside of the window, servo, bearing, electronics. Wet: only the duct and the aluminium fins',
       m=mats(frame=tilt(6),servo=I,bar=I,housing=I,plate=I,lid=I,flow=I,ground=I,fixed=I),
       hide=['housing','plate','lid','gasket','window','frame_cut','bar_cut','clamp_cut'],cam=list(np.array([-38,-5,ZC])+[-180,170,260]),tgt=list(np.array([-38,-8,ZC-10]))),
- dict(cap='4  Chin: + and - buttons, air slots either side, the road sensor behind its own small window',
+ dict(cap='4  Chin: + and - buttons in pockets, air slots either side, drains in the lid below',
       m=mats(frame=I,servo=I,bar=I,housing=I,plate=I,lid=I,flow=I,ground=I),
       hide=['housing_cut','plate_cut','lid_cut','gasket_cut','flow','drain','frame_cut','bar_cut','clamp_cut'],cam=list(np.array([-67.5,-36.0,ZC])+[-210,30,120]),tgt=list(np.array([-67.5,-36.0,ZC]))),
- dict(cap='5  Assembly: bar and lens frame + servo drop in from above, the clamp and the top plate lock them',
+ dict(cap='5  Assembly: bar and lens frame + servo drop in from above; the top plate locks both (its fingers hold the bar)',
       m=mats(frame=T(0,65,0),servo=T(0,65,0),bar=T(0,95,0),housing=I,plate=T(0,135,0),lid=I,flow=I,ground=I),
       hide=['housing_cut','plate_cut','lid_cut','gasket_cut','flow','drain','frame_cut','bar_cut','clamp_cut'],cam=list(C+[-300,280,340]),tgt=list(C+[0,55,0])),
 ]
