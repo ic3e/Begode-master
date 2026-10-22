@@ -185,6 +185,7 @@ Every file is already lying on the bed the way it should print: load it, don't r
 
 ![Housing on the bed, with its supports](renders/print_housing_supports.png)
 
+- **The small round knob inside each leg** is part of the stock handle: it holds the top cover's edge. Leave it.
 - **Check before slicing:** `source/print_check.py` checks every STL the way a slicer would see it. It looks
   for closed solids, thin walls, slits, and what needs support and where that support stands.
 
