@@ -64,13 +64,25 @@ After each set:
 
 Stop when something breaks. Fix it, note what and why, and start that step again.
 
-## 5. Rain and washing
+## 5. Water, spray and sand (the sealing)
+
+- [ ] **Bench spray:** lamp in the wheel, lid on. Spray the front with a garden hose (no nozzle jet) for 5 minutes,
+  from the front and from below, as the tyre would. Then open the lid and the top plate: the electronics box,
+  both side bays and the inside of the window must be dry. Water in the trap and the duct is expected.
+- [ ] **Wet road:** ride on a wet road with puddles. Check the same places afterwards.
+- [ ] **Sand:** ride a sandy or gravel path when it's wet. Afterwards rinse the chin and check that the drains run
+  clear. Any sand in the dry spaces is a finding: note where.
+- [ ] **Road sensor window:** how quickly does it get dirty, and does the beam still level when it is?
+- [ ] **Light output:** measure lux at 10 m on a wall (beam at 100 %) and note it. The lens gap costs some light;
+  this is the real figure.
+
+## 6. Rain and washing
 
 - [ ] Ride in rain. Afterwards, open the lid: any water inside?
 - [ ] Wash the wheel as you normally do (no pressure washer at the lamp).
 - [ ] USB cap on: no water in the socket.
 
-## 6. Long term (a few months)
+## 7. Long term (a few months)
 
 - [ ] Play in the bearing or the servo.
 - [ ] Window clouding or scratching.

@@ -1,9 +1,9 @@
-# Parts list and where to buy (lamp v5.4)
+# Parts list and where to buy (lamp v6)
 
 Prices are rough estimates (October 2026), VAT included. Most parts come from AliExpress; the LED drivers
 come from a European distributor.
 
-**Total: about €95–145** with the Mean Well drivers, or **about €80–125** with PT4115 drivers. The USB charger and
+**Total: about €110–165** with the Mean Well drivers, or **about €95–145** with PT4115 drivers. The USB charger and
 the buttons are about €15–25 of that. Add shipping;
 the filament is already in the list.
 
@@ -30,7 +30,9 @@ the filament is already in the list.
 | Thermal adhesive (stars to the heat sink) | | 3–5 | AliExpress |
 | M4 heat-set inserts (5.7 × 5.6 mm), M2/M3 screw assortment, 4 × M3 × 10 countersunk | | 6–8 | AliExpress |
 | PETG or ASA, about 250 g | | 5–7 | 3DJake, Prusa store, or a local shop |
-| Clear polycarbonate sheet 1.5 mm (A5 is plenty), thin double-sided foam tape | | 5–9 | hardware or plastics shop, or AliExpress |
+| TPU 95A filament (a small spool or a sample; the gasket uses about 10 g) | | 3–8 | 3DJake, AliExpress |
+| Neutral-cure clear silicone, 2 rubber grommets (6 mm hole), conformal coating spray | | 12–18 | hardware shop; coating: Partco, AliExpress |
+| Clear polycarbonate sheet 1.5 mm (A5 is plenty: the window and the road sensor's small window), thin double-sided foam tape | | 5–9 | hardware or plastics shop, or AliExpress |
 
 ## The LED drivers
 

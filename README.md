@@ -5,8 +5,9 @@
 - **Front handle:** built on the community handle (`reference/euc_master_front_handle.stl`), with every
   original bolt hole kept where it was, and a sealed USB-C phone charger in one leg.
 - **Self-levelling headlamp:** fills the stock lamp's opening in the top cover. It has:
-  - three LEDs with optics on one heat-sink bar that a servo tilts ±10°, so the beam stays put while the
-    wheel pitches (about 1200 lm)
+  - three fixed LEDs; a servo tilts a frame with their three lenses ±10°, so the beam stays put while the
+    wheel pitches (about 1000–1100 lm)
+  - sealed against rain, tyre spray and sand: the cooling air has its own drained duct, everything else is dry
   - a road sensor that follows the slope ahead
   - daytime running lights and day/night switching
   - two buttons in the chin for every setting, so no phone or app is needed (a Wi-Fi page is there if you want it)
@@ -24,7 +25,7 @@ Everything is in [`current/`](current). [`current/BUILD_GUIDE.md`](current/BUILD
 
 - the parts list
 - which LEDs, optics, heat sink and electronics to buy, and the wiring
-  (prices and shops in [`current/PARTS.md`](current/PARTS.md), about €95–145)
+  (prices and shops in [`current/PARTS.md`](current/PARTS.md), about €110–165)
 - hardware and assembly order
 - the buttons and the USB charger
 - the firmware
@@ -34,7 +35,7 @@ Everything is in [`current/`](current). [`current/BUILD_GUIDE.md`](current/BUILD
 
 | Folder | Contents |
 |---|---|
-| `current/stl/` | handle v13 (USB port on the right or left), the original top cap, lamp housing, top plate, head, lid, running-light diffusers, and the window's cutting template (SVG) |
+| `current/stl/` | handle v13 (USB port on the right or left), the original top cap, lamp housing, top plate, lens frame, bar clamp, lid, TPU gasket, running-light diffusers, and the window's cutting template (SVG) |
 | `current/firmware/headlamp6_firmware/` | ESP32-C3 firmware (Arduino; needs the Pololu "VL53L1X" library) |
 | `current/renders/` | stills: day, night, face on, fallen forward / onto its side; how the head is fitted, the stops, the buttons and the USB port |
 | `reference/` | the original handle and cap STLs, the measurement sheets, and [`MEASUREMENTS.md`](reference/MEASUREMENTS.md) (every measurement taken on the wheel) |
@@ -64,7 +65,8 @@ against a model built from caliper measurements.
 | lamp v5.1 | v12 | flush polycarbonate window, angled running-light lines, chin vent and baffle, checked for drops |
 | lamp v5.2 | v12 | open-top housing with a screwed-on top plate, so the head and servo can actually be fitted |
 | lamp v5.3 | v12 | sealed 6800 ball bearing for the head's pivot; wire hole on the pin's axis |
-| **lamp v5.4** | **v13** | **hard stops for the head; chin buttons instead of the phone page; USB-C charger in the handle with a power guard; firmware v6** |
+| lamp v5.4 | v13 | hard stops for the head; chin buttons instead of the phone page; USB-C charger in the handle with a power guard; firmware v6 |
+| **lamp v6** | **v13** | **sealed against rain, tyre spray and sand: LEDs fixed on a heat sink in a separate air duct, only a lens frame tilts** |
 
 ## Rebuilding
 
@@ -72,8 +74,8 @@ Python 3 with `numpy`, `trimesh`, `manifold3d` and `matplotlib`. Run from `sourc
 
 ```
 cd source && mkdir -p ../build_output
-python3 check21.py     # every fit / clearance / assembly / drop check for the current version
-python3 export21.py    # writes the current STLs and the window SVG to build_output/
+python3 check22.py     # every fit / clearance / assembly / drop check for the current version
+python3 export22.py    # writes the current STLs and the window SVG to build_output/
 ```
 
 Stills (three.js in headless Chromium, as for the animation):

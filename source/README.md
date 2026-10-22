@@ -23,7 +23,8 @@ everything from this folder; the original handle and cap are read from `../refer
 | `build18.py` + `check18.py`, `export18.py`, `stills_export.py` | lamp v5.1: window, angled running lights, chin vent and baffle, drop check |
 | `build19.py` + `check19.py`, `export19.py` | lamp v5.2: open-top housing and top plate, so head and servo can be fitted |
 | `build20.py` + `check20.py`, `export20.py` | lamp v5.3: 6800 ball bearing on the head's pin |
-| **`build21.py` + `check21.py`, `export21.py`, `mech_export.py`** | **lamp v5.4 + handle v13 (current): head stops, chin buttons, USB-C port in the handle; mechanism stills** |
+| `build21.py` + `check21.py`, `export21.py`, `mech_export.py` | lamp v5.4 + handle v13: head stops, chin buttons, USB-C port in the handle |
+| **`build22.py` + `check22.py`, `export22.py`, `mech6_export.py`** | **lamp v6 (current): sealed; fixed LEDs behind a bulkhead, tilting lens frame, drained air duct. check22 includes a flood-fill seal test** |
 | `render*.py`, `master_render*.py`, `lamp_render.py` | matplotlib renders of earlier versions |
 | `meas_sheet.py`, `meas_sheet2.py` | the measurement sheets |
 | `anim_export.py`, `anim/index.html`, `anim/render.mjs` | the v8 animation |

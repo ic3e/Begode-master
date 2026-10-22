@@ -1,4 +1,5 @@
-// Auto-levelling headlamp v6 for the Begode Master: three LEDs on one tilting bar, in the stock lamp opening (±10°).
+// Auto-levelling headlamp v6 for the Begode Master, in the stock lamp opening: three fixed LEDs; the servo tilts a
+// frame with their three lenses ±10° about the LED chips (lamp v6, sealed).
 // ESP32-C3 SuperMini + MPU-6050 + VL53L1X road sensor + LDR + MG90S servo
 // + Mean Well LDD-1500L (main beam; runs from 6 V) + MOSFET module (daytime running lights)
 // + INA219 (what the lamp draws from the wheel) + MP1584 and MOSFET module (USB-C phone charger in the handle).
