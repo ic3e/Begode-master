@@ -156,7 +156,7 @@ Every file is already lying on the bed the way it should print: load it, don't r
 | `stl/lamp62_lens_frame.stl` | 1 | PETG/ASA | front face on the bed (the lenses' lips are the first layers) | none |
 | `stl/lamp62_lid.stl` | 1 | ASA/PETG | flat | none |
 | `stl/master_handle_v17_usb_right.stl` (or `_left`) | 1 | PETG/ASA, 5 walls, 40 % infill | flat: legs and grip on the bed | from the bed only, and a brim |
-| `stl/master_handle_top_cap_p2.stl` | 1 | as your original | flat side down | none |
+| `stl/master_handle_bolt_cover_right.stl` and `_left.stl` | 1 + 1 | PETG/ASA, as the handle | flat side down | none |
 
 ## Printing
 
@@ -279,7 +279,9 @@ switches the charger by cutting its ground.
 10. **Into the wheel:** push the lamp up into the opening, screw the cover's two M4 screws into the inserts.
 11. **Handle:**
     - Feed the USB wire up through the side-floor hole (grommet).
-    - Bolt the handle on, and fit the two M3 screws up through its webs into the lamp.
+    - Bolt the handle on: on each foot, the bolt cover goes in its recess on the outside and the three bolts go
+      through it, the foot and into the block (the covers are your stock part, and its mirror for the left).
+    - Fit the two M3 screws up through the lamp tabs into the lamp.
     - Connect the USB wire to buck #2.
 12. **Lid:** foam tape along the bottom edges of the electronics box's walls (the divider, both sides, the back),
     then the lid, 4 × M3 × 10. The drain slots go under the trap, at the front.

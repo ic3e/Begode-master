@@ -34,7 +34,7 @@ Everything is in [`current/`](current). [`current/BUILD_GUIDE.md`](current/BUILD
 
 | Folder | Contents |
 |---|---|
-| `current/stl/` | handle v17 (USB port on the right or left), the original top cap, lamp housing, top plate, lens frame, lid, and the window's cutting template (SVG), each lying on the bed as it should print |
+| `current/stl/` | handle v17 (USB port on the right or left), the two bolt covers (right and left), lamp housing, top plate, lens frame, lid, and the window's cutting template (SVG), each lying on the bed as it should print |
 | `current/firmware/headlamp6_firmware/` | ESP32-C3 firmware (Arduino; needs the Pololu "VL53L1X" library) |
 | `current/renders/` | stills: day, night, face on, fallen forward / onto its side; how the head is fitted, the stops, the buttons and the USB port |
 | `reference/` | the original handle and cap STLs, the measurement sheets, and [`MEASUREMENTS.md`](reference/MEASUREMENTS.md) (every measurement taken on the wheel) |

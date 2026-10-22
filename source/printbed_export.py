@@ -55,7 +55,7 @@ PARTS=[('lamp62_housing','Housing: open top on the bed. Red = support (in the si
        ('lamp62_lens_frame','Lens frame: front face on the bed, no support','#2b2f35'),
        ('lamp62_lid','Lid: flat, no support','#2b2f35'),
        ('master_handle_v17_usb_right','Handle: legs and grip flat, so every layer runs along them. Red = support from the bed, add a brim','#24272c'),
-       ('master_handle_top_cap_p2','Top cap: flat side down','#24272c')]
+       ('master_handle_bolt_cover_right','Bolt covers (right, and a mirrored left): flat side down, no support','#24272c')]
 TOZ=np.array([[1,0,0,0],[0,0,1,0],[0,-1,0,0],[0,0,0,1]],float)    # print frame (z up) -> renderer (y up)
 frames=[]; Z=np.zeros(16).tolist()
 for k,(f,cap,col) in enumerate(PARTS):

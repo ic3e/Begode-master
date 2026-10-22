@@ -21,6 +21,7 @@ add('wheel_plate',M2.plate(),'#9ea3a9','body',0.4,0.7)
 add('wheel_block',M2.box_ctrl(),'#1b1c1e','body',0.7)   # the black controller block: the handle's three bolts go into its sides
 BLACK='#1c1e22'
 add('handle',handle17(1),BLACK,'body',0.7); add('cap',trimesh.load(U+'euc_master_front_handle_p2.stl'),BLACK,'body',0.7)
+cl=trimesh.load(U+'euc_master_front_handle_p2.stl'); cl.apply_transform(np.array([[1,0,0,0],[0,1,0,0],[0,0,-1,2*ZC],[0,0,0,1.0]])); add('capL',cl,BLACK,'body',0.7)   # the left foot's cover
 add('usb',usb16_receptacle(),'#b8bdc4','body',0.3,0.9)
 add('housing',housing11(),'#16181b','body',0.75); add('lid',lid10(),'#16181b','body',0.75)
 add('plate',top_plate11(),'#16181b','body',0.75)

@@ -15,7 +15,11 @@ put(lid10().rotate([90,0,0]),'lamp62_lid.stl')
 for side,nm in ((1,'right'),(-1,'left')):
     t=clean_tm(to_tm(handle17(side))); n=np.array([0.71,0.70,0.0]); n/=np.linalg.norm(n)   # the U's normal (its thinnest axis)
     t.apply_transform(trimesh.geometry.align_vectors(-n,[0,0,1])); put(t,f'master_handle_v17_usb_{nm}.stl')
-put(trimesh.load(U+'euc_master_front_handle_p2.stl'),'master_handle_top_cap_p2.stl')   # your stock cap, flat side down
+# the bolt covers / fixing plates on the feet: your stock part for the right foot, mirrored for the left;
+# each lies on its flat side (the one against the foot)
+cov=trimesh.load(U+'euc_master_front_handle_p2.stl'); put(cov.copy(),'master_handle_bolt_cover_right.stl')
+covL=cov.copy(); covL.apply_transform(np.diag([1.0,1.0,-1.0,1.0]))                         # mirror (trimesh keeps the normals outward)
+covL.apply_transform(trimesh.transformations.rotation_matrix(np.pi,[1,0,0])); put(covL,'master_handle_bolt_cover_left.stl')
 pts=window_outline(); W_=2*WIN_W; H_=WIN_Y1-WIN_Y0
 path=' '.join(('M' if i==0 else 'L')+f'{w+WIN_W:.2f},{WIN_Y1-y:.2f}' for i,(w,y) in enumerate(pts))+' Z'
 open(OUTD+'lamp62_window_1.5mm_polycarbonate.svg','w').write(
