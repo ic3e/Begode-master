@@ -4,7 +4,7 @@ Hinnad on ligikaudsed (oktoober 2026), käibemaksuga. Enamik osi tuleb AliExpres
 Euroopa edasimüüjalt. Ingliskeelne versioon: [`PARTS.md`](PARTS.md).
 
 **Kokku: umbes 80–120 €** Mean Welli draiveritega või **umbes 65–100 €** PT4115 draiveritega. Lisaks
-saatmiskulu ja umbes 6 € filamenti.
+saatmiskulu; filament on juba nimekirjas.
 
 | Osa | Tk | Umbes € | Kust |
 |---|---|---|---|
