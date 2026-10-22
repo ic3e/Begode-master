@@ -34,7 +34,7 @@ Everything is in [`current/`](current). [`current/BUILD_GUIDE.md`](current/BUILD
 
 | Folder | Contents |
 |---|---|
-| `current/stl/` | handle v14 (USB port on the right or left), the original top cap, lamp housing, top plate, lens frame, lid, and the window's cutting template (SVG), each lying on the bed as it should print |
+| `current/stl/` | handle v15 (USB port on the right or left), the original top cap, lamp housing, top plate, lens frame, lid, and the window's cutting template (SVG), each lying on the bed as it should print |
 | `current/firmware/headlamp6_firmware/` | ESP32-C3 firmware (Arduino; needs the Pololu "VL53L1X" library) |
 | `current/renders/` | stills: day, night, face on, fallen forward / onto its side; how the head is fitted, the stops, the buttons and the USB port |
 | `reference/` | the original handle and cap STLs, the measurement sheets, and [`MEASUREMENTS.md`](reference/MEASUREMENTS.md) (every measurement taken on the wheel) |
@@ -67,7 +67,8 @@ against a model built from caliper measurements.
 | lamp v5.4 | v13 | hard stops for the head; chin buttons instead of the phone page; USB-C charger in the handle with a power guard; firmware v6 |
 | lamp v6 | v13 | sealed against rain, tyre spray and sand: LEDs fixed on a heat sink in a separate air duct, only a lens frame tilts |
 | lamp v6.1 | v13 | fewer parts: no road sensor, no heat-sink clamp, no diffusers, no gasket |
-| **lamp v6.2** | **v14** | **ready for the slicer: no thin walls, slits or trapped supports; parts exported in their print orientation; horn glued** |
+| lamp v6.2 | v14 | ready for the slicer: no thin walls, slits or trapped supports; parts exported in their print orientation; horn glued |
+| **lamp v6.2** | **v15** | **the USB-C port flush in the handle's leg, no bump: a bare receptacle potted in epoxy, with a silicone plug** |
 
 ## Rebuilding
 
@@ -75,8 +76,8 @@ Python 3 with `numpy`, `trimesh`, `manifold3d` and `matplotlib`. Run from `sourc
 
 ```
 cd source && mkdir -p ../build_output
-python3 check24.py     # every fit / clearance / assembly / sealing / drop check for the current version
-python3 export24.py    # writes the current STLs and the window SVG to current/stl/, lying as they print
+python3 check25.py     # every fit / clearance / assembly / sealing / drop check for the current version
+python3 export25.py    # writes the current STLs and the window SVG to current/stl/, lying as they print
 python3 print_check.py # what a slicer would see in them: closed solids, thin walls, slits, supports
 ```
 

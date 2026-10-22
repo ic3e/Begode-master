@@ -1,7 +1,7 @@
 # Lamp v6.2 on the Master: exterior stills (renderer: anim/stills6.html). The wheel is the dressed render model
 # (render_wheel.py) over the measured outline; the clearances in the captions are measured on this scene.
 import numpy as np, trimesh, json, base64
-exec(open('build24.py').read()); exec(open('render_wheel.py').read())
+exec(open('build25.py').read()); exec(open('render_wheel.py').read())
 def T(x=0,y=0,z=0): M=np.eye(4); M[:3,3]=[x,y,z]; return M
 def Rz(d): c,s=np.cos(np.radians(d)),np.sin(np.radians(d)); M=np.eye(4); M[:2,:2]=[[c,-s],[s,c]]; return M
 def Rx(d): c,s=np.cos(np.radians(d)),np.sin(np.radians(d)); M=np.eye(4); M[1:3,1:3]=[[c,-s],[s,c]]; return M
@@ -20,8 +20,8 @@ add('wheel_cover',cover3(),'#1c1e22','body',0.8)
 add('wheel_plate',M2.plate(),'#9ea3a9','body',0.4,0.7)
 add('wheel_block',M2.box_ctrl(),'#1b1c1e','body',0.7)   # the black controller block: the handle's three bolts go into its sides
 BLACK='#1c1e22'
-add('handle',handle14(1),BLACK,'body',0.7); add('cap',trimesh.load(U+'euc_master_front_handle_p2.stl'),BLACK,'body',0.7)
-add('usb',usb_socket(),'#3a3d42','body',0.4,0.6)
+add('handle',handle15(1),BLACK,'body',0.7); add('cap',trimesh.load(U+'euc_master_front_handle_p2.stl'),BLACK,'body',0.7)
+add('usb',usb_receptacle(),'#b8bdc4','body',0.3,0.9)
 add('housing',housing11(),'#16181b','body',0.75); add('lid',lid10(),'#16181b','body',0.75)
 add('plate',top_plate11(),'#16181b','body',0.75)
 add('buttons',buttons8(),'#c9ced6','body',0.3,0.9)
@@ -64,6 +64,7 @@ views=[view('Lamp v6.2 on the Master',stand,whole+np.array([-1500,560,1150]),who
        view('Night: three LEDs, levelled; running lights through their slots',stand,lampS+np.array([-520,120,-300]),lampS+np.array([-60,-50,0]),night=True,beams=True),
        view('Face: three optics behind the window, running-light slots, chin air intake and buttons',stand,lampS+np.array([-330,25,0]),lampS+np.array([0,-20,0])),
        view('Fallen forward (near side cut away): handle and shells take the ground, the lamp stays %.0f mm clear'%lp[1],front,np.array([lp[0]+40,70,lp[2]+560]),np.array([lp[0]+40,30,lp[2]]),cut=True),
+       view('USB-C flush in the handle\'s leg: no bump, a silicone plug closes it',stand,P(stand,[USB_C[0],USB_C[1],ZC+USB_FACE])+np.array([-160,90,260]),P(stand,[USB_C[0],USB_C[1],ZC+USB_FACE])),
        view('Fallen onto its side: pad and pedal take it, the lamp stays %.0f mm clear'%ls,side,P(side,[-60,-120,ZC])+np.array([-900,350,200]),P(side,[-60,-120,ZC])+np.array([0,-30,0]))]
 open('anim/stills6_data.js','w').write('window.DATA='+json.dumps(dict(meshes=meshes,frames=views))+';')
 print('views',len(views),'meshes',len(meshes))

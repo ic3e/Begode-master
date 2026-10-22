@@ -99,9 +99,14 @@ The blinks are the running lights. While you hold, they flash once at 3, 6 and 1
 
 ## The USB charger
 
-A sealed USB-C socket (IP67, with a cap) sits in the outer face of the handle's right leg, near the top. Its two
-wires run inside the leg, along a groove in the web, and up through a hole in the housing's side floor, with a
-grommet. Use `master_handle_v14_usb_left.stl` instead if you want it on the left.
+A USB-C port sits flush in the outer face of the handle's right leg, near the top, with no bump inside the
+handle (handle v15). It's a bare USB-C receptacle in a slot behind a shallow recess. It is fitted from the
+leg's inner face, then that pocket is filled with epoxy, which also seals the receptacle's back. A silicone
+USB-C dust plug closes it when you're not charging. Its two wires run inside the leg, along a groove in the web,
+and up through a hole in the housing's side floor, with a grommet. Use `master_handle_v15_usb_left.stl` instead
+if you want it on the left.
+
+![USB-C flush in the leg](renders/render_v62_usb.png)
 
 - **Power:** it gives 5 V at up to 1.5 A, about 7.5 W.
 - **Sharing with the lamp:** an INA219 measures what the whole lamp draws. When lamp and charger go over the
@@ -128,7 +133,8 @@ grommet. Use `master_handle_v14_usb_left.stl` instead if you want it on the left
 | MP1584EN buck module | 2 | one at 5.0 V (electronics), one at 5.1 V (USB) |
 | Logic-level MOSFET module (D4184 / AO3400) | 2 | running lights; USB charger switch |
 | 8 mm sealed momentary push button (IP67, flat head) | 2 | the chin buttons |
-| USB-C panel socket, IP67 with cap, 16 mm hole, CC1/CC2 brought out | 1 | the handle port |
+| USB-C female receptacle, solder-tab or on a small board, **6 pins (VBUS, GND, CC1, CC2)**; no resistors on it | 1 | the handle port: shell 8.9 × 3.3 mm, up to 7.5 mm deep, board up to 13 × 8 mm |
+| Silicone USB-C dust plug | 1 | closes the port in the rain |
 | 22 kΩ resistors | 2 | CC1 and CC2 to VBUS at the socket |
 | 5 V white LED strip, 2835, 120/m | about 14 LEDs | daytime running lights |
 | GL5528 LDR + 10 k; 10 k NTC (B3950) + 10 k | | light sensor, heat-sink temperature |
@@ -136,7 +142,7 @@ grommet. Use `master_handle_v14_usb_left.stl` instead if you want it on the left
 | Rubber grommets for a 6 mm hole | 2 | the wheel's power cable (back wall), the USB wire (side floor) |
 | Conformal coating spray (acrylic or silicone) | | a thin coat on every circuit board |
 | 26 AWG silicone wire; 2-core 24 AWG silicone wire, about 40 cm | | |
-| 2-part epoxy; a drop of CA (super) glue | | the USB socket in the handle; the servo horn in the lens frame |
+| 2-part epoxy (black if you can get it); a drop of CA (super) glue | | the USB port's pocket in the handle; the servo horn in the lens frame |
 
 ## Printed parts
 
@@ -148,7 +154,7 @@ Every file is already lying on the bed the way it should print: load it, don't r
 | `stl/lamp62_top_plate.stl` | 1 | ASA/PETG | top face on the bed, tongues and fingers up | none |
 | `stl/lamp62_lens_frame.stl` | 1 | PETG/ASA | front face on the bed (the lenses' lips are the first layers) | none |
 | `stl/lamp62_lid.stl` | 1 | ASA/PETG | flat | none |
-| `stl/master_handle_v14_usb_right.stl` (or `_left`) | 1 | PETG/ASA, 5 walls, 40 % infill | flat: legs and grip on the bed | from the bed only, and a brim |
+| `stl/master_handle_v15_usb_right.stl` (or `_left`) | 1 | PETG/ASA, 5 walls, 40 % infill | flat: legs and grip on the bed | from the bed only, and a brim |
 | `stl/master_handle_top_cap_p2.stl` | 1 | as your original | flat side down | none |
 
 ## Printing
@@ -249,8 +255,14 @@ switches the charger by cutting its ground.
    - **Right side bay:** behind the servo, buck #2, both MOSFET modules and the INA219.
    - **Electronics box:** the ESP32 and the MPU-6050 (flat, X arrow forward).
    - Fix everything with foam tape.
-8. **USB in the handle:** as before: wire through the handle's channel, solder the socket with its two 22 k
-   resistors, epoxy it into the leg, cap on.
+8. **USB in the handle:**
+   - Pull the 2-core wire through the handle's channel, from the foot up to the pocket on the leg's inner face.
+   - Solder it to the receptacle's VBUS and GND, and a 22 k resistor from each of CC1 and CC2 to VBUS.
+     Sleeve the joints.
+   - Push the receptacle into its slot from the pocket, mouth outwards, until its front sits level with the
+     recess's floor. A plug pushed in from outside holds it straight.
+   - With the plug still in, fill the pocket with epoxy, level with the leg's face. Once it has set, take the
+     plug out, check a phone charges, and fit the silicone dust plug.
 9. **Window:** lightly sand the window's inside where it covers the two running-light slots, so it spreads
    their light. Foam tape round the edge of the face, press the window on, film off last.
 10. **Into the wheel:** push the lamp up into the opening, screw the cover's two M4 screws into the inserts.

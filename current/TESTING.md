@@ -80,7 +80,7 @@ Stop when something breaks. Fix it, note what and why, and start that step again
 
 - [ ] Ride in rain. Afterwards, open the lid: any water inside?
 - [ ] Wash the wheel as you normally do (no pressure washer at the lamp).
-- [ ] USB cap on: no water in the socket.
+- [ ] USB dust plug in: no water in the port. Also once without it (a short ride in light rain), then dry it and check a phone still charges.
 
 ## 7. Long term (a few months)
 
