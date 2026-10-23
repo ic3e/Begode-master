@@ -32,6 +32,7 @@ everything from this folder; the original handle and cap are read from `../refer
 | **`build27.py` + `check27.py`, `export27.py`** | **lamp v6.3 + handle v17 (current): wire slots from the side bays into the electronics box** |
 | **`boards_pack.py`, `boards_export.py`, `anim/boards.html`** | **the boards fitted at their real sizes, and their render (`current/renders/boards_*`): `PAGE=boards.html OUTD=boards node stills_render.mjs`** |
 | **`wiring_diagram.py`** | **the wiring diagram (`current/renders/wiring_diagram.png`)** |
+| **`swing_export.py`, `anim/swing.html`, `anim/level.html`** | **how far the lenses tilt (`tilt_*`) and the beam held level on the wheel (`level_*`): `PAGE=swing.html OUTD=swing` / `PAGE=level.html OUTD=level node stills_render.mjs`** |
 | `render*.py`, `master_render*.py`, `lamp_render.py` | matplotlib renders of earlier versions |
 | `meas_sheet.py`, `meas_sheet2.py` | the measurement sheets |
 | `anim_export.py`, `anim/index.html`, `anim/render.mjs` | the v8 animation |

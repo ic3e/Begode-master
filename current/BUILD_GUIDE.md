@@ -80,6 +80,22 @@ The wires pass between dry spaces only: from the LEDs through the left pivot poc
 
 ![Dry and wet](renders/render_v62_3.png)
 
+## How far it levels
+
+- **The lenses tilt ±12°** about the line through the three LED chips: 24° in all, between two hard stops at
+  ±12.4°. Only the lens frame moves; the LEDs stay on their heat sink.
+- **The firmware uses ±10°**, so there are 2° in hand before the stops, and the servo never pushes against them.
+  The wheel can pitch 10° either way and the beam stays where you aimed it.
+- **What that means on the road:** the lenses sit about 0.61 m above the ground. Aimed 1.5° down, the beam's
+  centre lands about 23 m ahead, and 1° of aim moves it about 35 cm at 20 m. Without levelling, braking with
+  the nose 5° down would pull it in to about 5 m (10° down: about 3 m), and accelerating 5° nose-up would lift it
+  3.5° above level, into oncoming eyes.
+
+![Lenses at +12°](renders/tilt_up.png)
+![Braking: the beam stays put; red is a fixed lamp](renders/level_braking.png)
+
+The other pictures: `renders/tilt_level.png`, `tilt_down.png`, `level_riding.png`, `level_accelerating.png`.
+
 ## The buttons
 
 Two buttons sit one above the other in the middle of the chin, so either hand reaches them: **+** on top,

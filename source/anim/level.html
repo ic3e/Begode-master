@@ -1,0 +1,76 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Master lamp levelling</title>
+<style>
+html,body{margin:0;background:#15181d;overflow:hidden;font-family:"Helvetica Neue",Arial,sans-serif}
+#cap{position:absolute;left:80px;bottom:70px;color:#fff;font-size:44px;font-weight:600;letter-spacing:.2px;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+#tag{position:absolute;left:64px;top:46px;color:#c9d1db;font-size:24px;letter-spacing:2px;text-transform:uppercase}
+#tag b{color:#ff5a5f;font-weight:700}
+#pipbox{position:absolute;right:40px;top:40px;width:660px;height:372px;border:2px solid rgba(255,255,255,.55);border-radius:6px;box-sizing:border-box;opacity:0}
+#piptxt{position:absolute;left:14px;bottom:10px;color:#fff;font-size:20px;text-shadow:0 1px 6px #000}
+</style></head><body>
+<div id="tag"><b>Begode Master</b> &nbsp;self-levelling headlamp v6.3: the beam stays level</div><div id="cap"></div>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js"}}</script>
+<div id="pipbox"><div id="piptxt"></div></div>
+<script src="level_data.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from './node_modules/three/examples/jsm/environments/RoomEnvironment.js';
+const W=2400,H=1350;
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
+renderer.setSize(W,H); renderer.setPixelRatio(1);
+renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.15;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+const scene=new THREE.Scene();
+{ const pm=new THREE.PMREMGenerator(renderer); scene.environment=pm.fromScene(new RoomEnvironment(),0.04).texture; scene.environmentIntensity=0.45; }
+{ const c=document.createElement('canvas'); c.width=4; c.height=256; const g=c.getContext('2d');
+  const gr=g.createLinearGradient(0,0,0,256); gr.addColorStop(0,'#4a525e'); gr.addColorStop(0.55,'#262a31'); gr.addColorStop(1,'#141619');
+  g.fillStyle=gr; g.fillRect(0,0,4,256); const tx=new THREE.CanvasTexture(c); tx.colorSpace=THREE.SRGBColorSpace; scene.background=tx; }
+scene.add(new THREE.HemisphereLight(0xdfe7f2,0x262a30,0.9));
+const key=new THREE.DirectionalLight(0xffffff,2.4); key.position.set(-900,900,700); key.castShadow=true;
+key.shadow.mapSize.set(4096,4096); Object.assign(key.shadow.camera,{left:-900,right:900,top:900,bottom:-900,near:10,far:4000}); key.shadow.bias=-0.0004;
+key.target.position.set(-60,-200,-70); scene.add(key); scene.add(key.target);
+const fill=new THREE.DirectionalLight(0xcfe0ff,0.9); fill.position.set(-600,200,-900); scene.add(fill);
+const rim=new THREE.DirectionalLight(0xffe2c4,1.2); rim.position.set(900,500,-300); scene.add(rim);
+const dec=s=>{const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u.buffer};
+const objs=[];
+for(const m of DATA.meshes){
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(dec(m.pos)),3));
+  g.setAttribute('normal',new THREE.BufferAttribute(new Float32Array(dec(m.nrm)),3));
+  g.setIndex(new THREE.BufferAttribute(new Uint32Array(dec(m.idx)),1));
+  let mat;
+  if(m.kind==='beam'){ mat=new THREE.MeshBasicMaterial({color:m.color,transparent:true,opacity:m.opacity,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}); }
+  else if(m.kind==='glass'){ mat=new THREE.MeshPhysicalMaterial({color:m.color,transparent:true,opacity:m.opacity,roughness:0.04,metalness:0,clearcoat:1,clearcoatRoughness:0.03,envMapIntensity:2.2,depthWrite:false}); }
+  else { mat=new THREE.MeshStandardMaterial({color:m.color,roughness:m.rough,metalness:m.metal});
+         if(m.emissive){mat.emissive=new THREE.Color(m.emissive); mat.emissiveIntensity=1.6;} }
+  const o=new THREE.Mesh(g,mat); o.matrixAutoUpdate=false; o.castShadow=!(m.kind==='beam'||m.kind==='glass'||m.name==='ground'); o.receiveShadow=m.kind!=='beam';
+  o.userData=m; scene.add(o); objs.push(o);
+}
+const cam=new THREE.PerspectiveCamera(30,W/H,5,20000);
+const ghostMat=new THREE.MeshStandardMaterial({color:0x9fb3c8,transparent:true,opacity:0.22,depthWrite:false,roughness:0.5});
+const capEl=document.getElementById('cap'); const pcam=new THREE.PerspectiveCamera(30,656/368,5,20000);
+const bgTex=(a,b)=>{const c=document.createElement('canvas');c.width=4;c.height=256;const g=c.getContext('2d');const gr=g.createLinearGradient(0,0,0,256);gr.addColorStop(0,a);gr.addColorStop(1,b);g.fillStyle=gr;g.fillRect(0,0,4,256);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;};
+const DAY=bgTex('#eef1f5','#aab2bd'), NIGHT=bgTex('#1d232c','#07090c');
+const hemi=scene.children.find(o=>o.isHemisphereLight);
+window.setFrame=(i)=>{
+  const f=DATA.frames[i];
+  scene.background=f.night?NIGHT:DAY; hemi.intensity=f.night?0.25:1.0; key.intensity=f.night?0.5:2.6; fill.intensity=f.night?0.25:1.0; rim.intensity=f.night?0.6:1.3;
+  scene.environmentIntensity=f.night?0.15:0.55;
+  const ce=document.getElementById('cap'); ce.style.color=f.night?'#fff':'#15181c'; ce.style.textShadow='none';
+  ce.style.background=f.night?'rgba(0,0,0,.5)':'rgba(255,255,255,.82)'; ce.style.padding='12px 22px'; ce.style.borderRadius='10px';
+  document.getElementById('tag').style.color=f.night?'#c9d1db':'#3b434d';
+  for(const o of objs){ const n=o.userData.name;
+    if(o.userData.kind==='beam') o.visible=!!f.beams;
+    if(n==='drl') o.material.emissiveIntensity=f.night?0.5:1.8;
+    if(n==='lens') o.material.emissiveIntensity=f.beams?2.2:0.15;
+    if(n==='ground') o.material.color.set(f.night?'#15181c':'#c4c9d0');
+    o.visible = (o.userData.kind==='beam') ? !!f.beams : (o.userData.kind==='mark') ? !!f.mark : !(f.cut && n.startsWith('wheelR_')); }
+  for(const o of objs){ const m=f.m[o.userData.group]; if(m) o.matrix.fromArray(m); }
+  cam.position.set(...f.cam); cam.up.set(0,1,0); cam.lookAt(new THREE.Vector3(...f.tgt));
+  capEl.textContent=f.cap;
+  renderer.setScissorTest(false); renderer.setViewport(0,0,W,H); renderer.render(scene,cam);
+  return i;
+};
+window.NFRAMES=DATA.frames.length; window.READY=true;
+</script></body></html>
