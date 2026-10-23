@@ -129,6 +129,14 @@ The ±10° covers braking or a hill comfortably. If you brake hard on a steep de
 - So the servo dips the beam instead. Dipped, it drops 4° below your aim, which puts the top edge of the
   10° spot about 1° below level, under oncoming eyes.
 - High beam lifts it 4° above your aim, for empty roads.
+- **A cut-off of our own (concept, not built or checked):** a projector, like a car's low beam. A blade's straight
+  edge runs across the middle of the LED's chip, and a glass aspheric lens with its focus on the chip throws that
+  edge onto the road as a sharp line. Because the lenses pivot about the chips, a blade fixed at the chip stays on
+  the lens's axis at any tilt. It costs about half the light. The first step is a bench rig: one LED, a printed jig,
+  a snapped utility-knife blade for the edge and a focus sleeve for the lens.
+
+![Projector bench rig, cut open](renders/concept_projector_rig_cut.png)
+![Its beam on a wall: a flat top under the lamp-height tape](renders/concept_projector_wall.png)
 
 **From the rider's eyes:** `renders/rider_pov.mp4` (14 s; `rider_pov.gif` is a smaller copy) is the view standing on
 the wheel at night: cruising, hard braking (nose 9° down), accelerating (nose 7° up) and a stretch of broken asphalt.

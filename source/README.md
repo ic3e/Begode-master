@@ -32,6 +32,7 @@ everything from this folder; the original handle and cap are read from `../refer
 | `build27.py` + `check27.py`, `export27.py` | lamp v6.3 + handle v17: wire slots from the side bays into the electronics box |
 | **`build28.py` + `check28.py`, `export28.py`** | **lamp v6.4 + handle v18 (current): the road sensor's hood behind the face; the riding buttons on the handle's leg** |
 | **`stills64_export.py`, `anim/stills64.html`** | **the v6.4 stills (`current/renders/render_v64_*`): face, road sensor, riding buttons, night** |
+| `proj_export.py`, `anim/proj.html` | concept renders of a projector cut-off bench rig (`current/renders/concept_projector_*`): `PAGE=proj.html OUTD=proj node stills_render.mjs` |
 | **`boards_pack.py`, `boards_export.py`, `anim/boards.html`** | **the boards (and, from v6.4, the road sensor) fitted at their real sizes, and their render (`current/renders/boards_*`): `PAGE=boards.html OUTD=boards node stills_render.mjs`** |
 | **`wiring_diagram.py`** | **the wiring diagram (`current/renders/wiring_diagram.png`)** |
 | **`swing_export.py`, `anim/swing.html`, `anim/level.html`** | **how far the lenses tilt (`tilt_*`) and the beam held level on the wheel (`level_*`): `PAGE=swing.html OUTD=swing` / `PAGE=level.html OUTD=level node stills_render.mjs`** |
