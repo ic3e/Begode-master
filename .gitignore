@@ -23,3 +23,5 @@ source/anim/level_data.js
 source/anim/swing_data.js
 source/anim/level/
 source/anim/swing/
+source/anim/pov_data.js
+source/anim/pov/

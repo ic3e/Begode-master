@@ -1,0 +1,142 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Rider's view</title>
+<style>
+html,body{margin:0;background:#05070a;overflow:hidden;font-family:"Helvetica Neue",Arial,sans-serif}
+#tag{position:absolute;left:40px;top:30px;color:#c9d1db;font-size:22px;letter-spacing:2px;text-transform:uppercase;text-shadow:0 1px 6px #000}
+#tag b{color:#ffd24a;font-weight:700}
+#cap{position:absolute;left:40px;bottom:40px;color:#fff;font-size:40px;font-weight:600;background:rgba(0,0,0,.55);padding:10px 22px;border-radius:10px}
+#pip{position:absolute;right:30px;top:30px;border:2px solid rgba(255,90,95,.9);border-radius:6px;box-sizing:border-box}
+#piptxt{position:absolute;left:12px;bottom:8px;color:#fff;font-size:19px;text-shadow:0 1px 6px #000}
+#piptxt b{color:#ff6b6f}
+#hud{position:absolute;right:30px;bottom:40px;width:430px;background:rgba(0,0,0,.55);border-radius:10px;padding:14px 20px;color:#e9eef4;font-size:22px;box-sizing:border-box}
+#hud .row{display:flex;justify-content:space-between;align-items:center;height:40px}
+#hud .v{font-weight:700;font-variant-numeric:tabular-nums;color:#fff}
+#hud svg{display:block}
+</style></head><body>
+<div id="tag"><b>Rider's view</b> &nbsp;Begode Master, self-levelling headlamp v6.3</div>
+<div id="cap"></div>
+<div id="pip"><div id="piptxt"><b>Fixed lamp</b>, same ride</div></div>
+<div id="hud">
+ <div class="row"><span>Speed</span><span class="v" id="hv"></span></div>
+ <div class="row"><span>Wheel pitch</span><span class="v" id="hp"></span></div>
+ <div class="row"><span>Lenses turned</span><span class="v" id="ha"></span></div>
+ <svg id="g" width="390" height="70" viewBox="0 0 390 70"></svg>
+</div>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js"}}</script>
+<script src="pov_data.js"></script>
+<script type="module">
+import * as THREE from 'three';
+const W=+(new URLSearchParams(location.search).get('w')||window.innerWidth), H=Math.round(W*9/16);
+const S=W/1920;   // everything on the page is laid out for 1920 wide
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,logarithmicDepthBuffer:true});
+renderer.setSize(W,H); renderer.setPixelRatio(1);
+renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.0;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+const scene=new THREE.Scene();
+{ const c=document.createElement('canvas'); c.width=4; c.height=256; const g=c.getContext('2d');
+  const gr=g.createLinearGradient(0,0,0,256); gr.addColorStop(0,'#070b14'); gr.addColorStop(0.5,'#101826'); gr.addColorStop(0.62,'#1a2230'); gr.addColorStop(1,'#05070a');
+  g.fillStyle=gr; g.fillRect(0,0,4,256); const tx=new THREE.CanvasTexture(c); tx.colorSpace=THREE.SRGBColorSpace; scene.background=tx; }
+scene.add(new THREE.HemisphereLight(0x6f86b0,0x202020,0.14));          // a cloudy night, far from town
+const moon=new THREE.DirectionalLight(0x9fb4d8,0.18); moon.position.set(-3000,6000,4000); scene.add(moon);
+scene.fog=new THREE.FogExp2(0x0b0f16,0.0000045);
+// ---- the road: 220 m of two-lane asphalt, right lane, edge lines, dashed centre line, verges, posts, trees ----
+const ZC=DATA.ZC, X0=20000, X1=-200000, LEN=X0-X1;
+const noise=(n,base,amp,seed)=>{ const c=document.createElement('canvas'); c.width=c.height=n; const g=c.getContext('2d'); const d=g.createImageData(n,n);
+  let s=seed; const r=()=>((s=(s*16807)%2147483647)/2147483647);
+  for(let i=0;i<n*n;i++){ const v=base+amp*(r()-0.5)+(r()<0.02?amp*1.5:0); d.data[4*i]=d.data[4*i+1]=d.data[4*i+2]=Math.max(0,Math.min(255,v)); d.data[4*i+3]=255; }
+  g.putImageData(d,0,0); const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=8; return t; };
+const plane=(x0,x1,z0,z1,y,mat)=>{ const g=new THREE.PlaneGeometry(x1-x0,z1-z0); g.rotateX(-Math.PI/2); const m=new THREE.Mesh(g,mat); m.position.set((x0+x1)/2,y,(z0+z1)/2); scene.add(m); return m; };
+const RIGHT=ZC-1300, CENTRE=ZC+1700, LEFT=ZC+4700;      // facing -x, the right hand is -z
+const asph=noise(256,70,60,11); asph.repeat.set(LEN/1500,(LEFT-RIGHT+1200)/1500);
+plane(X1,X0,RIGHT-600,LEFT+600,0,new THREE.MeshStandardMaterial({map:asph,color:0x8a8a8a,roughness:0.92}));
+const grass=noise(128,60,70,5); grass.repeat.set(LEN/900,8);
+const gm=new THREE.MeshStandardMaterial({map:grass,color:0x5d6b45,roughness:1});
+plane(X1,X0,RIGHT-14000,RIGHT-600,-40,gm); plane(X1,X0,LEFT+600,LEFT+14000,-40,gm);
+const paint=new THREE.MeshStandardMaterial({color:0xe8e8e2,roughness:0.6});
+plane(X1,X0,RIGHT-50,RIGHT+50,1.5,paint); plane(X1,X0,LEFT-50,LEFT+50,1.5,paint);
+for(let x=X0;x>X1;x-=12000) plane(x-3000,x,CENTRE-50,CENTRE+50,1.5,paint);
+const postW=new THREE.MeshStandardMaterial({color:0xf2f2f2,roughness:0.5}), postB=new THREE.MeshStandardMaterial({color:0x111111,roughness:0.7});
+const refl=new THREE.MeshStandardMaterial({color:0xff2a1a,roughness:0.3,emissive:0x000000});
+const refW=new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.3});
+for(let x=X0-10000,k=0;x>X1;x-=25000,k++) for(const [z,r] of [[RIGHT-1400,refl],[LEFT+1400,refW]]){
+  const p=new THREE.Mesh(new THREE.BoxGeometry(110,1000,110),postW); p.position.set(x+(r===refW?12500:0),500,z); scene.add(p);
+  const b=new THREE.Mesh(new THREE.BoxGeometry(114,200,114),postB); b.position.set(p.position.x,820,z); scene.add(b);
+  const q=new THREE.Mesh(new THREE.BoxGeometry(30,90,50),r); q.position.set(p.position.x+50,820,z); scene.add(q); }
+const trunk=new THREE.MeshStandardMaterial({color:0x2b2118,roughness:1}), crown=new THREE.MeshStandardMaterial({color:0x1d2a1a,roughness:1});
+{ let s=3; const r=()=>((s=(s*16807)%2147483647)/2147483647);
+  for(let x=X0;x>X1;x-=4000+r()*9000) for(const side of [-1,1]){ if(r()<0.35) continue;
+    const z=side<0? RIGHT-4500-r()*8000 : LEFT+4500+r()*8000, h=7000+r()*7000;
+    const t=new THREE.Mesh(new THREE.CylinderGeometry(150,220,h*0.35,8),trunk); t.position.set(x,h*0.175,z); scene.add(t);
+    const c=new THREE.Mesh(new THREE.ConeGeometry(1800+r()*900,h*0.8,9),crown); c.position.set(x,h*0.55,z); scene.add(c); } }
+{ // a give-way sign on the right at 60 m into the ride, a parked car's reflectors... no, just the sign
+  const pole=new THREE.Mesh(new THREE.CylinderGeometry(35,35,2300,10),new THREE.MeshStandardMaterial({color:0x9aa0a6,roughness:0.4,metalness:0.6}));
+  pole.position.set(-60000,1150,RIGHT-1500); scene.add(pole);
+  const sg=new THREE.CircleGeometry(400,3); const sign=new THREE.Mesh(sg,new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.35,side:THREE.DoubleSide}));
+  sign.rotation.set(0,Math.PI/2,-Math.PI/2); sign.position.set(-60030,2050,RIGHT-1500); scene.add(sign);
+  const rim=new THREE.Mesh(new THREE.RingGeometry(330,400,3),new THREE.MeshStandardMaterial({color:0xd8141c,roughness:0.35,side:THREE.DoubleSide}));
+  rim.rotation.copy(sign.rotation); rim.position.set(-60032,2050,RIGHT-1500); scene.add(rim); }
+// ---- the wheel and the lamp ----
+const dec=s=>{const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u.buffer};
+const groups={body:[],head:[]};
+for(const m of DATA.meshes){
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(dec(m.pos)),3));
+  g.setAttribute('normal',new THREE.BufferAttribute(new Float32Array(dec(m.nrm)),3));
+  g.setIndex(new THREE.BufferAttribute(new Uint32Array(dec(m.idx)),1));
+  let mat;
+  if(m.kind==='glass') mat=new THREE.MeshPhysicalMaterial({color:m.color,transparent:true,opacity:m.opacity,roughness:0.04,clearcoat:1,depthWrite:false});
+  else { mat=new THREE.MeshStandardMaterial({color:m.color,roughness:m.rough,metalness:m.metal});
+         if(m.emissive){ mat.emissive=new THREE.Color(m.emissive); mat.emissiveIntensity=m.name==='lens'?3.0:0.5; }
+         else { mat.emissive=new THREE.Color(m.color).lerp(new THREE.Color(0x8fa3c4),0.5); mat.emissiveIntensity=0.025; } }   // the town's glow on the shell: black plastic under a night sky renders as nothing
+  const o=new THREE.Mesh(g,mat); o.matrixAutoUpdate=false; scene.add(o); groups[m.group].push(o);
+}
+// ---- the lamp's light: one spot per optic, a levelled set and a fixed set (only one set is lit per picture) ----
+const KN=+(new URLSearchParams(location.search).get("k")||8e9);
+const mk=()=>DATA.spots.map(s=>{ const l=new THREE.SpotLight(0xfff4dc,0,0,THREE.MathUtils.degToRad(s.half*(s.half>10?1.6:1.4)),s.half>10?0.75:0.6,2);
+  l.userData=s; l.matrixAutoUpdate=true; scene.add(l); scene.add(l.target); return l; });
+const LEV=mk(), FIX=mk();
+const glow=new THREE.PointLight(0xdde3ec,0,1500,2); scene.add(glow);   // the running lights' and the town's spill on the shell; dies out before the road
+const aim=(set,M,on)=>{ for(const l of set){ const s=l.userData;
+  l.position.set(s.x,0,s.w+0).applyMatrix4(M); l.target.position.set(s.x-1000,0,s.w).applyMatrix4(M); l.target.updateMatrixWorld();
+  l.intensity=on? KN*Math.pow(4.5/s.half,1.3) : 0; } };
+const cam=new THREE.PerspectiveCamera(72,16/9,20,260000), pcam=new THREE.PerspectiveCamera(72,16/9,20,260000);
+const PW=Math.round(600*S), PH=Math.round(PW*9/16), PM=Math.round(30*S);
+const pip=document.getElementById('pip'); Object.assign(pip.style,{width:PW+'px',height:PH+'px'});
+const mat4=new THREE.Matrix4(), mlev=new THREE.Matrix4(), mfix=new THREE.Matrix4();
+const svg=document.getElementById('g');
+const fmt=(x,pos,neg)=>Math.abs(x)<0.3?'level':`${Math.abs(x).toFixed(1)}° ${x>0?pos:neg}`;
+window.setFrame=(i)=>{
+  const f=DATA.frames[i];
+  mat4.fromArray(f.body); for(const o of groups.body) o.matrix.copy(mat4);
+  mlev.fromArray(f.lev); mfix.fromArray(f.fix);
+  glow.position.set(f.cam[0]-150,1250,f.cam[2]+250); glow.intensity=+(new URLSearchParams(location.search).get('g')||5e6);
+  cam.position.set(...f.cam); cam.lookAt(new THREE.Vector3(...f.tgt));
+  document.getElementById('cap').textContent=f.cap;
+  document.getElementById('hv').textContent=f.v.toFixed(0)+' km/h';
+  document.getElementById('hp').textContent=fmt(f.p,'nose down','nose up');
+  document.getElementById('ha').textContent=fmt(f.a-2,'down','up');
+  // the last 4 s of pitch (grey) and of the lenses (yellow), so you can see one cancel the other
+  const k0=Math.max(0,i-120), pts=(key,off)=>DATA.frames.slice(k0,i+1).map((g,j)=>`${(j+(120-(i-k0)))*390/120},${35+(g[key]-off)*2.8}`).join(' ');
+  svg.innerHTML=`<line x1="0" y1="35" x2="390" y2="35" stroke="#566" stroke-width="1"/>`+
+    `<polyline points="${pts('p',0)}" fill="none" stroke="#9aa6b2" stroke-width="3"/>`+
+    `<polyline points="${pts('a',2)}" fill="none" stroke="#ffd24a" stroke-width="3"/>`+
+    `<text x="0" y="12" fill="#9aa6b2" font-size="14">wheel pitch</text><text x="96" y="12" fill="#ffd24a" font-size="14">lenses</text>`;
+  // main picture: the levelled lamp
+  for(const o of groups.head) o.matrix.copy(mlev);
+  aim(LEV,mlev,true); aim(FIX,mfix,false);
+  renderer.setScissorTest(false); renderer.setViewport(0,0,W,H); renderer.render(scene,cam);
+  // inset: the same moment with the lenses fixed
+  for(const o of groups.head) o.matrix.copy(mfix);
+  aim(LEV,mlev,false); aim(FIX,mfix,true);
+  pcam.position.copy(cam.position); pcam.quaternion.copy(cam.quaternion);
+  const x=W-PM-PW, y=H-PM-PH;
+  renderer.setScissorTest(true); renderer.setScissor(x,y,PW,PH); renderer.setViewport(x,y,PW,PH);
+  renderer.autoClear=true; renderer.render(scene,pcam); renderer.setScissorTest(false);
+  return i;
+};
+// scale the overlay for other widths
+for(const id of ['tag','cap','hud']){ const e=document.getElementById(id); e.style.transformOrigin=id==='hud'?'right bottom':'left '+(id==='tag'?'top':'bottom'); e.style.transform=`scale(${S})`; }
+document.getElementById('piptxt').style.fontSize=(19*S)+'px';
+window.__dbg={scene};
+window.NFRAMES=DATA.frames.length; window.READY=true;
+</script></body></html>

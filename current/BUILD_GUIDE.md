@@ -96,6 +96,14 @@ The wires pass between dry spaces only: from the LEDs through the left pivot poc
 
 The other pictures: `renders/tilt_level.png`, `tilt_down.png`, `level_riding.png`, `level_accelerating.png`.
 
+**From the rider's eyes:** `renders/rider_pov.mp4` (14 s; `rider_pov.gif` is a smaller copy) is the view standing on
+the wheel at night: cruising, hard braking (nose 9° down), accelerating (nose 7° up) and a stretch of broken asphalt.
+The big picture is this lamp; the red-framed inset is the same ride with the lenses fixed. The lenses move by the
+firmware's rule: aim (2° down) minus the pitch, held to ±10°, at most 400°/s. The levelled pool of light stays where
+it was; the fixed one runs in to your front tyre when you brake and up into the trees when you accelerate.
+
+![Rider's view, braking](renders/rider_pov.png)
+
 ## The buttons
 
 Two buttons sit one above the other in the middle of the chin, so either hand reaches them: **+** on top,
