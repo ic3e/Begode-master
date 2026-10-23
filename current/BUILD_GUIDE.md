@@ -1,4 +1,4 @@
-# Lamp v6.2: sealed, self-levelling three-LED headlamp in the stock lamp opening
+# Lamp v6.3: sealed, self-levelling three-LED headlamp in the stock lamp opening
 
 The stock lamp comes out, and this lamp sits flush in its opening in the top cover.
 
@@ -21,6 +21,8 @@ The stock lamp comes out, and this lamp sits flush in its opening in the top cov
 - **Ready to print (v6.2):** every STL is one closed solid, lying on the bed the way it should print, with no
   wall thinner than a 0.4 mm nozzle can draw, no hairline slits and no support trapped where it can't come out.
   See *Printing* below.
+- **Boards placed (v6.3):** every board was fitted, at its real size, into the dry spaces, with a slot through
+  each side bay's floor for the wires to the electronics box. See *Wiring* and *Where the boards go* below.
 - **No phone needed:** two buttons in the chin set the aim, brightness, mode, calibration and the USB charger.
   The Wi-Fi settings page stays off unless you ask for it.
 - **USB-C charger:** a sealed USB-C port in the handle charges a phone from the wheel. A power guard keeps the
@@ -122,7 +124,7 @@ instead if you want it on the left.
 | Luminus SST-20 (or Cree XM-L2 / XP-L), 3 V, on a **16 mm** copper star | 3 | 4000–5000 K |
 | 20 mm TIR optic for a 16 mm star | 3 | 1 × 10° round (centre, reach), 2 × **elliptical** wide (sides) |
 | Finned aluminium heat-sink bar | 1 | flat face 25 mm tall, fins no deeper than 20 mm, fins running front to back. **Cut to 62 mm wide** |
-| Clear polycarbonate sheet, 1.5 mm | 1 | the window (`stl/lamp62_window_1.5mm_polycarbonate.svg`) |
+| Clear polycarbonate sheet, 1.5 mm | 1 | the window (`stl/lamp63_window_1.5mm_polycarbonate.svg`) |
 | Thin double-sided foam tape, 0.5 mm, 3–5 mm wide | | the window; strips on the inner walls' top edges under the top plate and on the electronics box's wall edges under the lid |
 | Neutral-cure clear silicone | | seals the LED bar's face to the bulkhead |
 | Mean Well LDD-1500L (or LDD-1000L / PT4115, see `PARTS.md`) | 3 | one per LED |
@@ -132,7 +134,7 @@ instead if you want it on the left.
 | MG90S metal-gear servo | 1 | |
 | 6800-2RS ball bearing (10 × 19 × 5 mm, sealed) | 1 | the lens frame's pivot |
 | MP1584EN buck module | 2 | one at 5.0 V (electronics), one at 5.1 V (USB) |
-| Logic-level MOSFET module (D4184 / AO3400) | 2 | running lights; USB charger switch |
+| Small logic-level MOSFET module (AO3400 type), **at most 18 × 11 × 4 mm** | 2 | running lights; USB charger switch. The D4184 boards with screw terminals don't fit beside the servo |
 | 8 mm sealed momentary push button (IP67, flat head) | 2 | the chin buttons |
 | USB-C female receptacle, solder-tab or on a small board, **6 pins (VBUS, GND, CC1, CC2)**; no resistors on it | 1 | the handle port: shell 8.9 × 3.3 mm, up to 7.5 mm deep, board up to 13 × 8 mm |
 | Silicone USB-C dust plug | 1 | closes the port in the rain |
@@ -151,10 +153,10 @@ Every file is already lying on the bed the way it should print: load it, don't r
 
 | File | Qty | Material | Lies | Supports |
 |---|---|---|---|---|
-| `stl/lamp62_housing.stl` | 1 | black ASA, 4 walls | open top on the bed | yes, see below |
-| `stl/lamp62_top_plate.stl` | 1 | ASA/PETG | top face on the bed, tongues and fingers up | none |
-| `stl/lamp62_lens_frame.stl` | 1 | PETG/ASA | front face on the bed (the lenses' lips are the first layers) | none |
-| `stl/lamp62_lid.stl` | 1 | ASA/PETG | flat | none |
+| `stl/lamp63_housing.stl` | 1 | black ASA, 4 walls | open top on the bed | yes, see below |
+| `stl/lamp63_top_plate.stl` | 1 | ASA/PETG | top face on the bed, tongues and fingers up | none |
+| `stl/lamp63_lens_frame.stl` | 1 | PETG/ASA | front face on the bed (the lenses' lips are the first layers) | none |
+| `stl/lamp63_lid.stl` | 1 | ASA/PETG | flat | none |
 | `stl/master_handle_v17_usb_right.stl` (or `_left`) | 1 | PETG/ASA, 5 walls, 40 % infill | flat: legs and grip on the bed | from the bed only, and a brim |
 | `stl/master_handle_bolt_cover_right.stl` and `_left.stl` | 1 + 1 | PETG/ASA, as the handle | flat side down | none |
 
@@ -202,6 +204,10 @@ Every file is already lying on the bed the way it should print: load it, don't r
 - **Buttons:** their own nuts.
 
 ## Wiring
+
+![Wiring](renders/wiring_diagram.png)
+
+Pins with the same tag are joined. The same connections as a list:
 
 ```
 wheel lamp plug + ── INA219 VIN+      INA219 VIN- ──┬── LDD-1500L #1, #2, #3  VIN+
@@ -261,10 +267,18 @@ switches the charger by cutting its ground.
      countersunk.
 7. **Electronics:**
    - Give every board a thin coat of conformal coating first. Keep it off connectors and the LDR.
-   - **Left side bay:** the three LED drivers and buck #1.
-   - **Right side bay:** behind the servo, buck #2, both MOSFET modules and the INA219.
-   - **Electronics box:** the ESP32 and the MPU-6050 (flat, X arrow forward).
+   - **Left side bay:** the three LED drivers stacked at the front, against the outer wall; buck #1 above them;
+     the MPU-6050 flat on top (X arrow forward). It reads the lamp's tilt from there just as well.
+   - **Electronics box:** the INA219 and the ESP32 on edge against the divider, side by side. The ESP32's USB-C
+     faces down, so you can flash it with the lid off.
+   - **Right side bay:** buck #2 and the USB MOSFET under the servo, the DRL MOSFET above it.
+   - Keep the space over the two floor slots clear: the wires between the bays and the box go through them
+     (left slot 2.3 × 10 mm, a flat bundle; right slot 5 × 10 mm).
    - Fix everything with foam tape.
+
+   ![Left side bay](renders/boards_1.png)
+   ![Right side bay](renders/boards_2.png)
+   ![Electronics box from below](renders/boards_3.png)
 8. **USB in the handle:**
    - Push the 2-core wire into the hole in the top of the lamp tab (right side) and feed it through the handle's
      channel, up the leg and out through the slot in the well on the leg's inner face.

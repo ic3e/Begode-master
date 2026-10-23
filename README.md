@@ -70,7 +70,8 @@ against a model built from caliper measurements.
 | lamp v6.2 | v14 | ready for the slicer: no thin walls, slits or trapped supports; parts exported in their print orientation; horn glued |
 | lamp v6.2 | v15 | the USB-C port flush in the handle's leg, no bump: a bare receptacle potted in epoxy, with a silicone plug |
 | lamp v6.2 | v16 | the USB-C port on the leg's inside, out of the way in a side fall; pressed in from inside, no pocket to fill |
-| **lamp v6.2** | **v17** | **the lamp tabs braced (the first print snapped them): a gusset under each and a fillet over its root; the USB wire inside the root, not in a groove along it** |
+| lamp v6.2 | v17 | the lamp tabs braced (the first print snapped them): a gusset under each and a fillet over its root; the USB wire inside the root, not in a groove along it |
+| **lamp v6.3** | **v17** | **every board fitted at its real size; wire slots from the side bays into the electronics box; wiring diagram and board renders** |
 
 ## Rebuilding
 
@@ -78,8 +79,9 @@ Python 3 with `numpy`, `trimesh`, `manifold3d` and `matplotlib`. Run from `sourc
 
 ```
 cd source && mkdir -p ../build_output
-python3 check25.py     # every fit / clearance / assembly / sealing / drop check for the current version
-python3 export25.py    # writes the current STLs and the window SVG to current/stl/, lying as they print
+python3 check27.py     # every fit / clearance / assembly / sealing / drop check for the current version
+python3 export27.py    # writes the current STLs and the window SVG to current/stl/, lying as they print
+python3 boards_pack.py # fits the boards into the dry spaces (then boards_export.py, wiring_diagram.py)
 python3 print_check.py # what a slicer would see in them: closed solids, thin walls, slits, supports
 ```
 

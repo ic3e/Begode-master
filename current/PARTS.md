@@ -1,4 +1,4 @@
-# Parts list and where to buy (lamp v6.2)
+# Parts list and where to buy (lamp v6.3)
 
 Prices are rough estimates (October 2026), VAT included. Most parts come from AliExpress; the LED drivers
 come from a European distributor.
@@ -19,7 +19,7 @@ the filament is already in the list.
 | MG90S metal-gear servo | 1 | 3–4 | AliExpress |
 | 6800-2RS ball bearing, 10 × 19 × 5 mm, sealed | 1 | 1–3 | AliExpress (packs of 2–10) |
 | MP1584EN buck module (pack of 5; you need 2) | 1 | 2–3 | AliExpress |
-| Logic-level MOSFET module (D4184 / AO3400) | 2 | 2–4 | AliExpress |
+| Small logic-level MOSFET module (AO3400 type), at most 18 × 11 × 4 mm | 2 | 2–4 | AliExpress ("AO3400 MOSFET module"). The D4184 boards with screw terminals are too big |
 | 8 mm sealed momentary push button, IP67, flat head | 2 | 3–6 | AliExpress ("8mm waterproof momentary push button") |
 | USB-C female receptacle with CC1/CC2 brought out (6-pin, solder tabs or a small board up to 13 × 8 mm), and a silicone USB-C dust plug | 1 + 1 | 1–3 | AliExpress ("USB-C female 6 pin", "USB-C silicone dust plug"). Not a "charging-in" board with 5.1 k resistors fitted, or remove them |
 | 2-core 24 AWG silicone wire (about 40 cm), 2-part epoxy, CA glue | | 4–7 | AliExpress or a hardware shop |

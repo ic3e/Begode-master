@@ -47,7 +47,7 @@ def housing11():
     h=housing10()
     z0,z1=zw(-36.65,-33.9); h-=bx(-29.95,-21.35,-3.6,-3.45,z0,z1)                 # v5.4 stop's last skin
     z0,z1=zw(-36.6,-36.45)                                                        # slit beside the lower stop
-    h+=bx(PX6+STOP6_U[0],PX6+STOP6_U[1],FLOOR_Y[1]-0.1,PY6-STOP6_V,z0,z1)-cw(SEAT_R+0.05,-37.0,-36.5).translate([PX6,PY6,ZC])
+    h+=bx(PX6+STOP6_U[0],PX6+STOP6_U[1],FLOOR_Y[1]-0.1,PY6-STOP6_V,z0,z1)-cw(SEAT_R-0.1,-37.0,-36.5).translate([PX6,PY6,ZC])   # 0.1 mm off the bearing (r 9.5)
     h+=duct_ribs()^bx(-300,300,PASS_Y0-1,FLOOR_Y[0]+1,ZC-P3A-0.05,ZC+P3A+0.05)    # into the partitions, not flush with them
     z0,z1=zw(31.0,33.4); h-=horn_recess()^bx(-300,300,-300,300,z0,z1)
     for s in (-1,1):                                                              # the bar's pads stood 0.1 mm off the inlet's edge

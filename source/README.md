@@ -28,7 +28,10 @@ everything from this folder; the original handle and cap are read from `../refer
 | `build23.py` + `check23.py`, `export23.py`, `mech6_export.py` | lamp v6.1: v6 with fewer parts (no road sensor, clamp, diffusers or gasket) |
 | `build24.py` + `check24.py`, `export24.py`, `print_check.py` | lamp v6.2 + handle v14: v6.1 made ready for the slicer; `print_check.py` checks the STLs as a slicer sees them |
 | `build25.py` | handle v15 / v16: the USB-C port flush in the leg instead of a socket in a boss (v15, outer face), then on the leg's inside (v16) |
-| **`build26.py` + `check25.py`, `export25.py`** | **lamp v6.2 + handle v17 (current): the lamp tabs braced with gussets and fillets, the USB wire inside their root** |
+| `build26.py` + `check25.py`, `export25.py` | lamp v6.2 + handle v17: the lamp tabs braced with gussets and fillets, the USB wire inside their root |
+| **`build27.py` + `check27.py`, `export27.py`** | **lamp v6.3 + handle v17 (current): wire slots from the side bays into the electronics box** |
+| **`boards_pack.py`, `boards_export.py`, `anim/boards.html`** | **the boards fitted at their real sizes, and their render (`current/renders/boards_*`): `PAGE=boards.html OUTD=boards node stills_render.mjs`** |
+| **`wiring_diagram.py`** | **the wiring diagram (`current/renders/wiring_diagram.png`)** |
 | `render*.py`, `master_render*.py`, `lamp_render.py` | matplotlib renders of earlier versions |
 | `meas_sheet.py`, `meas_sheet2.py` | the measurement sheets |
 | `anim_export.py`, `anim/index.html`, `anim/render.mjs` | the v8 animation |
