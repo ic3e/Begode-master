@@ -1,10 +1,10 @@
-# Parts list and where to buy (lamp v6.3)
+# Parts list and where to buy (lamp v6.4)
 
 Prices are rough estimates (October 2026), VAT included. Most parts come from AliExpress; the LED drivers
 come from a European distributor.
 
-**Total: about €100–150** with the Mean Well drivers, or **about €85–130** with PT4115 drivers. The USB charger and
-the buttons are about €15–25 of that. Add shipping;
+**Total: about €115–170** with the Mean Well drivers, or **about €100–150** with PT4115 drivers. The USB charger and
+the buttons are about €20–30 of that, the road sensor about €12–15. Add shipping;
 the filament is already in the list.
 
 | Part | Qty | Approx. € | Where |
@@ -15,14 +15,16 @@ the filament is already in the list.
 | Mean Well **LDD-1500L** LED driver | 3 | 18–24 | Farnell, Mouser, TME, or Italian shops such as alimentatorishop. **Discontinued: see below.** |
 | ESP32-C3 SuperMini | 1 | 2–4 | AliExpress (Partco doesn't stock it) |
 | MPU-6050 (GY-521) | 1 | 2–3 | AliExpress |
+| VL53L1X laser distance sensor, **Pololu carrier #3415** (12.7 × 17.8 mm) | 1 | 12–15 | Pololu distributors (Botland, Kiwi Electronics, Robotshop). The hood is sized for this board; other VL53L1X boards differ |
 | INA219 module (0.1 Ω shunt) | 1 | 1–3 | AliExpress |
 | MG90S metal-gear servo | 1 | 3–4 | AliExpress |
 | 6800-2RS ball bearing, 10 × 19 × 5 mm, sealed | 1 | 1–3 | AliExpress (packs of 2–10) |
 | MP1584EN buck module (pack of 5; you need 2) | 1 | 2–3 | AliExpress |
 | Small logic-level MOSFET module (AO3400 type), at most 18 × 11 × 4 mm | 2 | 2–4 | AliExpress ("AO3400 MOSFET module"). The D4184 boards with screw terminals are too big |
 | 8 mm sealed momentary push button, IP67, flat head | 2 | 3–6 | AliExpress ("8mm waterproof momentary push button") |
+| C&K KSC6 sealed tact switch, IP67, 6.2 × 6.2 mm, hard actuator (e.g. KSC621J LFS) | 2 | 2–4 | Farnell, Mouser, TME (with the driver order). The riding buttons on the handle |
 | USB-C female receptacle with CC1/CC2 brought out (6-pin, solder tabs or a small board up to 13 × 8 mm), and a silicone USB-C dust plug | 1 + 1 | 1–3 | AliExpress ("USB-C female 6 pin", "USB-C silicone dust plug"). Not a "charging-in" board with 5.1 k resistors fitted, or remove them |
-| 2-core 24 AWG silicone wire (about 40 cm), 2-part epoxy, CA glue | | 4–7 | AliExpress or a hardware shop |
+| 2-core 24 AWG silicone wire (about 40 cm), three 28 AWG wires (about 40 cm), 2-part epoxy, CA glue | | 4–7 | AliExpress or a hardware shop |
 | 5 V white LED strip, 2835, 120 LEDs/m | 1 m | 2–3 | AliExpress |
 | GL5528 LDR, 10 k NTC (B3950), resistors 10 k ×2 and 22 k ×2 | | 2–4 | AliExpress assortments, or with the driver order |
 | JST-XH 2-pin plugs, 26 AWG silicone wire | | 5–7 | AliExpress |
@@ -50,7 +52,7 @@ wheel's 6.5 V dim mode.
 ## Ordering tips
 
 - **Minimum orders:** Farnell, Mouser and TME ship quickly to Finland and Estonia, and often ship free above a
-  minimum order. To get there, add the resistors, NTC, LDR and connectors to the driver order.
+  minimum order. To get there, add the resistors, NTC, LDR, connectors and the KSC6 switches to the driver order.
 - **VAT:** AliExpress orders under €150 have VAT added at checkout, so there's nothing extra to pay on delivery.
 - **Delivery:** AliExpress takes 1–3 weeks. Partco (partco.fi) and Oomipood (oomipood.ee) are quicker for the
   common modules. Check their stock first.

@@ -7,6 +7,9 @@
 - **Self-levelling headlamp:** fills the stock lamp's opening in the top cover. It has:
   - three fixed LEDs; a servo tilts a frame with their three lenses ±10°, so the beam stays put while the
     wheel pitches (about 1000–1100 lm)
+  - a road sensor behind the window, so the beam follows hills too (an EUC stays level on a hill; the gyro alone
+    can't see one)
+  - two riding buttons on the handle's leg: dip the beam for oncoming traffic, high beam, flash
   - sealed against rain, tyre spray and sand: the cooling air has its own drained duct, everything else is dry
   - daytime running lights and day/night switching
   - two buttons in the chin for every setting, so no phone or app is needed (a Wi-Fi page is there if you want it)
@@ -17,6 +20,7 @@
     20 mm clear), and hard stops inside so a drop doesn't load the servo's gears
 
 ![Lamp v6.2 in the stock opening](current/renders/render_v62_hero.png)
+![Lamp v6.4: the road sensor's eye left of the lenses](current/renders/render_v64_face.png)
 
 ## What to print now
 
@@ -24,9 +28,9 @@ Everything is in [`current/`](current). [`current/BUILD_GUIDE.md`](current/BUILD
 
 - the parts list
 - which LEDs, optics, heat sink and electronics to buy, and the wiring
-  (prices and shops in [`current/PARTS.md`](current/PARTS.md), about €100–150)
+  (prices and shops in [`current/PARTS.md`](current/PARTS.md), about €115–170)
 - hardware and assembly order
-- the buttons and the USB charger
+- the buttons (chin and handle) and the USB charger
 - the firmware
 - everything that was checked
 
@@ -34,7 +38,7 @@ Everything is in [`current/`](current). [`current/BUILD_GUIDE.md`](current/BUILD
 
 | Folder | Contents |
 |---|---|
-| `current/stl/` | handle v17 (USB port on the right or left), the two bolt covers (right and left), lamp housing, top plate, lens frame, lid, and the window's cutting template (SVG), each lying on the bed as it should print |
+| `current/stl/` | handle v18 (USB port and riding buttons on the right or left), the two bolt covers (right and left), lamp housing, top plate, lens frame, lid, and the window's cutting template (SVG), each lying on the bed as it should print |
 | `current/firmware/headlamp6_firmware/` | ESP32-C3 firmware (Arduino; needs the Pololu "VL53L1X" library) |
 | `current/renders/` | stills: day, night, face on, fallen forward / onto its side; how the head is fitted, the stops, the buttons and the USB port |
 | `reference/` | the original handle and cap STLs, the measurement sheets, and [`MEASUREMENTS.md`](reference/MEASUREMENTS.md) (every measurement taken on the wheel) |
@@ -71,7 +75,8 @@ against a model built from caliper measurements.
 | lamp v6.2 | v15 | the USB-C port flush in the handle's leg, no bump: a bare receptacle potted in epoxy, with a silicone plug |
 | lamp v6.2 | v16 | the USB-C port on the leg's inside, out of the way in a side fall; pressed in from inside, no pocket to fill |
 | lamp v6.2 | v17 | the lamp tabs braced (the first print snapped them): a gusset under each and a fillet over its root; the USB wire inside the root, not in a groove along it |
-| **lamp v6.3** | **v17** | **every board fitted at its real size; wire slots from the side bays into the electronics box; wiring diagram and board renders** |
+| lamp v6.3 | v17 | every board fitted at its real size; wire slots from the side bays into the electronics box; wiring diagram and board renders |
+| **lamp v6.4** | **v18** | **a road sensor (VL53L1X) behind the window so the beam follows hills; two riding buttons on the handle's leg that dip, raise and flash the beam (cut-off lenses don't fit the opening)** |
 
 ## Rebuilding
 
@@ -79,8 +84,8 @@ Python 3 with `numpy`, `trimesh`, `manifold3d` and `matplotlib`. Run from `sourc
 
 ```
 cd source && mkdir -p ../build_output
-python3 check27.py     # every fit / clearance / assembly / sealing / drop check for the current version
-python3 export27.py    # writes the current STLs and the window SVG to current/stl/, lying as they print
+python3 check28.py     # every fit / clearance / assembly / sealing / drop check for the current version
+python3 export28.py    # writes the current STLs and the window SVG to current/stl/, lying as they print
 python3 boards_pack.py # fits the boards into the dry spaces (then boards_export.py, wiring_diagram.py)
 python3 print_check.py # what a slicer would see in them: closed solids, thin walls, slits, supports
 ```

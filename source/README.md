@@ -29,8 +29,10 @@ everything from this folder; the original handle and cap are read from `../refer
 | `build24.py` + `check24.py`, `export24.py`, `print_check.py` | lamp v6.2 + handle v14: v6.1 made ready for the slicer; `print_check.py` checks the STLs as a slicer sees them |
 | `build25.py` | handle v15 / v16: the USB-C port flush in the leg instead of a socket in a boss (v15, outer face), then on the leg's inside (v16) |
 | `build26.py` + `check25.py`, `export25.py` | lamp v6.2 + handle v17: the lamp tabs braced with gussets and fillets, the USB wire inside their root |
-| **`build27.py` + `check27.py`, `export27.py`** | **lamp v6.3 + handle v17 (current): wire slots from the side bays into the electronics box** |
-| **`boards_pack.py`, `boards_export.py`, `anim/boards.html`** | **the boards fitted at their real sizes, and their render (`current/renders/boards_*`): `PAGE=boards.html OUTD=boards node stills_render.mjs`** |
+| `build27.py` + `check27.py`, `export27.py` | lamp v6.3 + handle v17: wire slots from the side bays into the electronics box |
+| **`build28.py` + `check28.py`, `export28.py`** | **lamp v6.4 + handle v18 (current): the road sensor's hood behind the face; the riding buttons on the handle's leg** |
+| **`stills64_export.py`, `anim/stills64.html`** | **the v6.4 stills (`current/renders/render_v64_*`): face, road sensor, riding buttons, night** |
+| **`boards_pack.py`, `boards_export.py`, `anim/boards.html`** | **the boards (and, from v6.4, the road sensor) fitted at their real sizes, and their render (`current/renders/boards_*`): `PAGE=boards.html OUTD=boards node stills_render.mjs`** |
 | **`wiring_diagram.py`** | **the wiring diagram (`current/renders/wiring_diagram.png`)** |
 | **`swing_export.py`, `anim/swing.html`, `anim/level.html`** | **how far the lenses tilt (`tilt_*`) and the beam held level on the wheel (`level_*`): `PAGE=swing.html OUTD=swing` / `PAGE=level.html OUTD=level node stills_render.mjs`** |
 | **`pov_export.py`, `anim/pov.html`** | **the rider's view at night, levelled lamp vs a fixed one (`rider_pov.*`): `PAGE=pov.html OUTD=pov node stills_render.mjs`, then ffmpeg at 30 fps** |

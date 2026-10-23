@@ -18,6 +18,11 @@ into something you could sell.
 ## 1. On the bench (lamp powered from a 12 V supply)
 
 - [ ] **Buttons:** every action in the guide's table works, and the blinks match.
+- [ ] **Riding buttons (handle):** ▲ / ▼ taps step the beam dipped → main → high and back; holding ▲ flashes high
+  while held. On a wall at 5 m, dipped puts the beam's bright top edge about 1° (9 cm) below the lamp's height.
+- [ ] **Road sensor:** the Wi-Fi page shows *road sensor* with a distance. Lamp at its height (0.61 m) over a
+  flat floor: about 1440 mm. Calibrate there, then hold a board under its view and tilt it: the slope on the
+  page follows, and the beam tips with it.
 - [ ] **Stillness lock:** move the lamp by hand while pressing: nothing should happen.
 - [ ] **Levelling:** tilt the lamp slowly and quickly. The beam on a wall should stay put within about 1°,
   without buzzing or hunting.
@@ -32,7 +37,10 @@ into something you could sell.
 
 ## 2. Normal rides (aim for 300 km)
 
-- [ ] The beam stays steady over bumps, on hills, braking and accelerating.
+- [ ] The beam stays steady over bumps, braking and accelerating.
+- [ ] **Hills:** on a steady climb and a steady descent, the beam keeps its distance down the road (the slope on
+  the Wi-Fi page or the serial log matches the hill). Note any hill where it doesn't, and the road surface.
+- [ ] **Riding buttons** reached and pressed with gloves on, while riding; no accidental presses.
 - [ ] No flicker, no LED dimmer than the others.
 - [ ] After every 100 km: check for play at the head (wiggle it with the power off), loose screws, cracks at the
   screw bosses, and the window tape.
@@ -58,7 +66,7 @@ After each set:
 - [ ] Does the head still swing freely and come back to level?
 - [ ] Does the beam aim where it did before?
 - [ ] Any cracks: corners of the electronics box, the top plate's tongues, the screw bosses, the handle's lamp tabs (where they leave the leg), the handle's legs
-  around the USB port?
+  around the USB port and the riding buttons? Is the road sensor still on its rim in the hood?
 - [ ] Any loose plugs, flickering LEDs, buttons that stick?
 - [ ] Is the window still sealed?
 
@@ -72,7 +80,12 @@ Stop when something breaks. Fix it, note what and why, and start that step again
 - [ ] **Wet road:** ride on a wet road with puddles. Check the same places afterwards.
 - [ ] **Sand:** ride a sandy or gravel path when it's wet. Afterwards rinse the chin and check that the drains run
   clear. Any sand in the dry spaces is a finding: note where.
-- [ ] **Levelling without a road sensor:** on hills, is following them halfway right? Adjust "Follow long hills" on the Wi-Fi page if not.
+- [ ] **Road sensor in the wet:** on a wet road at night, how often does it lose its reading (the serial log's
+  *road* stays at its last value)? It should then fall back to plain levelling, never jump.
+- [ ] **Road sensor and a dirty window:** after a wet, sandy ride, before cleaning: does it still read? "Follow
+  hills" on the Wi-Fi page sets how much of the slope it follows (100 % by default).
+- [ ] **Riding buttons in the rain:** they still work, and no water gets into the USB channel past their
+  silicone.
 - [ ] **Light output:** measure lux at 10 m on a wall (beam at 100 %) and note it. The lens gap costs some light;
   this is the real figure.
 

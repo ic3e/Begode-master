@@ -1,12 +1,14 @@
 # Where the boards go: the real module sizes packed into the dry spaces (left bay, right bay, electronics box)
-# around the housing, top plate, servo, bearing, LED bar and the lens frame's whole swing, 0.5 mm off everything.
+# around the housing, top plate, servo, bearing, LED bar, the road sensor (v6.4) and the lens frame's whole swing,
+# 0.5 mm off everything.
 # Writes anim/boards_placed.json for boards_export.py.
 import itertools, json
-exec(open('build27.py').read())
+exec(open('build28.py').read())
 from scipy import ndimage
-hs=housing12(); pl=top_plate11(); sv=servo6(); brg=H6(bearing7()); bar=led_bar(); bt=buttons8(); ld=lid10()
+hs=housing13(); pl=top_plate11(); sv=servo6(); brg=H6(bearing7()); bar=led_bar(); bt=buttons8(); ld=lid10()
 sweep=mf.Manifold.batch_boolean([tilt6(H6(lens_frame7()+lenses6()),a) for a in (-13,-6,0,6,13)],mf.OpType.Add)
-solid=hs+pl+sv+brg+bar+bt+ld+sweep
+tb,tc=tof_board()
+solid=hs+pl+sv+brg+bar+bt+ld+sweep+tb+tc
 t=to_tm(solid); P=0.5
 lo=np.array([-70.0,-52.0,ZC-68.0]); hi=np.array([-12.0,24.0,ZC+68.0])
 xs=np.arange(lo[0],hi[0],P)+P/2; ys=np.arange(lo[1],hi[1],P)+P/2; zs=np.arange(lo[2],hi[2],P)+P/2
@@ -23,6 +25,8 @@ occ=ndimage.binary_dilation(occ,iterations=1)          # 0.5 mm off every wall
 def cells_(a,b): return (slice(int((a[0]-lo[0])/P),int(np.ceil((b[0]-lo[0])/P))),slice(int((a[1]-lo[1])/P),int(np.ceil((b[1]-lo[1])/P))),slice(int((a[2]-lo[2])/P),int(np.ceil((b[2]-lo[2])/P))))
 for s_,w_,r_ in WIRE_SLOTS:   # keep the space over each floor slot free for the wires (8 mm up, 1 mm round it)
     occ[cells_(np.array([-43.0,HOUSE_Y0,ZC+w_-r_-1.0]),np.array([-31.0,HOUSE_Y0+11.0,ZC+w_+r_+1.0]))]=True
+for s_ in (-1,1):   # the running-light strips behind their slots in the face (3 mm deep: strip and tape)
+    w0,w1=sorted((s_*40.0,s_*63.5)); occ[cells_(np.array([HOUSE_X0+FACE-0.5,10.0,ZC+w0]),np.array([HOUSE_X0+FACE+3.0,21.5,ZC+w1]))]=True
 MODS=[('LDD-1500L #1',(22.1,11.3,8.5),'L'),('LDD-1500L #2',(22.1,11.3,8.5),'L'),('LDD-1500L #3',(22.1,11.3,8.5),'L'),('MP1584 #1 (5.0 V)',(22.0,17.0,4.5),'L'),
       ('INA219',(25.5,22.3,4.0),'RB'),('MP1584 #2 (5.1 V, USB)',(22.0,17.0,4.5),'R'),('MOSFET #2 (USB)',(18.0,11.0,4.0),'R'),('MOSFET #1 (DRL)',(18.0,11.0,4.0),'RL'),
       ('ESP32-C3 SuperMini',(22.5,18.0,4.5),'B'),('MPU-6050',(21.0,16.0,3.5),'LR')]

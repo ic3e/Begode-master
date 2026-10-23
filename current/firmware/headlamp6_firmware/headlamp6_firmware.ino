@@ -1,6 +1,7 @@
 // Auto-levelling headlamp v6 for the Begode Master, in the stock lamp opening: three fixed LEDs; the servo tilts a
-// frame with their three lenses ±10° about the LED chips (lamp v6, sealed).
-// ESP32-C3 SuperMini + MPU-6050 + LDR + MG90S servo
+// frame with their three lenses ±10° about the LED chips (lamp v6, sealed; v6.4 adds the road sensor and the
+// handle's buttons).
+// ESP32-C3 SuperMini + MPU-6050 + VL53L1X (road sensor) + LDR + MG90S servo
 // + Mean Well LDD-1500L (main beam; runs from 6 V) + MOSFET module (daytime running lights)
 // + INA219 (what the lamp draws from the wheel) + MP1584 and MOSFET module (USB-C phone charger in the handle).
 //
@@ -8,10 +9,20 @@
 // wheel raises it when accelerating. The lamp reads that voltage and scales the main beam with it,
 // so the wheel's dim/full setting and its "brighter when accelerating" still work.
 //
-// Levelling: the gyro/accelerometer cancels fast pitching (braking, accelerating, bumps) and follows
-// long hills partly ("follow hills" setting), so the beam stays at AIM below level. (v6.1 has no road
-// sensor: under the lamp its window was dirty with spray and sand most of the time.)
+// Levelling: the gyro/accelerometer cancels pitching (braking, accelerating, bumps), so the beam stays at AIM
+// below level. Hills need the road sensor: an EUC balances to gravity, not to the road, so on a steady hill the
+// shell stays level and the gyro sees nothing (v6.1-v6.3 had no sensor, and their "follow hills" only followed the
+// rider's pedal angle). The VL53L1X looks 25° down at the road about 1.3 m ahead, through the main window; from
+// its distance and the wheel's pitch the lamp works out the slope it is on and tips the beam with it. Without a
+// reading (no sensor, a dirty window, grass, a wet mirror-like road) it eases back to plain levelling.
 // Lights: day = DRL only; night = main beam + DRL dimmed. AUTO picks from the light sensor.
+//
+// Riding: the two buttons on the inner face of the handle's right leg, under the USB port, work at any speed:
+//   handle ▲ tap ............. beam one step up: dipped -> main -> high
+//   handle ▼ tap ............. one step down (dip it for oncoming traffic: the beam drops DIP_DEG, under their eyes)
+//   handle ▲ hold ............ flash: high beam while held
+// (The lenses have no cut-off, so dipping is how this lamp avoids dazzling people.)
+// Don't hold ▼ while switching the wheel on: it is the ESP32's boot pin, and it would wait to be programmed.
 //
 // Settings: the two buttons in the chin do everything, no phone needed. They only listen to a deliberate
 // press (at least 0.4 s) while the wheel stands still, so bumps, drops and knocks change nothing.
@@ -19,7 +30,7 @@
 //   + hold 3 s ............... brightness 50 / 70 / 85 / 100 %  (1-4 blinks of the running lights)
 //   - hold 3 s ............... mode: auto / beam on / running lights only  (1 / 2 / 3 blinks)
 //   both tap ................. USB charger off / on  (1 / 2 blinks)
-//   both hold 3 s ............ calibrate: wheel upright on flat ground  (3 blinks)
+//   both hold 3 s ............ calibrate: wheel upright on flat ground  (3 blinks; the road sensor's angle too)
 //   both hold 6 s ............ Wi-Fi settings page on for 10 minutes  (4 blinks)
 //   both hold 10 s ........... back to factory settings
 // While a button is held, the running lights blink once at 3, 6 and 10 s, so you know when to let go.
@@ -30,13 +41,15 @@
 // 70 % at night the charger pauses for a minute. The beam always comes first.
 //
 // Board: "ESP32C3 Dev Module", USB CDC On Boot: Enabled.
-// No extra libraries: everything comes with the ESP32 core.
+// One library: "VL53L1X" by Pololu (Arduino Library Manager). Everything else comes with the ESP32 core.
 
 #include <cmath>
+#include <algorithm>
 #include <Wire.h>
 #include <Preferences.h>
 #include <WiFi.h>
 #include <WebServer.h>
+#include <VL53L1X.h>
 
 // ---------------- pins ----------------
 const int PIN_SDA   = 6;
@@ -49,6 +62,8 @@ const int PIN_LDR   = 1;    // LDR to 3V3, 10k to GND: brighter = higher reading
 const int PIN_UP    = 20;   // chin button +, to GND
 const int PIN_DN    = 21;   // chin button -, to GND
 const int PIN_USB   = 0;    // MOSFET module that switches the USB charger's buck (high = on)
+const int PIN_HUP   = 8;    // handle button ▲, to GND (GPIO8 also drives the board's blue LED: it lights while pressed)
+const int PIN_HDN   = 9;    // handle button ▼, to GND (GPIO9 is the board's BOOT button too)
 const float VIN_DIM = 6.5, VIN_FULL = 12.0;
 const uint8_t INA = 0x40;   // INA219 in the plug's + wire: the wheel's voltage and the whole lamp's current
 const float R_SHUNT = 0.1;  // ohm, the R100 on the usual INA219 modules
@@ -73,6 +88,17 @@ const float STILL_RATE = 5.0;     // deg/s: the wheel counts as standing still b
 const uint32_t STILL_MS = 1500;   // ... for this long, before a button press counts
 const float BEAM_FIRST = 0.7;     // the charger pauses rather than the beam going below this
 const float BRIGHT_STEPS[] = {0.5, 0.7, 0.85, 1.0};
+const float DIP_DEG     = 4.0;    // dipped: the beam this much lower than the aim (2° down + 4: the 10° spot's top edge 1° under level)
+const float HIGH_DEG    = 4.0;    // high beam / flash: this much higher
+const uint32_t FLASH_MS = 400;    // ▲ held this long is a flash, not a step
+// road sensor: where it sits on the wheel standing level (m): ahead of the axle, above the ground; the shell pitches
+// about the axle, which is a tyre's radius above the ground
+const float TOF_AHEAD   = 0.244, TOF_HIGH = 0.61, AXLE_HIGH = 0.255;
+const float TOF_DOWN    = 25.0;   // deg below level as built; "calibrate" measures the real one
+const float TOF_MIN = 300, TOF_MAX = 4000;   // mm: nearer is a hand or a kerb; 4 m is the sensor's reach (a 10 % descent, nose up)
+const float HILL_MAX    = 15.0;   // deg: a steeper "slope" is a reading of something else
+const float TAU_HILL    = 1.0;    // s: how quickly the beam follows a change of slope
+const uint32_t TOF_LOST_MS = 1500;   // no good reading this long: back to plain levelling
 
 // ---------------- settings (kept in flash, changed on the web page) ----------------
 struct Settings {
@@ -81,7 +107,8 @@ struct Settings {
   float beamMax   = 0.9;    // 0..1; three LEDs at 90 % keep the lamp inside the wheel's ~20 W lamp output
   float drlDay    = 1.0;
   float drlNight  = 0.2;    // dim position light while the beam is on (0 = off)
-  float levelGain = 0.5;    // how much of a long hill to follow (0..1)
+  float levelGain = 1.0;    // how much of the slope the road sensor sees to follow (0..1)
+  float tofDown   = TOF_DOWN;   // deg, the road sensor's real view below level (set by "calibrate")
   int   nightThr  = 600;    // light sensor reading (0..4095): below = getting dark
   int   dayThr    = 1200;   // above = daylight
   float levelZero = 0.0;    // accelerometer pitch when the wheel stands level
@@ -99,7 +126,8 @@ void loadCfg() {
   cfg.beamMax = prefs.getFloat("beam", cfg.beamMax);
   cfg.drlDay = prefs.getFloat("drlD", cfg.drlDay);
   cfg.drlNight = prefs.getFloat("drlN", cfg.drlNight);
-  cfg.levelGain = prefs.getFloat("gain", cfg.levelGain);
+  cfg.levelGain = prefs.getFloat("hill", cfg.levelGain);   // a new key: v6.3's "gain" meant something else
+  cfg.tofDown = prefs.getFloat("tofD", cfg.tofDown);
   cfg.nightThr = prefs.getInt("nThr", cfg.nightThr);
   cfg.dayThr = prefs.getInt("dThr", cfg.dayThr);
   cfg.levelZero = prefs.getFloat("level", NAN);
@@ -114,6 +142,8 @@ void loadCfg() {
 // ---------------- hardware helpers ----------------
 const uint8_t MPU = 0x68;
 float gyroBiasX = 0, gyroBiasY = 0;
+VL53L1X tof;                // 0x29 on the same bus as the MPU-6050 (0x68) and the INA219 (0x40)
+bool tofOk = false;
 
 void mpuWrite(uint8_t reg, uint8_t v) {
   Wire.beginTransmission(MPU); Wire.write(reg); Wire.write(v); Wire.endTransmission();
@@ -194,6 +224,10 @@ int fbLeft = 0; uint32_t fbNext = 0;                 // running-light blinks for
 bool night = false; uint32_t darkSince = 0, brightSince = 0;
 bool fallen = false;
 uint32_t lastUs = 0, lastSlowMs = 0, wifiSince = 0;
+int beamStep = 1;                                    // 0 dipped, 1 main, 2 high (the handle's buttons)
+bool flashing = false; uint32_t hPressAt = 0, hDnAt = 0;
+float roadMm = 0, hill = 0; uint32_t roadAt = 0, tofPollMs = 0;
+float hillBuf[5]; int hillN = 0;
 
 void calibrateGyro() {
   float sx = 0, sy = 0, ax, ay, az, gx, gy, sp = 0, sr = 0; int n = 0;
@@ -212,7 +246,59 @@ void calibrateGyro() {
 // "the wheel is standing upright on flat ground right now"
 void calibrateHere() {
   cfg.levelZero = pitchSlow; prefs.putFloat("level", cfg.levelZero);
+  // on flat ground the sensor's distance gives its real view angle: sin(down) = height / distance
+  if (tofOk && millis() - roadAt < 500 && roadMm > TOF_HIGH * 1000) {
+    cfg.tofDown = asin(TOF_HIGH * 1000 / roadMm) * 57.2958; prefs.putFloat("tofD", cfg.tofDown);
+  }
 }
+
+// the slope the wheel is on, from the road sensor: + uphill, deg. phi = the wheel's pitch, nose up +.
+float slopeFrom(float mm, float phi) {
+  float p = phi / 57.2958, th = (cfg.tofDown - phi) / 57.2958, d = mm / 1000;
+  float up = TOF_HIGH - AXLE_HIGH;
+  float e = TOF_AHEAD * cos(p) - up * sin(p), h = AXLE_HIGH + TOF_AHEAD * sin(p) + up * cos(p);
+  return atan2(h - d * sin(th), e + d * cos(th)) * 57.2958;   // the road through the contact point and the spot it sees
+}
+
+void readRoad(float dt) {
+  uint32_t now = millis();
+  if (tofOk && now - tofPollMs >= 10) {              // the sensor measures at 20 Hz; ask at most every 10 ms
+    tofPollMs = now;
+    if (tof.dataReady()) {
+      float mm = tof.read(false);
+      if (tof.ranging_data.range_status == VL53L1X::RangeValid && mm > TOF_MIN && mm < TOF_MAX && !fallen) {
+        float a = slopeFrom(mm, pitch - cfg.levelZero);
+        if (fabs(a) < HILL_MAX) {
+          roadMm = mm; roadAt = now;
+          hillBuf[hillN++ % 5] = a;                    // median of the last five: a pothole, a stone or a crack is one reading
+          if (hillN >= 5) {
+            float b[5]; memcpy(b, hillBuf, sizeof b); std::sort(b, b + 5);
+            hill += (b[2] - hill) * constrain(0.05f / TAU_HILL, 0.0f, 1.0f);
+          }
+        }
+      }
+    }
+  }
+  if (!tofOk || now - roadAt > TOF_LOST_MS) { hill -= hill * constrain(dt / 2.0f, 0.0f, 1.0f); hillN = 0; }   // ease back to level
+}
+
+// the handle's buttons: they work riding, at any speed
+void handleBeamButtons() {
+  uint32_t now = millis();
+  bool up = digitalRead(PIN_HUP) == LOW, dn = digitalRead(PIN_HDN) == LOW;
+  if (up && !hPressAt) hPressAt = now;
+  if (hPressAt) {
+    uint32_t held = now - hPressAt;
+    if (up) flashing = held >= FLASH_MS;
+    else {                                             // released
+      if (held >= 30 && held < FLASH_MS) beamStep = min(beamStep + 1, 2);
+      hPressAt = 0; flashing = false;
+    }
+  }
+  if (dn && !hDnAt) hDnAt = now;
+  if (!dn && hDnAt) { if (now - hDnAt >= 30) beamStep = max(beamStep - 1, 0); hDnAt = 0; }
+}
+float beamOffset() { return flashing || beamStep == 2 ? HIGH_DEG : beamStep == 0 ? -DIP_DEG : 0.0f; }
 
 // the wheel's own brightness: 6.5 V dim .. 12 V full (it rises further while accelerating)
 float wheelFactor() {
@@ -239,7 +325,7 @@ button.big{width:100%;background:#c8202a;margin-top:18px}#s{font-family:monospac
 <label>Beam in the wheel's dim mode <b id=dimFv></b>%</label><input type=range id=dimF min=5 max=100 onchange="set('dimF',this.value/100)">
 <label>Running lights, day <b id=drlDv></b>%</label><input type=range id=drlD min=0 max=100 onchange="set('drlD',this.value/100)">
 <label>Running lights, at night <b id=drlNv></b>%</label><input type=range id=drlN min=0 max=100 onchange="set('drlN',this.value/100)">
-<label>Follow long hills <b id=gainv></b>%</label><input type=range id=gain min=0 max=100 onchange="set('gain',this.value/100)">
+<label>Follow hills (road sensor) <b id=gainv></b>%</label><input type=range id=gain min=0 max=100 onchange="set('gain',this.value/100)">
 <label>Night starts below light <b id=nThrv></b></label><input type=range id=nThr min=0 max=4095 onchange="set('nThr',this.value)">
 <label>Day starts above light <b id=dThrv></b></label><input type=range id=dThr min=0 max=4095 onchange="set('dThr',this.value)">
 <label><input type=checkbox id=usb onchange="set('usb',this.checked?1:0)"> USB charger in the handle</label>
@@ -252,7 +338,8 @@ function nudge(k,d){set(k,(c[k]+d).toFixed(1))}
 async function tick(){try{let r=await fetch('/s');c=await r.json();
 s.textContent=`${c.night?'NIGHT':'DAY'}  light ${c.light}  heat ${c.temp}C${c.fallen?'  FALLEN':''}
 wheel lamp ${c.vin} V  ${c.pin} W  (beam x${c.wheel}, power guard x${c.guard})  USB ${c.usbOn?'on':'off'}
-pitch ${c.pitch}  servo ${c.servo}`;
+pitch ${c.pitch}  servo ${c.servo}  beam ${['dipped','main','high'][c.step]}
+road sensor ${c.tof?c.road+' mm, slope '+c.hill+'°, looks '+c.tofD+'° down':'not found'}`;
 if(document.activeElement!==follow)follow.checked=!!c.follow;if(document.activeElement!==usb)usb.checked=!!c.usb;
 if(document.activeElement!==pmax)pmax.value=c.pmax;pmaxv.textContent=c.pmax;
 for(const k of ['beam','drlD','drlN','gain','dimF']){let e=document.getElementById(k);if(document.activeElement!==e)e.value=Math.round(c[k]*100);document.getElementById(k+'v').textContent=Math.round(c[k]*100)}
@@ -267,10 +354,11 @@ void webStatus() {
     "\"mode\":%d,\"aim\":%.1f,\"beam\":%.2f,"
     "\"drlD\":%.2f,\"drlN\":%.2f,\"gain\":%.2f,\"nThr\":%d,\"dThr\":%d,\"trim\":%.1f,"
     "\"vin\":%.1f,\"wheel\":%.2f,\"follow\":%d,\"dimF\":%.2f,\"pin\":%.1f,\"guard\":%.2f,"
-    "\"usb\":%d,\"usbOn\":%d,\"pmax\":%.0f}",
+    "\"usb\":%d,\"usbOn\":%d,\"pmax\":%.0f,\"tof\":%d,\"road\":%.0f,\"hill\":%.1f,\"tofD\":%.1f,\"step\":%d}",
     night, (int)light, tempC, fallen, pitch - cfg.levelZero, cmd,
     cfg.mode, cfg.aim, cfg.beamMax, cfg.drlDay, cfg.drlNight, cfg.levelGain, cfg.nightThr, cfg.dayThr, cfg.trim,
-    vin, wheelFactor(), cfg.follow, cfg.dimFloor, pIn, guard, cfg.usb, usbOn, cfg.powerMax);
+    vin, wheelFactor(), cfg.follow, cfg.dimFloor, pIn, guard, cfg.usb, usbOn, cfg.powerMax,
+    tofOk, roadMm, hill, cfg.tofDown, beamStep);
   web.send(200, "application/json", b);
 }
 
@@ -281,7 +369,7 @@ void webSet() {
   else if (k == "beam") { cfg.beamMax = constrain(v, 0.1f, 1.0f); prefs.putFloat("beam", cfg.beamMax); }
   else if (k == "drlD") { cfg.drlDay = constrain(v, 0.0f, 1.0f); prefs.putFloat("drlD", cfg.drlDay); }
   else if (k == "drlN") { cfg.drlNight = constrain(v, 0.0f, 1.0f); prefs.putFloat("drlN", cfg.drlNight); }
-  else if (k == "gain") { cfg.levelGain = constrain(v, 0.0f, 1.0f); prefs.putFloat("gain", cfg.levelGain); }
+  else if (k == "gain") { cfg.levelGain = constrain(v, 0.0f, 1.0f); prefs.putFloat("hill", cfg.levelGain); }
   else if (k == "nThr") { cfg.nightThr = constrain((int)v, 0, 4095); prefs.putInt("nThr", cfg.nightThr); }
   else if (k == "dThr") { cfg.dayThr = constrain((int)v, 0, 4095); prefs.putInt("dThr", cfg.dayThr); }
   else if (k == "trim") { cfg.trim = constrain(v, -TRIM_MAX, TRIM_MAX); prefs.putFloat("trim", cfg.trim); }
@@ -318,6 +406,7 @@ void wifiCheck() {
 void setup() {
   Serial.begin(115200);
   pinMode(PIN_UP, INPUT_PULLUP); pinMode(PIN_DN, INPUT_PULLUP);
+  pinMode(PIN_HUP, INPUT_PULLUP); pinMode(PIN_HDN, INPUT_PULLUP);
   pinMode(PIN_USB, OUTPUT); digitalWrite(PIN_USB, LOW);
   analogReadResolution(12);
   pwmSetup();
@@ -328,6 +417,13 @@ void setup() {
   Wire.begin(PIN_SDA, PIN_SCL, 400000);
   mpuWrite(0x6B, 0x00); mpuWrite(0x1A, 0x03); mpuWrite(0x1B, 0x08); mpuWrite(0x1C, 0x08);
   inaOk = inaStart();
+  tof.setTimeout(100);
+  tofOk = tof.init();
+  if (tofOk) {
+    tof.setDistanceMode(VL53L1X::Long);
+    tof.setMeasurementTimingBudget(50000);            // 50 ms: the longest reach on dark asphalt at 20 readings a second
+    tof.startContinuous(50);
+  }
   calibrateGyro();
   light = analogRead(PIN_LDR);
   night = light < cfg.nightThr;
@@ -421,9 +517,10 @@ void loop() {
   if (ok && !fallen && fabs(rate) < STILL_RATE && fabs(gx - gyroBiasX) < STILL_RATE) { if (!stillSince) stillSince = millis(); }
   else stillSince = 0;
 
-  // cancel fast pitching completely, follow slow changes (hills) by levelGain
-  float gravCorr = -((pitch - pitchSlow) + cfg.levelGain * (pitchSlow - cfg.levelZero));
-  float want = fallen ? cfg.aim : cfg.aim + gravCorr;
+  // cancel the wheel's pitch completely, follow the slope the road sensor sees, add the rider's dip / high beam
+  readRoad(dt);
+  float gravCorr = -(pitch - cfg.levelZero) + cfg.levelGain * hill;
+  float want = fallen ? cfg.aim : cfg.aim + gravCorr + beamOffset();
   want = constrain(want, -TILT_MAX, TILT_MAX);
   if (fabs(want - cmd) > DEADBAND) { float st = SLEW * dt; cmd += constrain(want - cmd, -st, st); }
   servoDeg(cmd);
@@ -433,8 +530,8 @@ void loop() {
   readSupply(dt);
   if (millis() - lastSlowMs > 100) {
     lastSlowMs = millis(); tempC = heatSinkC();
-    Serial.printf("%s light %4d  wheel %4.1fV %4.1fW  pitch %6.2f  servo %6.2f  heat %4.0fC  usb %d guard %.2f\n",
-                  night ? "NIGHT" : "DAY  ", (int)light, vin, pIn, pitch - cfg.levelZero, cmd, tempC, usbOn, guard);
+    Serial.printf("%s light %4d  wheel %4.1fV %4.1fW  pitch %6.2f  road %4.0fmm slope %5.1f  beam %d  servo %6.2f  heat %4.0fC  usb %d guard %.2f\n",
+                  night ? "NIGHT" : "DAY  ", (int)light, vin, pIn, pitch - cfg.levelZero, roadMm, hill, beamStep, cmd, tempC, usbOn, guard);
   }
   bool beamOn = cfg.mode == 2 || (cfg.mode == 0 && night);
   float beamT = fallen ? LED_FALLEN : (beamOn ? cfg.beamMax * wheelFactor() : 0.0f);
@@ -465,5 +562,6 @@ void loop() {
   level(PIN_DRL, drlOut);
 
   handleButtons();
+  handleBeamButtons();
   wifiCheck();
 }
