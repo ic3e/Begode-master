@@ -1,0 +1,40 @@
+# newsdesk settings. Paths are relative to this file.
+
+database: data/newsdesk.db
+
+ai:
+  # Claude model that reads the news. claude-opus-5-5 is the most capable
+  # default; claude-sonnet-5-5 costs about half, claude-haiku-5-5 about 1/40.
+  model: claude-opus-5-5
+  effort: medium          # low | medium | high
+  max_tokens: 16000
+
+news:
+  lookback_hours: 24      # only news published within this window is analysed
+  max_items_per_ticker: 12
+  sources: [google_news, yahoo]
+
+scoring:
+  # Every call is scored as if traded at the open of the first session that
+  # starts after the call was logged, and closed at the close of session N,
+  # where N is the call's horizon (1 = same session).
+  position_size_eur: 2000   # assumed size of one trade, used for minimum fees
+  short_borrow_annual_pct: 0.5
+  # Rough Interactive Brokers costs for a euro account (check ibkr.com pricing).
+  # commission_pct / commission_min_eur apply to each side; spread_bps and
+  # fx_bps are for the full round trip.
+  costs:
+    US: {commission_pct: 0.05, commission_min_eur: 1.0, spread_bps: 10, fx_bps: 10}
+    EU: {commission_pct: 0.05, commission_min_eur: 3.0, spread_bps: 10, fx_bps: 0}
+
+report:
+  min_confidence: 3         # calls at or above this count as "would act on"
+  gate1_min_calls: 400
+
+# Exchange sessions, matched by the Yahoo symbol's suffix ("" = US).
+markets:
+  "":   {region: US, tz: America/New_York, open: "09:30", benchmark: SPY}
+  ".DE": {region: EU, tz: Europe/Berlin,   open: "09:00", benchmark: EXSA.DE}
+  ".PA": {region: EU, tz: Europe/Paris,    open: "09:00", benchmark: EXSA.DE}
+  ".AS": {region: EU, tz: Europe/Amsterdam, open: "09:00", benchmark: EXSA.DE}
+  ".HE": {region: EU, tz: Europe/Helsinki, open: "10:00", benchmark: EXSA.DE}

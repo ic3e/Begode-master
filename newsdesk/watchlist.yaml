@@ -1,0 +1,45 @@
+# Liquid large caps: 20 US, 20 euro-area (no FX fee for a euro account).
+# symbol = Yahoo Finance symbol. query = optional news search override.
+stocks:
+  # --- US ---
+  - {symbol: AAPL,  name: Apple}
+  - {symbol: MSFT,  name: Microsoft}
+  - {symbol: NVDA,  name: Nvidia}
+  - {symbol: AMZN,  name: Amazon}
+  - {symbol: GOOGL, name: Alphabet, query: "Alphabet OR Google stock"}
+  - {symbol: META,  name: Meta Platforms}
+  - {symbol: TSLA,  name: Tesla}
+  - {symbol: AVGO,  name: Broadcom}
+  - {symbol: AMD,   name: Advanced Micro Devices, query: "AMD stock"}
+  - {symbol: NFLX,  name: Netflix}
+  - {symbol: JPM,   name: JPMorgan Chase}
+  - {symbol: BAC,   name: Bank of America}
+  - {symbol: XOM,   name: Exxon Mobil}
+  - {symbol: UNH,   name: UnitedHealth}
+  - {symbol: LLY,   name: Eli Lilly}
+  - {symbol: JNJ,   name: Johnson & Johnson}
+  - {symbol: WMT,   name: Walmart}
+  - {symbol: KO,    name: Coca-Cola}
+  - {symbol: BA,    name: Boeing}
+  - {symbol: INTC,  name: Intel}
+  # --- Euro area ---
+  - {symbol: ASML.AS,   name: ASML}
+  - {symbol: SAP.DE,    name: SAP}
+  - {symbol: SIE.DE,    name: Siemens}
+  - {symbol: ALV.DE,    name: Allianz}
+  - {symbol: MC.PA,     name: LVMH}
+  - {symbol: TTE.PA,    name: TotalEnergies}
+  - {symbol: SAN.PA,    name: Sanofi}
+  - {symbol: AIR.PA,    name: Airbus}
+  - {symbol: BNP.PA,    name: BNP Paribas}
+  - {symbol: BAS.DE,    name: BASF}
+  - {symbol: DTE.DE,    name: Deutsche Telekom}
+  - {symbol: VOW3.DE,   name: Volkswagen}
+  - {symbol: INGA.AS,   name: ING Groep, query: "ING bank stock"}
+  - {symbol: NOKIA.HE,  name: Nokia}
+  - {symbol: NDA-FI.HE, name: Nordea}
+  - {symbol: KNEBV.HE,  name: Kone}
+  - {symbol: SAMPO.HE,  name: Sampo}
+  - {symbol: FORTUM.HE, name: Fortum}
+  - {symbol: UPM.HE,    name: UPM-Kymmene, query: "UPM Kymmene"}
+  - {symbol: NESTE.HE,  name: Neste}
