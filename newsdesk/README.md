@@ -1,10 +1,13 @@
 # newsdesk: Phase 1 of the AI news-trading plan
 
 newsdesk reads the news for a watchlist of 40 stocks (20 US, 20 euro-area) a few
-times a day. Claude gives a view on each stock with fresh headlines: long,
-short or no trade, how many sessions the move should last (1 to 5), and how
-confident it is (1 to 5). Every call is time-stamped when it is made and scored
-automatically once the prices are in.
+times a day. Two AI analysts each give a view on every stock with fresh
+headlines: long, short or no trade, how many sessions the move should last
+(1 to 5), and how confident they are (1 to 5). By default they are Claude
+Haiku 5.5, through Anthropic's API, and a free model running on your own PC
+through Ollama. Both see exactly the same news and are scored separately, so the
+scorecard shows whether the free model is good enough. Every call is
+time-stamped when it is made and scored automatically once the prices are in.
 
 It places no orders and connects to no broker. Phase 1 exists to answer one
 question with real, forward-looking data before any money is at risk:
@@ -33,8 +36,8 @@ The rules are strict on purpose, so the result can be trusted:
 
 ## Gate 1
 
-`python -m newsdesk report` prints the scorecard. Gate 1 passes when both of
-these hold:
+`python -m newsdesk report` prints the scorecard, with a result for each
+analyst. An analyst passes Gate 1 when both of these hold:
 
 1. At least 400 calls with confidence 3 or higher have been scored.
 2. On average those calls beat holding the index over the same days, after
@@ -43,24 +46,56 @@ these hold:
 The scorecard also shows a baseline: buy every stock that had a call and ignore
 the AI's direction. The AI only adds value if it beats that.
 
-If Gate 1 fails, the trading idea stops there. You still have a news-brief tool.
+If no analyst passes, the trading idea stops there. You still have a news-brief tool.
 
 ## Setup
 
-You need Python 3.10 or newer and an Anthropic API key from
-[console.anthropic.com](https://console.anthropic.com).
+You need Python 3.10 or newer, an Anthropic API key from
+[console.anthropic.com](https://console.anthropic.com), and Ollama for the local
+model.
+
+**1. newsdesk**
 
 ```bash
 cd newsdesk
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
-export ANTHROPIC_API_KEY=sk-ant-...   # Windows: set ANTHROPIC_API_KEY=sk-ant-...
-python -m pytest                   # 14 tests, no network needed
-
-python -m newsdesk --only NOKIA.HE,AAPL run   # small first run
-python -m newsdesk brief                      # read what it said
+python -m pytest                   # 18 tests, no network needed
 ```
+
+Set the API key. On Windows, run this once and then open a new terminal:
+`setx ANTHROPIC_API_KEY "sk-ant-..."`. On Linux or macOS, use
+`export ANTHROPIC_API_KEY=sk-ant-...`.
+
+**2. The local model**
+
+Install Ollama from [ollama.com](https://ollama.com). On Windows it runs in the
+background and starts with the computer. Then download the model:
+
+```bash
+ollama pull qwen3:8b
+ollama run qwen3:8b "Say hello"    # check that it works, then type /bye
+```
+
+With 6 GB of graphics memory, as on an RTX 3060 laptop, `qwen3:8b` only just
+fits. Ollama puts the overflow in normal memory, which works but is slower. If a
+call takes more than about a minute, switch to `qwen3:4b`: run
+`ollama pull qwen3:4b` and change `model:` under the `local` analyst in
+`config.yaml`. Newer models appear in the [Ollama library](https://ollama.com/library)
+all the time; any model that fits your memory will work. Give each new model
+its own analyst `name` so its record stays separate.
+
+**3. First run**
+
+```bash
+python -m newsdesk --only NOKIA.HE,AAPL run   # two stocks, both analysts
+python -m newsdesk brief                      # read what they said
+```
+
+If one analyst fails, for example because Ollama is not running, the other
+carries on and the error is printed. That analyst picks up the unread news on
+the next run, as long as the news is still within 24 hours old.
 
 ## Daily use
 
@@ -71,6 +106,7 @@ python -m newsdesk brief                      # read what it said
 | `python -m newsdesk report --out reports/scorecard.md` | The scorecard and Gate 1 check. |
 | `python -m newsdesk fetch` | News only, no AI and no cost. |
 | `python -m newsdesk score` | Score calls only. |
+| `python -m newsdesk --analyst local run` | Run only the named analyst(s). |
 
 Run `run` three times on weekdays. Suggested times in Finland are 08:30, before
 Helsinki opens at 10:00; 15:00, before New York opens at 16:30; and 22:30,
@@ -91,27 +127,37 @@ it is the evidence.
 
 ## Cost
 
-Claude is only called for a stock when it has new headlines. With 40 stocks
-and three runs a day, expect roughly 50 to 100 calls a day. Rough costs:
+An analyst is only called for a stock when it has new headlines. With 40 stocks
+and three runs a day, expect roughly 50 to 100 calls a day per analyst. Rough
+costs:
 
-| `ai.model` in config.yaml | Per call | Per month (about 1,500 to 2,000 calls) |
+| Analyst model | Per call | Per month (about 1,500 to 2,000 calls) |
 |---|---|---|
-| `claude-opus-5-5` (default, most capable) | ~$0.02–0.03 | ~$35–60 |
+| Local model through Ollama | Free | Electricity only |
+| `claude-haiku-5-5` (default) | under $0.001 | ~$1–2 |
 | `claude-sonnet-5-5` | ~$0.01 | ~$15–25 |
-| `claude-haiku-5-5` | under $0.001 | ~$1–2 |
+| `claude-opus-5-5` (most capable) | ~$0.02–0.03 | ~$35–60 |
 
 These are estimates; your Anthropic Console shows actual usage. The news and
-price data are free. Phase 1 can also tell you whether the cheaper models make
-calls as good as Opus: switch models for a month and compare the scorecards.
+price data are free.
+
+On a 6 GB graphics card, the local model takes roughly 10 to 60 seconds a call,
+so one run of 20 to 40 calls takes about 5 to 30 minutes. That is fine with
+runs hours apart. Setting `think: true` lets the model reason before it answers,
+which may give better calls but makes each one several times slower.
+
+To try a stronger Claude model, add a third analyst with its own name, for
+example `claude-sonnet`, rather than changing the model of an existing one.
+That keeps each model's record separate.
 
 ## Files
 
 | File | Purpose |
 |---|---|
 | `watchlist.yaml` | The stocks. Euro stocks avoid currency fees on a euro account. |
-| `config.yaml` | Model, costs, horizon rules, Gate 1 thresholds, exchange hours. |
+| `config.yaml` | Analysts and models, costs, horizon rules, Gate 1 thresholds, exchange hours. |
 | `newsdesk/news.py` | Google News RSS and Yahoo Finance headlines, de-duplicated. |
-| `newsdesk/analyst.py` | The prompt and the Claude call, with a fixed JSON answer format. |
+| `newsdesk/analyst.py` | The prompt, and the Claude and Ollama calls, with a fixed JSON answer format. |
 | `newsdesk/prices.py` | Daily prices (Yahoo Finance) and the entry and exit session rules. |
 | `newsdesk/scoring.py` | Returns, costs and benchmark comparison. |
 | `newsdesk/report.py` | Scorecard and daily brief. |

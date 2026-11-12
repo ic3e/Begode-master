@@ -22,6 +22,7 @@ def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="newsdesk", description=__doc__)
     p.add_argument("--config", help="path to config.yaml")
     p.add_argument("--only", help="comma-separated symbols to limit the run to")
+    p.add_argument("--analyst", help="comma-separated analyst names to run (default: all enabled)")
     p.add_argument("-v", "--verbose", action="store_true")
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("fetch", help="collect news only, no AI")
@@ -49,15 +50,19 @@ def main(argv: list[str] | None = None) -> int:
         print(f"News: {sum(counts.values())} new headlines across "
               f"{sum(1 for c in counts.values() if c)} stocks.")
     if args.cmd in ("analyse", "run"):
-        results = analyst.analyse(cfg, conn, now, stocks=stocks)
-        calls = [c for _, c in results if isinstance(c, analyst.Call)]
-        errors = [(s, c) for s, c in results if isinstance(c, str)]
-        active = [c for c in calls if c.direction != "none"]
-        print(f"AI: {len(calls)} stocks reviewed, {len(active)} calls "
-              f"({sum(c.direction == 'long' for c in active)} long, "
-              f"{sum(c.direction == 'short' for c in active)} short), {len(errors)} errors.")
-        for s, e in errors:
-            print(f"  {s}: {e}")
+        only = args.analyst.split(",") if args.analyst else None
+        team = analyst.make_analysts(cfg, only)
+        results = analyst.analyse(cfg, conn, now, analysts=team, stocks=stocks)
+        for a in team:
+            mine = [c for n, _, c in results if n == a.name]
+            calls = [c for c in mine if isinstance(c, analyst.Call)]
+            errors = [c for c in mine if isinstance(c, str)]
+            active = [c for c in calls if c.direction != "none"]
+            print(f"{a.name} ({a.model}): {len(calls)} stocks reviewed, {len(active)} calls "
+                  f"({sum(c.direction == 'long' for c in active)} long, "
+                  f"{sum(c.direction == 'short' for c in active)} short), {len(errors)} errors.")
+            for e in dict.fromkeys(errors):
+                print(f"  error: {e}")
     if args.cmd in ("score", "run"):
         c = scoring.score_pending(cfg, conn, now)
         print(f"Scoring: {c['scored']} scored, {c['waiting']} waiting, {c['error']} failed.")

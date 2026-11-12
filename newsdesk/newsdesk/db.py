@@ -14,13 +14,21 @@ CREATE TABLE IF NOT EXISTS news (
     url           TEXT,
     summary       TEXT,
     published_at  TEXT,                  -- UTC ISO, as reported by the feed
-    fetched_at    TEXT NOT NULL,         -- UTC ISO, when we first saw it
-    analysed_at   TEXT                   -- UTC ISO, when it was sent to the AI
+    fetched_at    TEXT NOT NULL          -- UTC ISO, when we first saw it
 );
-CREATE INDEX IF NOT EXISTS news_symbol ON news(symbol, analysed_at);
+CREATE INDEX IF NOT EXISTS news_symbol ON news(symbol, published_at);
+
+-- which analyst has already been shown which headline
+CREATE TABLE IF NOT EXISTS news_seen (
+    news_id   TEXT NOT NULL,
+    analyst   TEXT NOT NULL,
+    seen_at   TEXT NOT NULL,
+    PRIMARY KEY (news_id, analyst)
+);
 
 CREATE TABLE IF NOT EXISTS signals (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    analyst         TEXT NOT NULL,       -- name from config.yaml, e.g. claude / local
     symbol          TEXT NOT NULL,
     created_at      TEXT NOT NULL,       -- UTC ISO; the call is timestamped here
     direction       TEXT NOT NULL,       -- long | short | none
@@ -50,6 +58,7 @@ CREATE TABLE IF NOT EXISTS signals (
     note            TEXT
 );
 CREATE INDEX IF NOT EXISTS signals_status ON signals(status);
+CREATE INDEX IF NOT EXISTS signals_analyst ON signals(analyst, symbol, created_at);
 """
 
 

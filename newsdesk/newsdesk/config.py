@@ -37,7 +37,7 @@ class Stock:
 class Config:
     root: Path
     database: Path
-    ai: dict
+    analysts: list[dict]
     news: dict
     scoring: dict
     report: dict
@@ -69,7 +69,7 @@ def load(config_path: Path | None = None, watchlist_path: Path | None = None) ->
     cfg = Config(
         root=config_path.parent,
         database=config_path.parent / raw["database"],
-        ai=raw["ai"],
+        analysts=raw["analysts"],
         news=raw["news"],
         scoring=raw["scoring"],
         report=raw["report"],
@@ -78,4 +78,10 @@ def load(config_path: Path | None = None, watchlist_path: Path | None = None) ->
     )
     for s in stocks:  # fail early on a symbol with no market
         cfg.market_for(s.symbol)
+    names = [a["name"] for a in cfg.analysts]
+    if len(set(names)) != len(names):
+        raise ValueError("Analyst names in config.yaml must be unique")
+    for a in cfg.analysts:
+        if a.get("provider") not in ("anthropic", "ollama"):
+            raise ValueError(f"Analyst {a['name']}: provider must be anthropic or ollama")
     return cfg

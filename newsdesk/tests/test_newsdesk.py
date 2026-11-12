@@ -123,8 +123,8 @@ def test_score_pending_end_to_end(cfg, conn):
         "SPY": frame([(d(11), 50, 50), (d(12), 50, 50.2), (d(13), 50.2, 50.5), (d(16), 50.5, 50.6)]),
     }
     created = datetime(2026, 11, 11, 22, tzinfo=UTC)  # after the close -> enters 12th open
-    conn.execute("INSERT INTO signals (symbol, created_at, direction, horizon_days, confidence)"
-                 " VALUES ('AAPL', ?, 'long', 2, 4)", (created.isoformat(),))
+    conn.execute("INSERT INTO signals (analyst, symbol, created_at, direction, horizon_days, confidence)"
+                 " VALUES ('claude', 'AAPL', ?, 'long', 2, 4)", (created.isoformat(),))
     # On the 13th during the session, the exit session is not complete yet.
     c = scoring.score_pending(cfg, conn, datetime(2026, 11, 13, 18, tzinfo=UTC), fake_bars(table))
     assert c == {"scored": 0, "waiting": 1, "error": 0}
@@ -167,28 +167,91 @@ def test_analyse_logs_call_and_marks_news(cfg, conn, monkeypatch):
     news.store(conn, [news.NewsItem("NOKIA.HE", "Nokia wins deal", "R", "u", None,
                                     now - timedelta(hours=2))], now)
     client = FakeClient(CALL)
+    claude = analyst.ClaudeAnalyst({"name": "claude", "model": "claude-opus-5-5"}, client)
     answered = now + timedelta(seconds=40)
-    res = analyst.analyse(cfg, conn, now, client=client, stocks=[cfg.stock("NOKIA.HE")],
+    res = analyst.analyse(cfg, conn, now, analysts=[claude], stocks=[cfg.stock("NOKIA.HE")],
                           clock=lambda: answered)
-    assert res[0][1].direction == "long"
+    assert res[0][2].direction == "long"
     kw = client.calls[0]
     assert kw["output_config"]["format"]["type"] == "json_schema"
     assert kw["fallbacks"] == "default"
     assert "Nokia wins deal" in kw["messages"][0]["content"]
     sig = conn.execute("SELECT * FROM signals").fetchone()
     assert sig["created_at"] == answered.isoformat() and sig["status"] == "pending"
-    assert conn.execute("SELECT analysed_at FROM news").fetchone()[0] is not None
+    assert sig["analyst"] == "claude"
     # nothing new -> no second call
-    analyst.analyse(cfg, conn, now, client=client, stocks=[cfg.stock("NOKIA.HE")])
+    analyst.analyse(cfg, conn, now, analysts=[claude], stocks=[cfg.stock("NOKIA.HE")])
     assert len(client.calls) == 1
+
+
+def test_haiku_gets_no_fallback_param():
+    client = FakeClient(CALL)
+    analyst.ClaudeAnalyst({"name": "c", "model": "claude-haiku-5-5"}, client).ask("x")
+    assert "fallbacks" not in client.calls[0]
+
+
+class FakeResp:
+    def __init__(self, status, payload):
+        self.status_code, self._p, self.text = status, payload, json.dumps(payload)
+
+    def json(self):
+        return self._p
+
+
+def test_ollama_request_and_parse():
+    sent = []
+
+    def post(url, json, timeout):
+        sent.append((url, json))
+        return FakeResp(200, {"message": {"role": "assistant", "content": __import__("json").dumps(CALL)}})
+
+    a = analyst.OllamaAnalyst({"name": "local", "model": "qwen3:8b", "think": False}, post=post)
+    call = a.ask("prompt")
+    assert call.direction == "long" and call.model == "qwen3:8b"
+    url, body = sent[0]
+    assert url == "http://localhost:11434/api/chat"
+    assert body["format"] == analyst.SCHEMA and body["stream"] is False
+    assert body["think"] is False and body["options"]["temperature"] == 0
+
+
+def test_ollama_missing_model_is_fatal():
+    a = analyst.OllamaAnalyst({"name": "local", "model": "nope"},
+                              post=lambda *a, **k: FakeResp(404, {"error": "not found"}))
+    with pytest.raises(analyst.AnalystError) as e:
+        a.ask("x")
+    assert e.value.fatal and "ollama pull nope" in str(e.value)
+
+
+def test_two_analysts_same_news_and_fatal_skip(cfg, conn, monkeypatch):
+    monkeypatch.setattr(prices, "price_context", lambda *a: None)
+    now = datetime(2026, 11, 12, 12, tzinfo=UTC)
+    for sym in ("AAPL", "MSFT"):
+        news.store(conn, [news.NewsItem(sym, f"{sym} news", None, None, None, now)], now)
+    claude = analyst.ClaudeAnalyst({"name": "claude", "model": "claude-haiku-5-5"}, FakeClient(CALL))
+    calls = []
+
+    def down(*a, **k):
+        import requests
+        calls.append(1)
+        raise requests.ConnectionError("refused")
+
+    local = analyst.OllamaAnalyst({"name": "local", "model": "qwen3:8b"}, post=down)
+    res = analyst.analyse(cfg, conn, now, analysts=[claude, local],
+                          stocks=[cfg.stock("AAPL"), cfg.stock("MSFT")])
+    assert len(calls) == 1  # local disabled after the first failure
+    assert [r[0] for r in res if not isinstance(r[2], str)] == ["claude", "claude"]
+    # local never saw the news, so it is still pending for it on the next run
+    assert len(analyst.pending_news(conn, "AAPL", "local", now - timedelta(days=1))) == 1
+    assert len(analyst.pending_news(conn, "AAPL", "claude", now - timedelta(days=1))) == 0
 
 
 def test_none_call_is_not_scored(cfg, conn, monkeypatch):
     monkeypatch.setattr(prices, "price_context", lambda *a: None)
     now = datetime(2026, 11, 12, 12, tzinfo=UTC)
     news.store(conn, [news.NewsItem("SAP.DE", "SAP listicle", None, None, None, now)], now)
-    analyst.analyse(cfg, conn, now, client=FakeClient({**CALL, "direction": "none"}),
-                    stocks=[cfg.stock("SAP.DE")])
+    a = analyst.ClaudeAnalyst({"name": "claude", "model": "claude-haiku-5-5"},
+                              FakeClient({**CALL, "direction": "none"}))
+    analyst.analyse(cfg, conn, now, analysts=[a], stocks=[cfg.stock("SAP.DE")])
     assert conn.execute("SELECT status FROM signals").fetchone()[0] == "skipped"
 
 
@@ -198,14 +261,14 @@ def test_binomial():
     assert report.binom_p_greater(0, 10) == pytest.approx(1.0)
 
 
-def _insert_scored(conn, n, net, bench, direction="long", conf=4):
+def _insert_scored(conn, n, net, bench, direction="long", conf=4, analyst_name="claude"):
     for i in range(n):
         noise = 0.001 * ((i % 5) - 2)
         conn.execute(
-            "INSERT INTO signals (symbol, created_at, direction, horizon_days, confidence,"
+            "INSERT INTO signals (analyst, model, symbol, created_at, direction, horizon_days, confidence,"
             " status, stock_return, bench_return, gross_return, cost, net_return, net_excess)"
-            " VALUES ('AAPL', '2026-11-01T10:00:00+00:00', ?, 2, ?, 'scored', ?, ?, ?, 0.003, ?, ?)",
-            (direction, conf, net + noise + 0.003, bench, net + noise + 0.003, net + noise,
+            " VALUES (?, 'm', 'AAPL', '2026-11-01T10:00:00+00:00', ?, 2, ?, 'scored', ?, ?, ?, 0.003, ?, ?)",
+            (analyst_name, direction, conf, net + noise + 0.003, bench, net + noise + 0.003, net + noise,
              net + noise - bench))
 
 
@@ -221,13 +284,17 @@ def test_scorecard_gate(cfg, conn):
 
 def test_scorecard_gate_fails(cfg, conn):
     _insert_scored(conn, 450, -0.001, 0.002)
-    assert "Failed" in report.scorecard(cfg, conn, datetime(2026, 11, 12, tzinfo=UTC))
+    _insert_scored(conn, 450, 0.01, 0.002, analyst_name="local")
+    text = report.scorecard(cfg, conn, datetime(2026, 11, 12, tzinfo=UTC))
+    assert "| claude | **Failed** |" in text and "| local | **Passed** |" in text
 
 
 def test_brief(conn):
     now = datetime(2026, 11, 12, 12, tzinfo=UTC)
-    conn.execute("INSERT INTO signals (symbol, created_at, direction, horizon_days, confidence,"
-                 " summary, rationale, invalidation) VALUES ('AAPL', ?, 'short', 2, 3, 'S', 'R', 'I')",
-                 (now.isoformat(),))
+    for a, d in (("claude", "short"), ("local", "long")):
+        conn.execute("INSERT INTO signals (analyst, symbol, created_at, direction, horizon_days,"
+                     " confidence, summary, rationale, invalidation)"
+                     " VALUES (?, 'AAPL', ?, ?, 2, 3, 'S', 'R', 'I')", (a, now.isoformat(), d))
     text = report.brief(conn, now)
-    assert "AAPL: SHORT, confidence 3/5" in text
+    assert "claude: SHORT, confidence 3/5" in text and "local: LONG" in text
+    assert "disagree" in text

@@ -1,4 +1,6 @@
-"""Ask Claude for a view on one stock's fresh headlines and log the call."""
+"""Ask one or more AI analysts for a view on a stock's fresh headlines and log
+each call. Every analyst sees the same news and is scored the same way, so the
+scorecard can compare them."""
 from __future__ import annotations
 
 import json
@@ -12,7 +14,7 @@ from . import prices
 
 log = logging.getLogger(__name__)
 
-# Models that accept the server-side refusal fallback.
+# Claude models that accept the server-side refusal fallback.
 FALLBACK_MODELS = {"claude-opus-5-5", "claude-opus-5", "claude-sonnet-5-5",
                    "claude-fable-5-2", "claude-fable-5-1"}
 
@@ -44,7 +46,7 @@ material and under-reacted news). Reserve 4 and 5 for genuinely strong cases.
 expect it to trail the index.
 
 Write the summary, rationale and invalidation in plain English, one or two \
-sentences each."""
+sentences each. Answer with the JSON object only."""
 
 SCHEMA = {
     "type": "object",
@@ -77,9 +79,137 @@ class Call:
 
 
 class AnalystError(RuntimeError):
-    pass
+    """`fatal` means the analyst cannot work at all this run (server down,
+    model missing, bad key), so the remaining stocks skip it."""
+
+    def __init__(self, msg: str, fatal: bool = False):
+        super().__init__(msg)
+        self.fatal = fatal
 
 
+def parse_call(text: str, model: str) -> Call:
+    try:
+        d = json.loads(text)
+    except json.JSONDecodeError as e:
+        raise AnalystError(f"Invalid JSON: {e}") from e
+    if not isinstance(d, dict):
+        raise AnalystError("Answer is not a JSON object")
+    if d.get("direction") not in ("long", "short", "none"):
+        raise AnalystError(f"Bad direction {d.get('direction')!r}")
+    if d.get("horizon_days") not in range(1, 6) or d.get("confidence") not in range(1, 6):
+        raise AnalystError("Horizon or confidence out of range")
+    for k in ("summary", "rationale", "invalidation"):
+        if not isinstance(d.get(k), str):
+            raise AnalystError(f"Missing {k}")
+    return Call(d["direction"], d["horizon_days"], d["confidence"], d["summary"],
+                d["rationale"], d["invalidation"], model)
+
+
+# ------------------------------------------------------------------ analysts
+class ClaudeAnalyst:
+    def __init__(self, spec: dict, client=None):
+        self.name = spec["name"]
+        self.model = spec["model"]
+        self.effort = spec.get("effort", "medium")
+        self.max_tokens = spec.get("max_tokens", 16000)
+        self._client = client
+
+    @property
+    def client(self):
+        if self._client is None:
+            import anthropic
+            self._client = anthropic.Anthropic()
+        return self._client
+
+    def ask(self, prompt: str) -> Call:
+        import anthropic
+
+        kwargs = dict(
+            model=self.model,
+            max_tokens=self.max_tokens,
+            system=SYSTEM,
+            messages=[{"role": "user", "content": prompt}],
+            output_config={"effort": self.effort,
+                           "format": {"type": "json_schema", "schema": SCHEMA}},
+        )
+        if self.model in FALLBACK_MODELS:
+            kwargs.update(betas=["server-side-fallback-2026-07-01"], fallbacks="default")
+        try:
+            resp = self.client.beta.messages.create(**kwargs)
+        except (anthropic.AuthenticationError, anthropic.PermissionDeniedError,
+                anthropic.NotFoundError) as e:
+            raise AnalystError(f"API error {e.status_code}: {e.message}", fatal=True) from e
+        except anthropic.APIStatusError as e:
+            raise AnalystError(f"API error {e.status_code}: {e.message}") from e
+        except anthropic.APIConnectionError as e:
+            raise AnalystError(f"Network error: {e}") from e
+        except anthropic.AnthropicError as e:  # e.g. no API key configured
+            raise AnalystError(str(e), fatal=True) from e
+
+        if resp.stop_reason == "refusal":
+            raise AnalystError("Model declined the request")
+        if resp.stop_reason == "max_tokens":
+            raise AnalystError("Response cut off at max_tokens")
+        text = next((b.text for b in resp.content if b.type == "text"), None)
+        if text is None:
+            raise AnalystError("No text in response")
+        return parse_call(text, resp.model)
+
+
+class OllamaAnalyst:
+    """A model running on this computer through Ollama (ollama.com)."""
+
+    def __init__(self, spec: dict, post=None):
+        self.name = spec["name"]
+        self.model = spec["model"]
+        self.host = spec.get("host", "http://localhost:11434").rstrip("/")
+        self.think = spec.get("think")          # None = model default
+        self.timeout = spec.get("timeout_s", 600)
+        self.options = {"temperature": 0, "num_ctx": 8192, **spec.get("options", {})}
+        self._post = post
+
+    def ask(self, prompt: str) -> Call:
+        import requests
+
+        post = self._post or requests.post
+        body = {
+            "model": self.model,
+            "messages": [{"role": "system", "content": SYSTEM},
+                         {"role": "user", "content": prompt}],
+            "format": SCHEMA,
+            "stream": False,
+            "options": self.options,
+        }
+        if self.think is not None:
+            body["think"] = self.think
+        try:
+            r = post(f"{self.host}/api/chat", json=body, timeout=self.timeout)
+        except requests.ConnectionError as e:
+            raise AnalystError(f"Ollama not reachable at {self.host}. Is it running?",
+                               fatal=True) from e
+        except requests.Timeout as e:
+            raise AnalystError(f"Ollama took longer than {self.timeout}s") from e
+        if r.status_code == 404:
+            raise AnalystError(f"Model {self.model} not installed. Run: ollama pull {self.model}",
+                               fatal=True)
+        if r.status_code != 200:
+            raise AnalystError(f"Ollama error {r.status_code}: {r.text[:200]}")
+        content = (r.json().get("message") or {}).get("content", "")
+        return parse_call(content, self.model)
+
+
+PROVIDERS = {"anthropic": ClaudeAnalyst, "ollama": OllamaAnalyst}
+
+
+def make_analysts(cfg: Config, only: list[str] | None = None) -> list:
+    out = []
+    for spec in cfg.analysts:
+        if spec.get("enabled", True) and (not only or spec["name"] in only):
+            out.append(PROVIDERS[spec["provider"]](spec))
+    return out
+
+
+# ---------------------------------------------------------------- the run
 def build_prompt(stock: Stock, region: str, now: datetime, news_rows: list,
                  context: str | None, earlier: list) -> str:
     lines = [
@@ -105,101 +235,69 @@ def build_prompt(stock: Stock, region: str, now: datetime, news_rows: list,
     return "\n".join(lines)
 
 
-def ask(client, cfg: Config, prompt: str) -> Call:
-    import anthropic
-
-    model = cfg.ai["model"]
-    kwargs = dict(
-        model=model,
-        max_tokens=cfg.ai.get("max_tokens", 16000),
-        system=SYSTEM,
-        messages=[{"role": "user", "content": prompt}],
-        output_config={"effort": cfg.ai.get("effort", "medium"),
-                       "format": {"type": "json_schema", "schema": SCHEMA}},
-    )
-    if model in FALLBACK_MODELS:
-        kwargs.update(betas=["server-side-fallback-2026-07-01"], fallbacks="default")
-    try:
-        resp = client.beta.messages.create(**kwargs)
-    except anthropic.APIStatusError as e:
-        raise AnalystError(f"API error {e.status_code}: {e.message}") from e
-    except anthropic.APIConnectionError as e:
-        raise AnalystError(f"Network error: {e}") from e
-
-    if resp.stop_reason == "refusal":
-        raise AnalystError("Model declined the request")
-    if resp.stop_reason == "max_tokens":
-        raise AnalystError("Response cut off at max_tokens")
-    text = next((b.text for b in resp.content if b.type == "text"), None)
-    if text is None:
-        raise AnalystError("No text in response")
-    return parse_call(text, resp.model)
-
-
-def parse_call(text: str, model: str) -> Call:
-    try:
-        d = json.loads(text)
-    except json.JSONDecodeError as e:
-        raise AnalystError(f"Invalid JSON: {e}") from e
-    if d.get("direction") not in ("long", "short", "none"):
-        raise AnalystError(f"Bad direction {d.get('direction')!r}")
-    if d.get("horizon_days") not in range(1, 6) or d.get("confidence") not in range(1, 6):
-        raise AnalystError("Horizon or confidence out of range")
-    return Call(d["direction"], d["horizon_days"], d["confidence"], d["summary"],
-                d["rationale"], d["invalidation"], model)
-
-
-def pending_news(conn: sqlite3.Connection, symbol: str, cutoff: datetime) -> list:
+def pending_news(conn: sqlite3.Connection, symbol: str, analyst: str,
+                 cutoff: datetime) -> list:
+    """Headlines in the window that this analyst has not seen yet."""
     return conn.execute(
-        "SELECT * FROM news WHERE symbol=? AND analysed_at IS NULL AND published_at >= ?"
-        " ORDER BY published_at DESC", (symbol, cutoff.isoformat()),
+        "SELECT * FROM news n WHERE symbol=? AND published_at >= ? AND NOT EXISTS"
+        " (SELECT 1 FROM news_seen s WHERE s.news_id=n.id AND s.analyst=?)"
+        " ORDER BY published_at DESC", (symbol, cutoff.isoformat(), analyst),
     ).fetchall()
 
 
-def analyse(cfg: Config, conn: sqlite3.Connection, now: datetime, client=None,
-            stocks: list[Stock] | None = None,
-            clock=None) -> list[tuple[str, Call | str]]:
-    """Analyse every stock with unread news. Returns (symbol, Call or error).
+def analyse(cfg: Config, conn: sqlite3.Connection, now: datetime,
+            analysts: list | None = None, stocks: list[Stock] | None = None,
+            clock=None) -> list[tuple[str, str, Call | str]]:
+    """Run every analyst over every stock with unread news.
+    Returns (analyst name, symbol, Call or error message).
 
-    Each call is timestamped when the answer arrives (`clock`), not when the
+    Each call is timestamped when its answer arrives (`clock`), not when the
     run started, so it is never credited with a price it could not have used."""
     clock = clock or (lambda: datetime.now(timezone.utc))
-    if client is None:
-        import anthropic
-        client = anthropic.Anthropic()
+    analysts = make_analysts(cfg) if analysts is None else analysts
     cutoff = now - timedelta(hours=cfg.news["lookback_hours"])
+    disabled: set[str] = set()
     results = []
     for stock in stocks or cfg.stocks:
-        rows = pending_news(conn, stock.symbol, cutoff)
-        if not rows:
-            continue
-        rows = rows[: cfg.news["max_items_per_ticker"]]
         market = cfg.market_for(stock.symbol)
-        earlier = conn.execute(
-            "SELECT * FROM signals WHERE symbol=? AND created_at >= ? ORDER BY created_at",
-            (stock.symbol, (now - timedelta(days=5)).isoformat()),
-        ).fetchall()
-        prompt = build_prompt(stock, market.region, now, rows,
-                              prices.price_context(stock.symbol, now.date()), earlier)
-        try:
-            call = ask(client, cfg, prompt)
-        except AnalystError as e:
-            log.warning("%s: %s", stock.symbol, e)
-            results.append((stock.symbol, str(e)))
-            continue
-        ids = [r["id"] for r in rows]
-        created = clock()
-        conn.execute(
-            "INSERT INTO signals (symbol, created_at, direction, horizon_days, confidence,"
-            " summary, rationale, invalidation, news_ids, model, status)"
-            " VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-            (stock.symbol, created.isoformat(), call.direction, call.horizon_days,
-             call.confidence, call.summary, call.rationale, call.invalidation,
-             json.dumps(ids), call.model,
-             "pending" if call.direction != "none" else "skipped"),
-        )
-        conn.executemany("UPDATE news SET analysed_at=? WHERE id=?",
-                         [(created.isoformat(), i) for i in ids])
-        conn.commit()
-        results.append((stock.symbol, call))
+        context = None
+        for a in analysts:
+            if a.name in disabled:
+                continue
+            rows = pending_news(conn, stock.symbol, a.name, cutoff)
+            if not rows:
+                continue
+            rows = rows[: cfg.news["max_items_per_ticker"]]
+            if context is None:
+                context = prices.price_context(stock.symbol, now.date()) or ""
+            earlier = conn.execute(
+                "SELECT * FROM signals WHERE symbol=? AND analyst=? AND created_at >= ?"
+                " ORDER BY created_at",
+                (stock.symbol, a.name, (now - timedelta(days=5)).isoformat()),
+            ).fetchall()
+            prompt = build_prompt(stock, market.region, now, rows, context, earlier)
+            try:
+                call = a.ask(prompt)
+            except AnalystError as e:
+                log.warning("%s / %s: %s", a.name, stock.symbol, e)
+                results.append((a.name, stock.symbol, str(e)))
+                if e.fatal:
+                    disabled.add(a.name)
+                continue
+            created = clock().isoformat()
+            ids = [r["id"] for r in rows]
+            conn.execute(
+                "INSERT INTO signals (analyst, symbol, created_at, direction, horizon_days,"
+                " confidence, summary, rationale, invalidation, news_ids, model, status)"
+                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+                (a.name, stock.symbol, created, call.direction, call.horizon_days,
+                 call.confidence, call.summary, call.rationale, call.invalidation,
+                 json.dumps(ids), call.model,
+                 "pending" if call.direction != "none" else "skipped"),
+            )
+            conn.executemany(
+                "INSERT OR IGNORE INTO news_seen (news_id, analyst, seen_at) VALUES (?,?,?)",
+                [(i, a.name, created) for i in ids])
+            conn.commit()
+            results.append((a.name, stock.symbol, call))
     return results

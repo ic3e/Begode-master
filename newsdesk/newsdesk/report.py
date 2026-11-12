@@ -63,58 +63,69 @@ def load_signals(conn: sqlite3.Connection) -> pd.DataFrame:
     return pd.read_sql_query("SELECT * FROM signals", conn)
 
 
+def gate_verdict(s: dict, need: int) -> str:
+    if s["n"] < need:
+        return f"Not decided yet ({s['n']} of {need} calls scored)"
+    if s["vs_hold"] > 0 and s["t"] > 2:
+        return "Passed"
+    return "Failed"
+
+
 def scorecard(cfg: Config, conn: sqlite3.Connection, now: datetime) -> str:
     df = load_signals(conn)
     min_conf = cfg.report["min_confidence"]
     need = cfg.report["gate1_min_calls"]
-    out = [f"# newsdesk scorecard", "", f"Generated {now:%Y-%m-%d %H:%M} UTC.", ""]
+    out = ["# newsdesk scorecard", "", f"Generated {now:%Y-%m-%d %H:%M} UTC.", ""]
     if df.empty:
         return "\n".join(out + ["No calls logged yet. Run `python -m newsdesk run` first."])
 
-    counts = df["status"].value_counts().to_dict()
-    out += [
-        "## Log",
-        "",
-        f"- Calls logged: {len(df)} since {df['created_at'].min()[:10]}",
-        f"- \"No trade\" calls: {counts.get('skipped', 0)}",
-        f"- Waiting for their exit session: {counts.get('pending', 0)}",
-        f"- Scored: {counts.get('scored', 0)}",
-        f"- Could not be scored: {counts.get('error', 0)}",
-        "",
-    ]
-    sc = df[df["status"] == "scored"].copy()
-    acted = sc[sc["confidence"] >= min_conf]
-    s = stats(acted)
+    analysts = sorted(df["analyst"].unique())
+    out += ["## Log", "",
+            "| Analyst | Model | Calls logged | No trade | Waiting | Scored | Unscorable |",
+            "|---|---|---:|---:|---:|---:|---:|"]
+    for a in analysts:
+        g = df[df["analyst"] == a]
+        c = g["status"].value_counts().to_dict()
+        models = ", ".join(sorted(g["model"].dropna().unique()))
+        out.append(f"| {a} | {models} | {len(g)} | {c.get('skipped', 0)} | "
+                   f"{c.get('pending', 0)} | {c.get('scored', 0)} | {c.get('error', 0)} |")
+    out += ["", f"First call {df['created_at'].min()[:10]}.", ""]
 
+    sc = df[df["status"] == "scored"].copy()
     out += ["## Gate 1", "",
             f"Calls you would act on are those with confidence {min_conf} or higher. "
-            f"Gate 1 needs at least {need} of them, and on average they must beat simply "
-            "holding the index over the same days, after costs, by a margin unlikely "
-            "to be luck (t-stat above 2).", ""]
-    if s["n"] < need:
-        verdict = f"**Not decided yet.** {s['n']} of {need} calls scored."
-    elif s["vs_hold"] > 0 and s["t"] > 2:
-        verdict = "**Passed.** Move on to Phase 2 (paper trading)."
-    else:
-        verdict = "**Failed.** The calls did not beat holding the index after costs. Stop the trading idea here."
-    out += [verdict, ""]
-    if s["n"]:
-        out += [HEADER, _row(f"Confidence ≥ {min_conf}", s), ""]
-        out += [f"Right-way rate: {s['right_way'] * 100:.1f}% "
-                f"(chance of doing this well by coin-flipping: {s['p_right_way']:.3f}). "
-                f"Worst single call {_pct(s['worst'])}, best {_pct(s['best'])}.", ""]
+            f"An analyst passes Gate 1 with at least {need} such calls that on average "
+            "beat simply holding the index over the same days, after costs, by a margin "
+            "unlikely to be luck (t-stat above 2). If no analyst passes, stop the trading "
+            "idea here.", "",
+            "| Analyst | Result |", "|---|---|"]
+    gate_stats = {}
+    for a in analysts:
+        s = stats(sc[(sc["analyst"] == a) & (sc["confidence"] >= min_conf)])
+        gate_stats[a] = s
+        out.append(f"| {a} | **{gate_verdict(s, need)}** |")
+    out.append("")
+    if any(s["n"] for s in gate_stats.values()):
+        out += [HEADER] + [_row(a, s) for a, s in gate_stats.items() if s["n"]] + [""]
+        for a, s in gate_stats.items():
+            if s["n"]:
+                out.append(f"- **{a}:** right way {s['right_way'] * 100:.1f}% of the time "
+                           f"(chance of doing this well by coin-flipping: {s['p_right_way']:.3f}); "
+                           f"worst call {_pct(s['worst'])}, best {_pct(s['best'])}.")
+        out.append("")
 
     if not sc.empty:
-        out += ["## Breakdown (all scored calls)", "", HEADER]
-        out.append(_row("All", stats(sc)))
-        for col, label in [("direction", "Direction"), ("confidence", "Confidence"),
-                           ("horizon_days", "Horizon (sessions)")]:
-            for v, g in sc.groupby(col):
-                out.append(_row(f"{label}: {v}", stats(g)))
         sc["region"] = sc["symbol"].map(lambda x: cfg.market_for(x).region)
-        for v, g in sc.groupby("region"):
-            out.append(_row(f"Region: {v}", stats(g)))
-        out.append("")
+        for a in analysts:
+            g = sc[sc["analyst"] == a]
+            if g.empty:
+                continue
+            out += [f"## Breakdown: {a} (all scored calls)", "", HEADER, _row("All", stats(g))]
+            for col, label in [("direction", "Direction"), ("confidence", "Confidence"),
+                               ("horizon_days", "Horizon (sessions)"), ("region", "Region")]:
+                for v, gg in g.groupby(col):
+                    out.append(_row(f"{label}: {v}", stats(gg)))
+            out.append("")
 
         # Baseline: buy every stock that had a call, same windows, long only.
         rt = sc.apply(lambda r: round_trip_cost(
@@ -122,8 +133,8 @@ def scorecard(cfg: Config, conn: sqlite3.Connection, now: datetime) -> str:
             cfg.scoring["position_size_eur"]), axis=1)
         base = (sc["stock_return"] - rt).mean()
         out += ["## Baseline", "",
-                f"Buying every stock that had a call, ignoring the AI's direction, "
-                f"same days and costs: {_pct(base)} average per trade. The AI is only "
+                f"Buying every stock that had a call, ignoring the direction, "
+                f"same days and costs: {_pct(base)} average per trade. An analyst is only "
                 "useful if its calls do better than this.", ""]
 
     out += ["## Caveats", "",
@@ -135,27 +146,38 @@ def scorecard(cfg: Config, conn: sqlite3.Connection, now: datetime) -> str:
 
 
 def brief(conn: sqlite3.Connection, now: datetime, hours: float = 24) -> str:
+    """Latest call per analyst per stock, stocks with a trade call first."""
     since = (now - timedelta(hours=hours)).isoformat()
     rows = conn.execute(
-        "SELECT * FROM signals WHERE created_at >= ? ORDER BY"
-        " CASE direction WHEN 'none' THEN 1 ELSE 0 END, confidence DESC, created_at DESC",
-        (since,),
+        "SELECT * FROM signals WHERE created_at >= ? ORDER BY created_at DESC", (since,),
     ).fetchall()
     out = [f"# News brief, last {hours:g} hours", "", f"Generated {now:%Y-%m-%d %H:%M} UTC.", ""]
-    calls = [r for r in rows if r["direction"] != "none"]
-    quiet = [r for r in rows if r["direction"] == "none"]
     if not rows:
         return "\n".join(out + ["No calls in this period."])
-    for r in calls:
-        out += [f"## {r['symbol']}: {r['direction'].upper()}, confidence {r['confidence']}/5, "
-                f"{r['horizon_days']} session(s)", "",
-                f"- **What happened:** {r['summary']}",
-                f"- **Why:** {r['rationale']}",
-                f"- **Wrong if:** {r['invalidation']}",
-                f"- Logged {r['created_at'][:16].replace('T', ' ')} UTC", ""]
+    latest: dict[str, dict[str, sqlite3.Row]] = {}
+    for r in rows:  # newest first, so the first one seen is the latest
+        latest.setdefault(r["symbol"], {}).setdefault(r["analyst"], r)
+    active = {s: c for s, c in latest.items() if any(r["direction"] != "none" for r in c.values())}
+    quiet = {s: c for s, c in latest.items() if s not in active}
+    rank = lambda item: -max(r["confidence"] for r in item[1].values() if r["direction"] != "none")
+    for symbol, calls in sorted(active.items(), key=rank):
+        out += [f"## {symbol}", ""]
+        for a, r in sorted(calls.items()):
+            if r["direction"] == "none":
+                out += [f"**{a}: no trade.** {r['summary']}", ""]
+                continue
+            out += [f"**{a}: {r['direction'].upper()}, confidence {r['confidence']}/5, "
+                    f"{r['horizon_days']} session(s)** "
+                    f"(logged {r['created_at'][:16].replace('T', ' ')} UTC)", "",
+                    f"- What happened: {r['summary']}",
+                    f"- Why: {r['rationale']}",
+                    f"- Wrong if: {r['invalidation']}", ""]
+        agree = {r["direction"] for r in calls.values()}
+        if len(calls) > 1 and len(agree) > 1:
+            out += ["_The analysts disagree on this one._", ""]
     if quiet:
         out += ["## No trade", ""]
-        out += [f"- **{r['symbol']}:** {r['summary']}" for r in quiet]
+        out += [f"- **{s}:** {next(iter(c.values()))['summary']}" for s, c in sorted(quiet.items())]
         out.append("")
     out.append("_Research log, not advice. Calls are scored automatically; check the scorecard before acting on any of them._")
     return "\n".join(out)

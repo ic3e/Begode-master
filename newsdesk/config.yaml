@@ -2,12 +2,26 @@
 
 database: data/newsdesk.db
 
-ai:
-  # Claude model that reads the news. claude-opus-5-5 is the most capable
-  # default; claude-sonnet-5-5 costs about half, claude-haiku-5-5 about 1/40.
-  model: claude-opus-5-5
-  effort: medium          # low | medium | high
-  max_tokens: 16000
+# Every enabled analyst gets the same headlines and is scored separately, so
+# the scorecard shows whether the free local model keeps up with Claude.
+# The name is the label in the log; don't rename an analyst once it has calls.
+analysts:
+  - name: claude
+    provider: anthropic
+    # claude-haiku-5-5 costs about $1-2 a month here. claude-sonnet-5-5 is about
+    # $15-25 and claude-opus-5-5 about $35-60, for stronger judgement.
+    model: claude-haiku-5-5
+    effort: medium          # low | medium | high
+    enabled: true
+
+  - name: local
+    provider: ollama        # runs on your own PC, see README
+    # qwen3:8b only just fits a 6 GB card; qwen3:4b fits fully and is faster.
+    model: qwen3:8b
+    host: http://localhost:11434
+    think: false            # true = let it reason first: better, much slower
+    timeout_s: 600
+    enabled: true
 
 news:
   lookback_hours: 24      # only news published within this window is analysed
